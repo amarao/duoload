@@ -1,10 +1,18 @@
-let query = json!({
-        "query": "query cardsQuery(\n  $count: Int!\n  $cursor: String\n  $deckId: ID!\n  $search: String\n  $cardState: CardState\n) {\n  node(id: $deckId) {\n    __typename\n    ...cardsQuery_Deck_1yGN6X\n    id\n  }\n}\n\nfragment cardsQuery_Deck_1yGN6X on Deck {\n  cards(first: $count, after: $cursor, search: $search, cardState: $cardState) {\n    edges {\n      node {\n        id\n        sCardId\n        sBackId\n        sourceId\n        front\n        back\n        hint\n        waiting\n        knownCount\n        source {\n          kind\n          course\n          id\n        }\n        sCard {\n          theory {\n            sCardId\n            theory\n            theoryIsChecked\n            theoryNative\n            theoryNativeIsChecked\n            theoryEn\n            lang\n            langNative\n            canEdit\n          }\n          id\n        }\n        svg {\n          flatId\n          url\n          id\n        }\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  id\n}\n",
-        "variables": {
-            "cardState": null,
-            "count": 30,
-            "cursor": null,
-            "deckId": cfg.deckid,
-            "search": ""
-        }
-    });
+curl 'https://api.duocards.com/graphql?cardsQuery' \
+  -X POST \
+  -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:139.0) Gecko/20100101 Firefox/139.0' \
+  -H 'Accept: */*' \
+  -H 'Accept-Language: en-US,en;q=0.5' \
+  -H 'Accept-Encoding: gzip, deflate, br, zstd' \
+  -H 'Referer: https://app.duocards.com/' \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer (skip)' \
+  -H 'x-js-version: 2025-06-04T14:06:15.707Z' \
+  -H 'x-app-version: undefined' \
+  -H 'Origin: https://app.duocards.com' \
+  -H 'Connection: keep-alive' \
+  -H 'Sec-Fetch-Dest: empty' \
+  -H 'Sec-Fetch-Mode: cors' \
+  -H 'Sec-Fetch-Site: same-site' \
+  -H 'Priority: u=0' \
+  --data-raw '{"query":"query cardsQuery(\n  $count: Int!\n  $cursor: String\n  $deckId: ID!\n  $search: String\n  $cardState: CardState\n) {\n  node(id: $deckId) {\n    __typename\n    ...cardsQuery_Deck_1yGN6X\n    id\n  }\n}\n\nfragment cardsQuery_Deck_1yGN6X on Deck {\n  cards(first: $count, after: $cursor, search: $search, cardState: $cardState) {\n    edges {\n      node {\n        id\n        sCardId\n        sBackId\n        sourceId\n        front\n        back\n        hint\n        waiting\n        knownCount\n        source {\n          kind\n          course\n          id\n        }\n        sCard {\n          theory {\n            sCardId\n            theory\n            theoryIsChecked\n            theoryNative\n            theoryNativeIsChecked\n            theoryEn\n            lang\n            langNative\n            canEdit\n          }\n          id\n        }\n        svg {\n          flatId\n          url\n          id\n        }\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  id\n}\n","variables":{"count":30,"cursor":null,"deckId":"RGVjazo0NmYyYjllZC1hYmYzLTRiZDgtYTA1NC02OGRmYTRhNDIwM2U=","search":"","cardState":null}}'

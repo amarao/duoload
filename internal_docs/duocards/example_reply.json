@@ -1,1 +1,591 @@
-{"data":{"node":{"__typename":"Deck","cards":{"edges":[{"node":{"id":"Q2FyZDoxOWU0OTA5ZS00ZGQxLTQwYWEtOWEzZC03YmJhYjdkZjE4N2M=","sCardId":null,"sBackId":null,"sourceId":null,"front":"διχοτόμηση","back":"разделение на две части","hint":"","waiting":null,"knownCount":2,"source":null,"sCard":null,"svg":{"flatId":"RmxhdEljb246MTY3NDgyNA==","url":"https://imgs.duocards.com/flatsSvg/1674824.svg","id":"VXBsb2FkOjU4ODIx"},"__typename":"Card"},"cursor":"0"},{"node":{"id":"Q2FyZDoyYzY3M2EyZS02NDQ4LTQxOTYtYjM1NS00ZjU3YmEyMDQ2NDk=","sCardId":null,"sBackId":null,"sourceId":null,"front":"προτείνω","back":"я предлагаю","hint":"","waiting":null,"knownCount":2,"source":null,"sCard":null,"svg":{"flatId":"RmxhdEljb246MjU5MzY2Mw==","url":"https://imgs.duocards.com/flatsSvg/2593663.svg","id":"VXBsb2FkOjY4MzAw"},"__typename":"Card"},"cursor":"1"},{"node":{"id":"Q2FyZDozNjU3N2I5Yi1iYTBmLTQzYWUtOGNiNS1iZDkwZDIxZmZkYjM=","sCardId":null,"sBackId":null,"sourceId":null,"front":"κατέχω","back":"владеть, занимать","hint":"","waiting":null,"knownCount":2,"source":null,"sCard":null,"svg":{"flatId":"RmxhdEljb246NDc4NDMxOA==","url":"https://imgs.duocards.com/flatsSvg/4784318.svg","id":"VXBsb2FkOjUwOTUz"},"__typename":"Card"},"cursor":"2"},{"node":{"id":"Q2FyZDo3M2UwZTljNy1lYTYwLTQxOTItOWYzMy0zN2NiMTFmMGQwOWM=","sCardId":null,"sBackId":null,"sourceId":null,"front":"ασυνόδευτος","back":"без сопровождения","hint":"","waiting":null,"knownCount":1,"source":null,"sCard":null,"svg":{"flatId":"RmxhdEljb246MTAzMTU0MjA=","url":"https://imgs.duocards.com/flats256/10315420.png","id":"VXBsb2FkOjE1MzI0Mg=="},"__typename":"Card"},"cursor":"3"},{"node":{"id":"Q2FyZDo3ZWUyMzM1Yy1kYjRkLTQzZDAtYjRiNi03OTg1MTY1YzI0OTA=","sCardId":null,"sBackId":null,"sourceId":null,"front":"ανάβω","back":"Включаю","hint":"","waiting":null,"knownCount":1,"source":null,"sCard":null,"svg":{"flatId":"RmxhdEljb246NDg1OTAy","url":"https://imgs.duocards.com/flatsSvg/485902.svg","id":"VXBsb2FkOjExMzE="},"__typename":"Card"},"cursor":"4"},{"node":{"id":"Q2FyZDoxOTc1OWYwNy1lZmM0LTRkYjMtOTRmYy0zMGYyY2Q1N2MwYTU=","sCardId":null,"sBackId":null,"sourceId":null,"front":"απόχη","back":"сачок","hint":"","waiting":null,"knownCount":1,"source":null,"sCard":null,"svg":{"flatId":"RmxhdEljb246MzM3NTYzNA==","url":"https://imgs.duocards.com/flatsSvg/3375634.svg","id":"VXBsb2FkOjU3MjQ2"},"__typename":"Card"},"cursor":"5"},{"node":{"id":"Q2FyZDo1ZTk4NTAwZS1iZDczLTRhMGMtYjRlYi1hNmIzZGFjYmRkMDY=","sCardId":null,"sBackId":null,"sourceId":null,"front":"μάταια","back":"напрасно","hint":"Το έργο του ήταν μάταιο. (His work was in vain.)","waiting":261,"knownCount":2,"source":null,"sCard":null,"svg":{"flatId":"RmxhdEljb246NDEyOTg2","url":"https://imgs.duocards.com/flatsSvg/412986.svg","id":"VXBsb2FkOjEzMTI3"},"__typename":"Card"},"cursor":"6"},{"node":{"id":"Q2FyZDpjYmFhY2Y3Yi02MGQwLTQ2YmYtOGY5OS0yYWIxZTRkNTgwZGM=","sCardId":null,"sBackId":null,"sourceId":null,"front":"μέλος","back":"член (часть)","hint":"","waiting":292,"knownCount":2,"source":null,"sCard":null,"svg":{"flatId":"RmxhdEljb246MTM1NzY1MA==","url":"https://imgs.duocards.com/flatsSvg/1357650.svg","id":"VXBsb2FkOjYzNDE3"},"__typename":"Card"},"cursor":"7"},{"node":{"id":"Q2FyZDphM2M1MWExNS01M2QxLTQ3YTQtYjk5ZS0yOGM1Y2YxZWM4OWM=","sCardId":null,"sBackId":null,"sourceId":null,"front":"αναζητάω","back":"искать, разыскивать","hint":"","waiting":309,"knownCount":2,"source":null,"sCard":null,"svg":{"flatId":"RmxhdEljb246MzU3MTYxNg==","url":"https://imgs.duocards.com/flatsSvg/3571616.svg","id":"VXBsb2FkOjE5OTU="},"__typename":"Card"},"cursor":"8"},{"node":{"id":"Q2FyZDpkNzU4MzM4Yi0wOThkLTQ1M2UtYTgyYy0yNDY2ZWNlZDhhMzY=","sCardId":null,"sBackId":null,"sourceId":null,"front":"μετανιώνω","back":"раскаиваться","hint":"","waiting":11100,"knownCount":4,"source":null,"sCard":null,"svg":{"flatId":"RmxhdEljb246NDEyNjMwMA==","url":"https://imgs.duocards.com/flatsSvg/4126300.svg","id":"VXBsb2FkOjQx"},"__typename":"Card"},"cursor":"9"},{"node":{"id":"Q2FyZDpkY2Y3NzJhMC1jMDk2LTRmMWMtOTRlYS05NjI2OGI0OTFhMjM=","sCardId":null,"sBackId":null,"sourceId":null,"front":"το γόητρο","back":"престиж","hint":"","waiting":11121,"knownCount":4,"source":null,"sCard":null,"svg":{"flatId":"RmxhdEljb246NTMwMTQ3Ng==","url":"https://imgs.duocards.com/flatsSvg/5301476.svg","id":"VXBsb2FkOjM4MDYx"},"__typename":"Card"},"cursor":"10"},{"node":{"id":"Q2FyZDpjOGJjNTVkOS05ZDc1LTQwZTYtOTBiOS02NmFhYWMwOGMyNTE=","sCardId":null,"sBackId":null,"sourceId":null,"front":"οχιά","back":"гадюка","hint":"","waiting":11145,"knownCount":4,"source":null,"sCard":null,"svg":{"flatId":"RmxhdEljb246NjE2NDg3","url":"https://imgs.duocards.com/flatsSvg/616487.svg","id":"VXBsb2FkOjI0MDE="},"__typename":"Card"},"cursor":"11"},{"node":{"id":"Q2FyZDoxMjc3ZTYxNi03MmViLTQ0ZjctODQwOS1jYzMwYzJjYTE0OWE=","sCardId":null,"sBackId":null,"sourceId":null,"front":"επιδίωξη","back":"преследование","hint":"","waiting":11152,"knownCount":4,"source":null,"sCard":null,"svg":{"flatId":"RmxhdEljb246NTc4MTA2MQ==","url":"https://imgs.duocards.com/flatsSvg/5781061.svg","id":"VXBsb2FkOjMyNjg1"},"__typename":"Card"},"cursor":"12"},{"node":{"id":"Q2FyZDpmNTgyYzg2Mi05YWEzLTQ1M2QtODdhZC02MWFhMTJlM2VmMjM=","sCardId":null,"sBackId":null,"sourceId":null,"front":"καταργώ","back":"отменять","hint":"","waiting":11155,"knownCount":4,"source":null,"sCard":null,"svg":{"flatId":"RmxhdEljb246NTI2NzkyOA==","url":"https://imgs.duocards.com/flatsSvg/5267928.svg","id":"VXBsb2FkOjY1OTYz"},"__typename":"Card"},"cursor":"13"},{"node":{"id":"Q2FyZDpiZDFlNDEwOS1lYzc2LTQ2YTEtYWYzOC1lZDdhMDI2M2FiODU=","sCardId":null,"sBackId":null,"sourceId":null,"front":"τσακώνω","back":"схватывать, арестовывать","hint":"","waiting":11158,"knownCount":4,"source":null,"sCard":null,"svg":{"flatId":"RmxhdEljb246MTM3MjQ2OA==","url":"https://imgs.duocards.com/flats256/1372468.png","id":"VXBsb2FkOjkzNzQ5"},"__typename":"Card"},"cursor":"14"},{"node":{"id":"Q2FyZDo4NmNiNDg0MC0yYjA2LTQ5ZWUtOGYzNS0xN2RlNjdiYjk0Mzk=","sCardId":null,"sBackId":null,"sourceId":null,"front":"διαφθορά","back":"коррупция, разврат","hint":"","waiting":11179,"knownCount":4,"source":null,"sCard":null,"svg":{"flatId":"RmxhdEljb246OTExMDI4Mg==","url":"https://imgs.duocards.com/flats256/9110282.png","id":"VXBsb2FkOjEzNjkzOA=="},"__typename":"Card"},"cursor":"15"},{"node":{"id":"Q2FyZDpkNjNmNDVjYy02ZTA5LTQxYjgtOWMzYi05ZmRhNjIzODI0NWQ=","sCardId":null,"sBackId":null,"sourceId":null,"front":"αντέχω","back":"выдержать","hint":"","waiting":11183,"knownCount":4,"source":null,"sCard":null,"svg":{"flatId":"RmxhdEljb246NjE1ODk4NA==","url":"https://imgs.duocards.com/flatsSvg/6158984.svg","id":"VXBsb2FkOjUzNDU5"},"__typename":"Card"},"cursor":"16"},{"node":{"id":"Q2FyZDo1MWJiYWVjMC02YjM3LTQ3NzktYTJiNi1iYTNjNTU1YWY4NzA=","sCardId":null,"sBackId":null,"sourceId":null,"front":"παραδέχομαι","back":"признаю","hint":"","waiting":11189,"knownCount":4,"source":null,"sCard":null,"svg":{"flatId":"RmxhdEljb246Njg1MTQwMg==","url":"https://imgs.duocards.com/flatsSvg/6851402.svg","id":"VXBsb2FkOjY2Nzc5"},"__typename":"Card"},"cursor":"17"},{"node":{"id":"Q2FyZDo1ZGY5ZDEyNS1hNWMyLTQ0ZGMtYTdlYi0zMDU5NmNjODBkYTk=","sCardId":null,"sBackId":null,"sourceId":null,"front":"επιχειρώ","back":"пытаться","hint":"","waiting":11192,"knownCount":4,"source":null,"sCard":null,"svg":{"flatId":"RmxhdEljb246MTI1NjY1MA==","url":"https://imgs.duocards.com/flatsSvg/1256650.svg","id":"VXBsb2FkOjky"},"__typename":"Card"},"cursor":"18"},{"node":{"id":"Q2FyZDo4OTAwMzk0Mi1iNjFkLTRkOTItYWIzNi0zZjI5Mjc2MzA5YTE=","sCardId":null,"sBackId":null,"sourceId":null,"front":"πρατήριο","back":"заправка","hint":"","waiting":11204,"knownCount":4,"source":null,"sCard":null,"svg":{"flatId":"RmxhdEljb246NzA3MTM0MA==","url":"https://imgs.duocards.com/flatsSvg/7071340.svg","id":"VXBsb2FkOjYxNjA3"},"__typename":"Card"},"cursor":"19"},{"node":{"id":"Q2FyZDowZjFkNjA0OS02M2IzLTQ1MjEtYTZhMC1kMmUzNDY4OWU2MGU=","sCardId":null,"sBackId":null,"sourceId":null,"front":"κλοπή","back":"кража","hint":"","waiting":11208,"knownCount":4,"source":null,"sCard":null,"svg":{"flatId":"RmxhdEljb246MjMwMjcyMg==","url":"https://imgs.duocards.com/flatsSvg/2302722.svg","id":"VXBsb2FkOjQ0NTY="},"__typename":"Card"},"cursor":"20"},{"node":{"id":"Q2FyZDpkODFhY2M1MC05YWY4LTQ1NjAtOGFkNS0zMjVjNGM5MmViMDg=","sCardId":null,"sBackId":null,"sourceId":null,"front":"παραλαμβάνω","back":"Получаю","hint":"","waiting":11213,"knownCount":4,"source":null,"sCard":null,"svg":{"flatId":"RmxhdEljb246MzQ0NTc3MA==","url":"https://imgs.duocards.com/flatsSvg/3445770.svg","id":"VXBsb2FkOjgzMTA="},"__typename":"Card"},"cursor":"21"},{"node":{"id":"Q2FyZDpmNWYwYTJlMi0yODNlLTRjZmItYTE1Ny1mMDlmYTRhYmQ0YTE=","sCardId":null,"sBackId":null,"sourceId":null,"front":"η προώθηση","back":"продвижение, повышение","hint":"","waiting":11226,"knownCount":4,"source":null,"sCard":null,"svg":{"flatId":"RmxhdEljb246MjA2MzU0Nw==","url":"https://imgs.duocards.com/flats256/2063547.png","id":"VXBsb2FkOjkzMzI4"},"__typename":"Card"},"cursor":"22"},{"node":{"id":"Q2FyZDozZjc4YTNmYi04ZGJhLTRiYmUtODQ5NC05OGI1YTFkNWNlMDQ=","sCardId":null,"sBackId":null,"sourceId":null,"front":"συστήνω","back":"знакомить, рекомендовать","hint":"","waiting":11233,"knownCount":4,"source":null,"sCard":null,"svg":{"flatId":"RmxhdEljb246NDg5MTUxOQ==","url":"https://imgs.duocards.com/flatsSvg/4891519.svg","id":"VXBsb2FkOjMyNTI1"},"__typename":"Card"},"cursor":"23"},{"node":{"id":"Q2FyZDo4YzQ0YmIwNS1kZDA3LTQ0MWQtOTlhNy1kZjUyZjdjZmE4OTk=","sCardId":null,"sBackId":null,"sourceId":null,"front":"προτιμώ","back":"предпочитаю","hint":"","waiting":11240,"knownCount":4,"source":null,"sCard":null,"svg":{"flatId":"RmxhdEljb246MTMxMjIwMg==","url":"https://imgs.duocards.com/flatsSvg/1312202.svg","id":"VXBsb2FkOjYxNg=="},"__typename":"Card"},"cursor":"24"},{"node":{"id":"Q2FyZDo0ZjY3M2UwNC0xNDQzLTQyYzQtYjE2Yi04MTc1NjRiYjgyNjI=","sCardId":null,"sBackId":null,"sourceId":null,"front":"ανακοινώνω","back":"объявить, сообщить","hint":"","waiting":11246,"knownCount":4,"source":null,"sCard":null,"svg":{"flatId":"RmxhdEljb246NjMwNzU3","url":"https://imgs.duocards.com/flatsSvg/630757.svg","id":"VXBsb2FkOjE3"},"__typename":"Card"},"cursor":"25"},{"node":{"id":"Q2FyZDo0ZDM0YzAzZC1lOGFhLTQ2NWEtOTk5NS01YmQ0ZmUzMjExNWE=","sCardId":null,"sBackId":null,"sourceId":null,"front":"ξεχωρίζω","back":"выделять, отличать","hint":"","waiting":11262,"knownCount":4,"source":null,"sCard":null,"svg":{"flatId":"RmxhdEljb246ODI4Mjg2Nw==","url":"https://imgs.duocards.com/flats256/8282867.png","id":"VXBsb2FkOjEzNjE0NA=="},"__typename":"Card"},"cursor":"26"},{"node":{"id":"Q2FyZDowOWI4OTdjYi1lYmI2LTRiNWYtYTViYi0zNjg0OGFiMGNlZjY=","sCardId":null,"sBackId":null,"sourceId":null,"front":"σίδηρος","back":"железо","hint":"","waiting":14300,"knownCount":4,"source":null,"sCard":null,"svg":{"flatId":"RmxhdEljb246MjkzOTMzOA==","url":"https://imgs.duocards.com/flatsSvg/2939338.svg","id":"VXBsb2FkOjQyODE="},"__typename":"Card"},"cursor":"27"},{"node":{"id":"Q2FyZDo4MzFjNjk1NC04OWQxLTRmYWYtODVhMi00OTkzYTM4Mjg4MTc=","sCardId":null,"sBackId":null,"sourceId":null,"front":"αύξηση","back":"увеличение","hint":"","waiting":14355,"knownCount":4,"source":null,"sCard":null,"svg":{"flatId":"RmxhdEljb246MTM4OTEzMA==","url":"https://imgs.duocards.com/flatsSvg/1389130.svg","id":"VXBsb2FkOjc0MDQ1"},"__typename":"Card"},"cursor":"28"},{"node":{"id":"Q2FyZDpjNzQwYmI1MS0xMzQ0LTRlNDEtYjc3MC0zZWI0MjhkNDhjNTM=","sCardId":null,"sBackId":null,"sourceId":null,"front":"στρόγγυλος","back":"круглый","hint":"","waiting":14525,"knownCount":4,"source":null,"sCard":null,"svg":{"flatId":"RmxhdEljb246MTIzNzg4Ng==","url":"https://imgs.duocards.com/flatsSvg/1237886.svg","id":"VXBsb2FkOjQ4ODU="},"__typename":"Card"},"cursor":"29"}],"pageInfo":{"endCursor":"29","hasNextPage":true}},"id":"RGVjazo0NmYyYjllZC1hYmYzLTRiZDgtYTA1NC02OGRmYTRhNDIwM2U="}},"extensions":{"releaseId":"2024-07-26T08:43:34.080Z"}}
+{
+	"data": {
+		"node": {
+			"__typename": "Deck",
+			"cards": {
+				"edges": [
+					{
+						"node": {
+							"id": "Q2FyZDo2ZDI4NzNkNi0yMzM5LTQ0MzEtOTVkNS0wZGY4ZWEyYmQxOTI=",
+							"sCardId": null,
+							"sBackId": null,
+							"sourceId": null,
+							"front": "ποιότητα",
+							"back": "Качество",
+							"hint": "Η ποιότητα του φαγητού σε αυτό το εστιατόριο είναι εξαιρετική.",
+							"waiting": null,
+							"knownCount": 5,
+							"source": null,
+							"sCard": null,
+							"svg": {
+								"flatId": "RmxhdEljb246ODc5MDEzOQ==",
+								"url": "https://imgs.duocards.com/flats256/8790139.png",
+								"id": "VXBsb2FkOjExNDIzNw=="
+							},
+							"__typename": "Card"
+						},
+						"cursor": "0"
+					},
+					{
+						"node": {
+							"id": "Q2FyZDozNzMxZGM4Yi05ZWJmLTRhOTUtOGZjNi0zZjA4N2UwZDc5ODI=",
+							"sCardId": null,
+							"sBackId": null,
+							"sourceId": null,
+							"front": "αμέλεια",
+							"back": "небрежность",
+							"hint": "",
+							"waiting": null,
+							"knownCount": 4,
+							"source": null,
+							"sCard": null,
+							"svg": null,
+							"__typename": "Card"
+						},
+						"cursor": "1"
+					},
+					{
+						"node": {
+							"id": "Q2FyZDpjODgxYjc4MC0zM2Y0LTRmMzYtODhjNC0xYzQyZTE5YWE0Yzg=",
+							"sCardId": null,
+							"sBackId": null,
+							"sourceId": null,
+							"front": "άρση",
+							"back": "поднятие; отмена (lifting)",
+							"hint": "",
+							"waiting": null,
+							"knownCount": 2,
+							"source": null,
+							"sCard": null,
+							"svg": null,
+							"__typename": "Card"
+						},
+						"cursor": "2"
+					},
+					{
+						"node": {
+							"id": "Q2FyZDowODM0MTk2ZC1iNjYyLTRiZWYtOGE1OC03ODdkNThmZWNmOGU=",
+							"sCardId": null,
+							"sBackId": null,
+							"sourceId": null,
+							"front": "διοίκηση",
+							"back": "администрация, правление",
+							"hint": "Η καλή διοίκηση είναι το κλειδί για την επιτυχία ενός οργανισμού.",
+							"waiting": null,
+							"knownCount": 2,
+							"source": null,
+							"sCard": null,
+							"svg": null,
+							"__typename": "Card"
+						},
+						"cursor": "3"
+					},
+					{
+						"node": {
+							"id": "Q2FyZDo0MzZjZTdmZS1jYmM3LTQ0OWEtODY1Yy0zMjYwZjBmOGRkZjI=",
+							"sCardId": null,
+							"sBackId": null,
+							"sourceId": null,
+							"front": "αποτροπιασμός",
+							"back": "омерзение",
+							"hint": "",
+							"waiting": null,
+							"knownCount": 2,
+							"source": null,
+							"sCard": null,
+							"svg": {
+								"flatId": "RmxhdEljb246OTU4Njg5NQ==",
+								"url": "https://imgs.duocards.com/flats256/9586895.png",
+								"id": "VXBsb2FkOjE0NDEwMg=="
+							},
+							"__typename": "Card"
+						},
+						"cursor": "4"
+					},
+					{
+						"node": {
+							"id": "Q2FyZDo1ZDFmMWIwZC1lNDJlLTQ1ZmUtOGZjNC05N2M1OGEzYjgwOTQ=",
+							"sCardId": null,
+							"sBackId": null,
+							"sourceId": null,
+							"front": "διαρκώ",
+							"back": "продолжаться, тянуться",
+							"hint": "",
+							"waiting": null,
+							"knownCount": 5,
+							"source": null,
+							"sCard": null,
+							"svg": null,
+							"__typename": "Card"
+						},
+						"cursor": "5"
+					},
+					{
+						"node": {
+							"id": "Q2FyZDoyYmNkZTUwNS04MzRjLTQ2NmYtOTYwZC1iNWQ3MGIzZjE4YmM=",
+							"sCardId": null,
+							"sBackId": null,
+							"sourceId": null,
+							"front": "θυμάμαι",
+							"back": "Помню",
+							"hint": "",
+							"waiting": null,
+							"knownCount": 6,
+							"source": null,
+							"sCard": null,
+							"svg": null,
+							"__typename": "Card"
+						},
+						"cursor": "6"
+					},
+					{
+						"node": {
+							"id": "Q2FyZDo2MzExZjM4NC05ODViLTRiYTAtYWM4ZS0zNTFlNDFiZDE4ZmE=",
+							"sCardId": null,
+							"sBackId": null,
+							"sourceId": null,
+							"front": "το επίδομα",
+							"back": "надбавка, пособие",
+							"hint": "",
+							"waiting": null,
+							"knownCount": 1,
+							"source": null,
+							"sCard": null,
+							"svg": {
+								"flatId": "RmxhdEljb246MzE0MTk4OQ==",
+								"url": "https://imgs.duocards.com/flatsSvg/3141989.svg",
+								"id": "VXBsb2FkOjQwNjcw"
+							},
+							"__typename": "Card"
+						},
+						"cursor": "7"
+					},
+					{
+						"node": {
+							"id": "Q2FyZDowOTA0ZjRjYi00MWY1LTQyYTUtODY5Zi1jZjJkODlhZmZiZGU=",
+							"sCardId": null,
+							"sBackId": null,
+							"sourceId": null,
+							"front": "αναχωρώ",
+							"back": "отправляться",
+							"hint": "Αναχωρώ για την Αθήνα αύριο το πρωί.",
+							"waiting": 345,
+							"knownCount": 6,
+							"source": null,
+							"sCard": null,
+							"svg": null,
+							"__typename": "Card"
+						},
+						"cursor": "8"
+					},
+					{
+						"node": {
+							"id": "Q2FyZDozY2YxYzkzZi1jYjgzLTRlMGYtYWI5YS1kMTcwNTc0MDIxM2M=",
+							"sCardId": null,
+							"sBackId": null,
+							"sourceId": null,
+							"front": "ανεπανάληπτος",
+							"back": "неповторимый",
+							"hint": "",
+							"waiting": 5720,
+							"knownCount": 3,
+							"source": null,
+							"sCard": null,
+							"svg": null,
+							"__typename": "Card"
+						},
+						"cursor": "9"
+					},
+					{
+						"node": {
+							"id": "Q2FyZDpiZTkzMjQ2YS00YWFlLTRmZTAtODk2Zi0zZGVjNjVlMDg5OTk=",
+							"sCardId": null,
+							"sBackId": null,
+							"sourceId": null,
+							"front": "διασκεδάζω",
+							"back": "развлекаться, веселиться",
+							"hint": "Σήμερα το βράδυ θα διασκεδάσουμε σε ένα πάρτι.",
+							"waiting": 6412,
+							"knownCount": 3,
+							"source": null,
+							"sCard": null,
+							"svg": null,
+							"__typename": "Card"
+						},
+						"cursor": "10"
+					},
+					{
+						"node": {
+							"id": "Q2FyZDo2MzNjZDNmMy0wYzJmLTQ5N2ItYjlhNS1mNmNiNjU2ZjU3ZDI=",
+							"sCardId": null,
+							"sBackId": null,
+							"sourceId": null,
+							"front": "ανεξήγητος",
+							"back": "необъяснимый",
+							"hint": "",
+							"waiting": 7330,
+							"knownCount": 5,
+							"source": null,
+							"sCard": null,
+							"svg": null,
+							"__typename": "Card"
+						},
+						"cursor": "11"
+					},
+					{
+						"node": {
+							"id": "Q2FyZDpjMmIyZTg4NS1mYTNlLTQ5MDgtYmRmZi01MTczYzg5MjEwYWE=",
+							"sCardId": null,
+							"sBackId": null,
+							"sourceId": null,
+							"front": "Βέλγιο",
+							"back": "Бельгия",
+							"hint": "",
+							"waiting": 8207,
+							"knownCount": 4,
+							"source": null,
+							"sCard": null,
+							"svg": {
+								"flatId": "RmxhdEljb246MzAxNDAxMw==",
+								"url": "https://imgs.duocards.com/flatsSvg/3014013.svg",
+								"id": "VXBsb2FkOjQ2NzU="
+							},
+							"__typename": "Card"
+						},
+						"cursor": "12"
+					},
+					{
+						"node": {
+							"id": "Q2FyZDpjYWM0YjhiMy1iYzZjLTRlZGYtODg1Zi04MmRjNmNhM2IzMDU=",
+							"sCardId": null,
+							"sBackId": null,
+							"sourceId": null,
+							"front": "έσοδο",
+							"back": "прибыль",
+							"hint": "",
+							"waiting": 8509,
+							"knownCount": 3,
+							"source": null,
+							"sCard": null,
+							"svg": {
+								"flatId": "RmxhdEljb246MzE0MjA1MA==",
+								"url": "https://imgs.duocards.com/flatsSvg/3142050.svg",
+								"id": "VXBsb2FkOjE2Nzgy"
+							},
+							"__typename": "Card"
+						},
+						"cursor": "13"
+					},
+					{
+						"node": {
+							"id": "Q2FyZDo1MDdkNmE3ZS00YTUzLTQ3ZmYtYmI2OC1iNDg5MDU5MGMzMDI=",
+							"sCardId": null,
+							"sBackId": null,
+							"sourceId": null,
+							"front": "εξαίρεση",
+							"back": "Исключение",
+							"hint": "Η Μαρία είναι η εξαίρεση στον κανόνα, καθώς πάντα έρχεται νωρίς.",
+							"waiting": 8858,
+							"knownCount": 5,
+							"source": null,
+							"sCard": null,
+							"svg": null,
+							"__typename": "Card"
+						},
+						"cursor": "14"
+					},
+					{
+						"node": {
+							"id": "Q2FyZDpjMjg2OTczNC03MzQyLTRlYzMtYjBkOS04ZmE0M2U2NTY5ZTk=",
+							"sCardId": null,
+							"sBackId": null,
+							"sourceId": null,
+							"front": "παρατημένος",
+							"back": "заброшенный",
+							"hint": "",
+							"waiting": 8880,
+							"knownCount": 3,
+							"source": null,
+							"sCard": null,
+							"svg": null,
+							"__typename": "Card"
+						},
+						"cursor": "15"
+					},
+					{
+						"node": {
+							"id": "Q2FyZDoyMDYyZjg5ZS0xODRmLTRlMzgtYmU0Yi1jNmViM2Q0MDU1MGU=",
+							"sCardId": null,
+							"sBackId": null,
+							"sourceId": null,
+							"front": "θεάομαι",
+							"back": "рассматривать",
+							"hint": "",
+							"waiting": 9314,
+							"knownCount": 3,
+							"source": null,
+							"sCard": null,
+							"svg": null,
+							"__typename": "Card"
+						},
+						"cursor": "16"
+					},
+					{
+						"node": {
+							"id": "Q2FyZDphYjFiMWUzZi0yZjNjLTRjZGYtOTMyMC0wZDU5ZGRkYmVlNTU=",
+							"sCardId": null,
+							"sBackId": null,
+							"sourceId": null,
+							"front": "απέχω",
+							"back": "быть в далеке, воздерживаться",
+							"hint": "",
+							"waiting": 11136,
+							"knownCount": 6,
+							"source": null,
+							"sCard": null,
+							"svg": null,
+							"__typename": "Card"
+						},
+						"cursor": "17"
+					},
+					{
+						"node": {
+							"id": "Q2FyZDpjM2Q0ZGI1MC1kMzQ5LTQyZDgtYTA2Zi05ZDg1YTQ2ZWVjMGM=",
+							"sCardId": null,
+							"sBackId": null,
+							"sourceId": null,
+							"front": "επιστήμονας",
+							"back": "ученый",
+							"hint": "Ο επιστήμονας παρουσίασε τα αποτελέσματα της έρευνάς του σε διεθνές συνέδριο.",
+							"waiting": 14856,
+							"knownCount": 3,
+							"source": null,
+							"sCard": null,
+							"svg": {
+								"flatId": "RmxhdEljb246OTcwODcyMQ==",
+								"url": "https://imgs.duocards.com/flats256/9708721.png",
+								"id": "VXBsb2FkOjE0Mjc1NA=="
+							},
+							"__typename": "Card"
+						},
+						"cursor": "18"
+					},
+					{
+						"node": {
+							"id": "Q2FyZDpmZjIwMjVjYS01ZDliLTQyMDMtODk0MC1kYjk3ZWUxOGQ0MTI=",
+							"sCardId": null,
+							"sBackId": null,
+							"sourceId": null,
+							"front": "παρολίγο",
+							"back": "почти, чуть",
+							"hint": "",
+							"waiting": 17301,
+							"knownCount": 3,
+							"source": null,
+							"sCard": null,
+							"svg": null,
+							"__typename": "Card"
+						},
+						"cursor": "19"
+					},
+					{
+						"node": {
+							"id": "Q2FyZDo2NjQyNDU0NC1kODczLTRjMDItYTZiYS0xOThjYmE3ZDM3MjY=",
+							"sCardId": null,
+							"sBackId": null,
+							"sourceId": null,
+							"front": "ιερέας",
+							"back": "священник",
+							"hint": "Ο ιερέας τέλεσε τη λειτουργία στην εκκλησία.",
+							"waiting": 20173,
+							"knownCount": 6,
+							"source": null,
+							"sCard": null,
+							"svg": {
+								"flatId": "RmxhdEljb246MjA2ODg5",
+								"url": "https://imgs.duocards.com/flatsSvg/206889.svg",
+								"id": "VXBsb2FkOjUwODI="
+							},
+							"__typename": "Card"
+						},
+						"cursor": "20"
+					},
+					{
+						"node": {
+							"id": "Q2FyZDo0MGRhNmYxMy0yYmIzLTRjZjAtOTljOS05M2NhYzY4YTZjZDU=",
+							"sCardId": null,
+							"sBackId": null,
+							"sourceId": null,
+							"front": "δεσμεύομαι",
+							"back": "обязуюсь",
+							"hint": "",
+							"waiting": 20654,
+							"knownCount": 3,
+							"source": null,
+							"sCard": null,
+							"svg": null,
+							"__typename": "Card"
+						},
+						"cursor": "21"
+					},
+					{
+						"node": {
+							"id": "Q2FyZDpiYjNjMzVkYi0zZDE2LTQ3ZDQtOTQ3OC1lNjRjMDg4YTRkMTg=",
+							"sCardId": null,
+							"sBackId": null,
+							"sourceId": null,
+							"front": "ξεκαθαρίζω",
+							"back": "уточнять",
+							"hint": "Πρέπει να ξεκαθαρίσω τις σκέψεις μου πριν μιλήσω.",
+							"waiting": 22290,
+							"knownCount": 3,
+							"source": null,
+							"sCard": null,
+							"svg": null,
+							"__typename": "Card"
+						},
+						"cursor": "22"
+					},
+					{
+						"node": {
+							"id": "Q2FyZDowNTRkYzQzNy1lOTRlLTRhZDItYTRhNS1hNjY4MjM5YzBlOWU=",
+							"sCardId": null,
+							"sBackId": null,
+							"sourceId": null,
+							"front": "πρόωρα",
+							"back": "преждевременно",
+							"hint": "",
+							"waiting": 22747,
+							"knownCount": 5,
+							"source": null,
+							"sCard": null,
+							"svg": null,
+							"__typename": "Card"
+						},
+						"cursor": "23"
+					},
+					{
+						"node": {
+							"id": "Q2FyZDowYzNlZjhiNS03Y2Y2LTQ3NjUtYjA1YS04YmM5NjE1NTAwYTk=",
+							"sCardId": null,
+							"sBackId": null,
+							"sourceId": null,
+							"front": "χορταίνω",
+							"back": "насыщаться, досыта",
+							"hint": "Χορταίνω από φαγητό.",
+							"waiting": 23055,
+							"knownCount": 4,
+							"source": null,
+							"sCard": null,
+							"svg": null,
+							"__typename": "Card"
+						},
+						"cursor": "24"
+					},
+					{
+						"node": {
+							"id": "Q2FyZDo4YWRmZTIxNS1jZmU4LTQ1NTUtYTBmYS1mMThkM2NmMmE2MTQ=",
+							"sCardId": null,
+							"sBackId": null,
+							"sourceId": null,
+							"front": "κόκαλο",
+							"back": "кость",
+							"hint": "Τα κόκαλα του ζώου είναι πολύ δυνατά.",
+							"waiting": 25261,
+							"knownCount": 3,
+							"source": null,
+							"sCard": null,
+							"svg": {
+								"flatId": "RmxhdEljb246NDIyMzE1Mg==",
+								"url": "https://imgs.duocards.com/flatsSvg/4223152.svg",
+								"id": "VXBsb2FkOjI3MDUx"
+							},
+							"__typename": "Card"
+						},
+						"cursor": "25"
+					},
+					{
+						"node": {
+							"id": "Q2FyZDo2ODc4ZDg1Mi1kNWRhLTQ3NDAtYmY0My0yM2NiZjNmYTM0ZWE=",
+							"sCardId": null,
+							"sBackId": null,
+							"sourceId": null,
+							"front": "σφοδρός",
+							"back": "свирепый, чрезмерный",
+							"hint": "",
+							"waiting": 26066,
+							"knownCount": 4,
+							"source": null,
+							"sCard": null,
+							"svg": null,
+							"__typename": "Card"
+						},
+						"cursor": "26"
+					},
+					{
+						"node": {
+							"id": "Q2FyZDpkYThiN2E5NS1jODgyLTQ2YjQtYmI3Ni1mZjQ3NDQ4OTk4ZjM=",
+							"sCardId": null,
+							"sBackId": null,
+							"sourceId": null,
+							"front": "ανοχή",
+							"back": "терпимость, снисходительность",
+							"hint": "",
+							"waiting": 26561,
+							"knownCount": 5,
+							"source": null,
+							"sCard": null,
+							"svg": null,
+							"__typename": "Card"
+						},
+						"cursor": "27"
+					},
+					{
+						"node": {
+							"id": "Q2FyZDowNTU5NjI4OS1kZWNiLTQyOGItOTE4NS0wZjEzZTNmNDIzZDM=",
+							"sCardId": null,
+							"sBackId": null,
+							"sourceId": null,
+							"front": "επισήμανση",
+							"back": "отметка, заметка",
+							"hint": "",
+							"waiting": 27945,
+							"knownCount": 5,
+							"source": null,
+							"sCard": null,
+							"svg": null,
+							"__typename": "Card"
+						},
+						"cursor": "28"
+					},
+					{
+						"node": {
+							"id": "Q2FyZDoyMjJiZGVhOS05NjllLTQ5ZmQtYTA3Ny01NDIzODI5OGZkMGI=",
+							"sCardId": null,
+							"sBackId": null,
+							"sourceId": null,
+							"front": "έναρξη",
+							"back": "начало",
+							"hint": "Η έναρξη της σχολικής χρονιάς είναι πάντα συναρπαστική.",
+							"waiting": 28857,
+							"knownCount": 5,
+							"source": null,
+							"sCard": null,
+							"svg": null,
+							"__typename": "Card"
+						},
+						"cursor": "29"
+					}
+				],
+				"pageInfo": {
+					"endCursor": "29",
+					"hasNextPage": true
+				}
+			},
+			"id": "RGVjazo0NmYyYjllZC1hYmYzLTRiZDgtYTA1NC02OGRmYTRhNDIwM2U="
+		}
+	},
+	"extensions": {
+		"releaseId": "2025-06-04T14:06:15.707Z"
+	}
+}

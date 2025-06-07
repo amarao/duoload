@@ -1,0 +1,62 @@
+query cardsQuery(
+  $count: Int!
+  $cursor: String
+  $deckId: ID!
+  $search: String
+  $cardState: CardState
+) {
+  node(id: $deckId) {
+    __typename
+    ...cardsQuery_Deck_1yGN6X
+    id
+  }
+}
+
+fragment cardsQuery_Deck_1yGN6X on Deck {
+  cards(first: $count, after: $cursor, search: $search, cardState: $cardState) {
+    edges {
+      node {
+        id
+        sCardId
+        sBackId
+        sourceId
+        front
+        back
+        hint
+        waiting
+        knownCount
+        source {
+          kind
+          course
+          id
+        }
+        sCard {
+          theory {
+            sCardId
+            theory
+            theoryIsChecked
+            theoryNative
+            theoryNativeIsChecked
+            theoryEn
+            lang
+            langNative
+            canEdit
+          }
+          id
+        }
+        svg {
+          flatId
+          url
+          id
+        }
+        __typename
+      }
+      cursor
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+    }
+  }
+  id
+} 
