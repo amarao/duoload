@@ -1,12 +1,14 @@
 use std::time::Duration;
-use reqwest::{Client, header::{HeaderMap, HeaderValue, CONTENT_TYPE, ORIGIN, REFERER}};
+use reqwest::{Client, header::{HeaderMap, HeaderValue, CONTENT_TYPE, ORIGIN, REFERER, ACCEPT, ACCEPT_LANGUAGE, ACCEPT_ENCODING, AUTHORIZATION}};
 use crate::error::{Result, DuoloadError};
 use crate::duocards::models::{DuocardsResponse, VocabularyCard, CardsQuery, LearningStatus};
+use serde_json::to_string_pretty;
 
 const BASE_URL: &str = "https://api.duocards.com/graphql";
-const USER_AGENT: &str = "duoload/1.0";
+const USER_AGENT: &str = "Mozilla/5.0 (X11; Linux x86_64; rv:139.0) Gecko/20100101 Firefox/139.0";
 const DEFAULT_TIMEOUT: Duration = Duration::from_secs(30);
 const DEFAULT_PAGE_SIZE: i32 = 30;
+const JS_VERSION: &str = "2025-06-04T14:06:15.707Z";
 
 #[derive(Debug, Clone)]
 pub struct DuocardsClient {
@@ -20,6 +22,12 @@ impl DuocardsClient {
         headers.insert(CONTENT_TYPE, HeaderValue::from_static("application/json"));
         headers.insert(ORIGIN, HeaderValue::from_static("https://app.duocards.com"));
         headers.insert(REFERER, HeaderValue::from_static("https://app.duocards.com/"));
+        headers.insert(ACCEPT, HeaderValue::from_static("*/*"));
+        headers.insert(ACCEPT_LANGUAGE, HeaderValue::from_static("en-US,en;q=0.5"));
+        headers.insert(ACCEPT_ENCODING, HeaderValue::from_static("gzip, deflate, br, zstd"));
+        headers.insert(AUTHORIZATION, HeaderValue::from_static("Bearer (skip)"));
+        headers.insert("x-js-version", HeaderValue::from_str(JS_VERSION)?);
+        headers.insert("x-app-version", HeaderValue::from_static("undefined"));
 
         let client = Client::builder()
             .user_agent(USER_AGENT)
@@ -35,6 +43,9 @@ impl DuocardsClient {
 
     pub async fn fetch_page(&self, deck_id: &str, cursor: Option<String>) -> Result<DuocardsResponse> {
         let query = CardsQuery::new(deck_id, DEFAULT_PAGE_SIZE, cursor);
+        
+        // Debug: Print the request body
+        println!("Request body:\n{}", to_string_pretty(&query)?);
         
         let response = self.client
             .post(&self.base_url)

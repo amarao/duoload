@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DuocardsResponse {
@@ -37,7 +38,7 @@ pub struct Card {
     pub front: String,
     pub back: String,
     pub hint: Option<String>,
-    pub waiting: Option<String>,
+    pub waiting: Option<Value>,
     #[serde(rename = "knownCount")]
     pub known_count: i32,
     pub svg: Option<CardImage>,
@@ -47,9 +48,10 @@ pub struct Card {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CardImage {
-    pub flat_id: String,
-    pub url: String,
-    pub id: String,
+    #[serde(rename = "flatId")]
+    pub flat_id: Option<String>,
+    pub url: Option<String>,
+    pub id: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -113,8 +115,10 @@ pub struct CardsQuery {
 pub struct CardsQueryVariables {
     pub count: i32,
     pub cursor: Option<String>,
+    #[serde(rename = "deckId")]
     pub deck_id: String,
     pub search: String,
+    #[serde(rename = "cardState")]
     pub card_state: Option<String>,
 }
 
