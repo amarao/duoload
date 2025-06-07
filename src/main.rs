@@ -29,28 +29,28 @@ async fn main() {
 
     println!("Initializing new Anki file at '{}'...", args.output_file.display());
 
-    // Initialize components
-    let client = DuocardsClient::new(&args.cookie);
+    // // Initialize components
+    // let client = DuocardsClient::new(&args.cookie);
 
-    // Validate authentication
-    if let Err(e) = client.validate_auth().await {
-        eprintln!("Error: Authentication failed: {}", e);
-        exit(1);
-    }
+    // // Validate authentication
+    // if let Err(e) = client.validate_auth().await {
+    //     eprintln!("Error: Authentication failed: {}", e);
+    //     exit(1);
+    // }
 
-    let mut processor = TransferProcessor::new(
-        client,
-        AnkiPackageBuilder::new("Duocards Vocabulary"),
-    );
+    // let mut processor = TransferProcessor::new(
+    //     client,
+    //     AnkiPackageBuilder::new("Duocards Vocabulary"),
+    // );
 
-    // Process all pages
-    match processor.process_all().await {
-        Ok(()) => {
-            println!("Export complete. Cards saved to {}.", args.output_file.display());
-        }
-        Err(e) => {
-            eprintln!("Error during transfer: {}", e);
-            exit(1);
-        }
-    }
+    // // Process all pages
+    // match processor.process_all().await {
+    //     Ok(()) => {
+    //         println!("Export complete. Cards saved to {}.", args.output_file.display());
+    //     }
+    //     Err(e) => {
+    //         eprintln!("Error during transfer: {}", e);
+    //         exit(1);
+    //     }
+    // }
 }
