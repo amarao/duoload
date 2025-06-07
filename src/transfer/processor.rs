@@ -3,6 +3,12 @@ use crate::duocards::DuocardsClient;
 use crate::anki::AnkiPackageBuilder;
 use crate::transfer::DuplicateHandler;
 
+#[derive(Debug)]
+pub struct TransferStats {
+    pub total_cards: usize,
+    pub duplicates: usize,
+}
+
 pub struct TransferProcessor {
     client: DuocardsClient,
     builder: AnkiPackageBuilder,

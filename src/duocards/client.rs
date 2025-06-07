@@ -1,15 +1,15 @@
 use reqwest::Client;
-use crate::error::Result;
-use super::models::DuocardsResponse;
+use crate::error::{Result, DuoloadError};
+use crate::duocards::models::{DuocardsResponse, VocabularyCard};
 
 pub struct DuocardsClient {
-    _client: Client,
-    _cookie: String,
-    _base_url: String,
+    client: Client,
+    cookie: String,
+    base_url: String,
 }
 
 impl DuocardsClient {
-    pub fn new(_cookie: String) -> Self {
+    pub fn new(_cookie: &str) -> Self {
         unimplemented!("DuocardsClient::new")
     }
 
