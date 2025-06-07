@@ -1,3 +1,5 @@
+(!) This project is under writing. Nothing is working yet, but I hope it will.
+
 # Duoload
 
 Duoload is an utility to transfer a user's vocabulary data from the [Duocards](https://duocards.com/)
