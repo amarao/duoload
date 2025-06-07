@@ -1,0 +1,11 @@
+Deck_id is base64 encoded string:
+
+Example:
+
+deck_id: RGVjazo0NmYyYjllZC1hYmYzLTRiZDgtYTA1NC02OGRmYTRhNDIwM2U=
+
+Decoded string: Deck:46f2b9ed-abf3-4bd8-a054-68dfa4a4203
+
+Format: Deck:<UUID4>
+
+
