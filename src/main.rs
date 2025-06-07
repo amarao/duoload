@@ -24,7 +24,7 @@ struct Args {
 }
 
 #[tokio::main]
-async fn main() {
+async fn main() -> Result<()> {
     let args = Args::parse();
 
     println!("Initializing new Anki file at '{}'...", args.output_file.display());
@@ -44,19 +44,18 @@ async fn main() {
         exit(1);
     }
 
-    let mut processor = TransferProcessor::new(
-        client,
-        AnkiPackageBuilder::new("Duocards Vocabulary"),
-    );
+    let builder = AnkiPackageBuilder::new("Duocards Vocabulary");
+    let mut processor = TransferProcessor::new(client, builder, args.deck_id.clone());
+    processor.process_all().await?;
+    
+    // Write the output file
+    processor.write_to_file(&args.output_file)?;
+    
+    // Print success message
+    let stats = processor.stats();
+    println!("Export completed successfully!");
+    println!("Total cards saved: {}", stats.total_cards);
+    println!("Duplicates skipped: {}", stats.duplicates);
 
-    // Process all pages
-    match processor.process_all().await {
-        Ok(()) => {
-            println!("Export complete. Cards saved to {}.", args.output_file.display());
-        }
-        Err(e) => {
-            eprintln!("Error during transfer: {}", e);
-            exit(1);
-        }
-    }
+    Ok(())
 }

@@ -6,9 +6,11 @@
 use std::collections::HashSet;
 use std::path::Path;
 use genanki_rs::Deck;
-use anyhow::Result;
+use anyhow::Result as AnyhowResult;
 use crate::duocards::models::VocabularyCard;
 use super::note::{VocabularyNote, create_vocabulary_model};
+use crate::error::{Result, DuoloadError};
+use crate::anki::AnkiPackageBuilderTrait;
 
 /// Builder for creating Anki packages from vocabulary cards.
 /// 
@@ -60,7 +62,7 @@ impl AnkiPackageBuilder {
     /// 
     /// A Result containing a boolean indicating whether the card was added (true)
     /// or was a duplicate (false), or an error if note creation fails.
-    pub fn add_note(&mut self, vocab_card: VocabularyCard) -> Result<bool> {
+    pub fn add_note(&mut self, vocab_card: VocabularyCard) -> AnyhowResult<bool> {
         // Check for duplicates before moving the card
         if self.existing_words.contains(&vocab_card.word) {
             return Ok(false); // Duplicate
@@ -85,11 +87,21 @@ impl AnkiPackageBuilder {
     /// # Returns
     /// 
     /// A Result indicating success or failure of the write operation.
-    pub fn write_to_file<P: AsRef<Path>>(&self, path: P) -> Result<()> {
+    pub fn write_to_file<P: AsRef<Path>>(&self, path: P) -> AnyhowResult<()> {
         self.deck.write_to_file(path.as_ref().to_str().ok_or_else(|| {
             anyhow::anyhow!("Invalid file path: {:?}", path.as_ref())
         })?)
         .map_err(|e| anyhow::anyhow!("Failed to write Anki package: {}", e))
+    }
+}
+
+impl AnkiPackageBuilderTrait for AnkiPackageBuilder {
+    fn add_note(&mut self, card: VocabularyCard) -> std::result::Result<bool, DuoloadError> {
+        self.add_note(card).map_err(DuoloadError::from)
+    }
+
+    fn write_to_file<P: AsRef<Path>>(&self, path: P) -> std::result::Result<(), DuoloadError> {
+        self.write_to_file(path).map_err(DuoloadError::from)
     }
 }
 

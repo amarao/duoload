@@ -1,10 +1,11 @@
 use std::time::Duration;
 use reqwest::{Client, header::{HeaderMap, HeaderValue, CONTENT_TYPE, ORIGIN, REFERER, ACCEPT, ACCEPT_LANGUAGE, ACCEPT_ENCODING, AUTHORIZATION}};
 use crate::error::{Result, DuoloadError, DeckIdError};
-use crate::duocards::models::{DuocardsResponse, VocabularyCard, CardsQuery, LearningStatus};
+use crate::duocards::{DuocardsClientTrait, models::{DuocardsResponse, VocabularyCard, CardsQuery, LearningStatus}};
 use serde_json::to_string_pretty;
 use base64::{Engine as _, engine::general_purpose::STANDARD as BASE64};
 use uuid::Uuid;
+use async_trait::async_trait;
 
 const BASE_URL: &str = "https://api.duocards.com/graphql";
 const USER_AGENT: &str = "duoload/1.0";
@@ -108,6 +109,21 @@ impl DuocardsClient {
             .iter()
             .map(|edge| VocabularyCard::from(edge.node.clone()))
             .collect()
+    }
+}
+
+#[async_trait]
+impl DuocardsClientTrait for DuocardsClient {
+    async fn fetch_page(&self, deck_id: &str, cursor: Option<String>) -> Result<DuocardsResponse> {
+        self.fetch_page(deck_id, cursor).await
+    }
+
+    fn convert_to_vocabulary_cards(&self, response: &DuocardsResponse) -> Vec<VocabularyCard> {
+        self.convert_to_vocabulary_cards(response)
+    }
+
+    fn validate_deck_id(&self, deck_id: &str) -> Result<()> {
+        self.validate_deck_id(deck_id)
     }
 }
 
