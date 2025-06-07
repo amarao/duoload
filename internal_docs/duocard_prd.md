@@ -11,7 +11,7 @@ The primary user is a technically experienced computer user who is:
 
     A language learner using both Duocards and Anki.
     Comfortable running applications from a command line.
-    Capable of retrieving a web cookie from their browser's developer console.
+    Capable of finding their Duocards deck ID from the application.
     Using a Windows, macOS, or Linux operating system.
 
 3. User Problem
@@ -50,25 +50,25 @@ Language learners invest significant time building vocabulary lists in applicati
 
 5.4. CLI Functionality
 
-    Authentication: The user must provide their Duocards session cookie via a command-line argument:
-        --cookie "<cookie_string>"
+    Deck ID: The user must provide their Duocards deck ID via a command-line argument:
+        --deck-id "<deck_id>"
     Output File: The user must specify the path for the output Anki file:
         --output-file "path/to/my_deck.apkg"
 
 5.5. Feedback & Error Handling
 
     Normal Operation: The CLI will provide simple text feedback for each page of data it successfully fetches and processes (e.g., "Processing page 1... done."). No complex Terminal User Interface (TUI) is needed.
-    Invalid Cookie: If the provided cookie is invalid or expired, the application will terminate gracefully with a clear error message (e.g., "ERROR: The provided cookie is invalid or has expired.").
+    Invalid Deck ID: If the provided deck ID is invalid or doesn't exist, the application will terminate gracefully with a clear error message (e.g., "ERROR: The provided deck ID is invalid or doesn't exist.").
     Connection Errors: For network-related issues (e.g., timeouts, DNS errors), the application will:
         Attempt to reconnect using an exponential backoff strategy.
         Cease retries after a configurable TIMEOUT value.
-        Implement a polite delay between all page requests to avoid overwhelming the Duocards server and appear as a normal client.
+        Implement a polite delay between all page requests to avoid overwhelming the Duocards server.
 
 6. Non-Functional Requirements
 
     Platform Support: The application must be a self-contained executable that runs on Windows, macOS, and Linux.
     Usability: CLI commands and arguments must be clear and well-documented. Error messages must be informative and actionable.
-    Security: The application will not store the user's cookie or any personal data. The cookie will only be held in memory during the application's runtime.
+    Security: The application does not require any authentication or personal data storage.
     Performance: The primary performance constraint is the polite delay between API calls. The application should be efficient in its use of memory and CPU.
     Language: Rust
 
@@ -79,7 +79,7 @@ Scenario 1: New Export
 The user wants to export their entire collection to a new file.
 Bash
 
-duoload --cookie "sessionid=xyz; ..." --output-file "duocards_export.apkg"
+duoload --deck-id "RGVjazo1YjZmMTA3My1hZjA2LTQwMGMtYTQyNC05ZWM5YzFlMGEzZjg=" --output-file "duocards_export.apkg"
 
 Expected Output:
 

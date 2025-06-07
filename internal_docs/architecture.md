@@ -6,18 +6,18 @@ The application follows a simple, linear flow to transfer vocabulary from Duocar
 
 1. **User Input**
    ```
-   duoload --cookie "sessionid=xyz" --output-file "my_deck.apkg"
+   duoload --deck-id "RGVjazo0NmYyYjllZC1hYmYzLTRiZDgtYTA1NC02OGRmYTRhNDIwM2U=" --output-file "my_deck.apkg"
    ```
 
 2. **Data Flow**
    ```
-   Duocards API → Transfer Processor → Anki Package
+   Duocards API (public) → Transfer Processor → Anki Package
    ```
 
 ## Components
 
 ### 1. CLI Interface (`src/main.rs`)
-- Parses cookie and output file path
+- Parses deck ID and output file path
 - Provides progress feedback
 - Example output:
   ```
@@ -57,9 +57,9 @@ The application follows a simple, linear flow to transfer vocabulary from Duocar
 
 ## Happy Path Sequence
 
-1. User runs command with valid cookie and output path
+1. User runs command with valid deck ID and output path
 2. CLI validates inputs and creates client
-3. Client fetches vocabulary pages from Duocards
+3. Client validates deck ID and fetches vocabulary pages from Duocards
 4. Transfer processor:
    - Receives cards from client
    - Checks for duplicates

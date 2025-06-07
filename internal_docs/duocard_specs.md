@@ -44,18 +44,16 @@ Using `clap` with derive macros:
 #[command(name = "duoload")]
 #[command(about = "Transfer vocabulary from Duocards to Anki")]
 struct Args {
-    #[arg(long, value_name = "COOKIE", help = "Duocards session cookie")]
-    cookie: String,
+    #[arg(long, value_name = "DECK_ID", help = "Duocards deck ID")]
+    deck_id: String,
     
     #[arg(long, value_name = "FILE", help = "Output Anki package file path")]
     output_file: PathBuf,
-    
-
 }
 ```
 
 ### 2.2 Validation Requirements
-- Cookie format validation (basic structure check)
+- Deck ID format validation (numeric string)
 - Output file path validation (writable directory)
 
 ## 3. Data Models
@@ -141,13 +139,13 @@ impl VocabularyNote {
 ```rust
 struct DuocardsClient {
     client: reqwest::Client,
-    cookie: String,
+    deck_id: String,
     base_url: String,
 }
 
 impl DuocardsClient {
     async fn fetch_page(&self, page: u32) -> Result<DuocardsResponse>;
-    async fn validate_auth(&self) -> Result<bool>;
+    async fn validate_deck(&self) -> Result<bool>;
 }
 ```
 
@@ -159,7 +157,7 @@ impl DuocardsClient {
 - User-Agent: "duoload/1.0"
 
 ### 4.3 Error Handling
-- Invalid cookie detection
+- Invalid deck ID detection
 - Network timeout handling
 - Rate limiting response handling
 - Malformed JSON response handling
@@ -268,8 +266,8 @@ Export complete. X cards saved to filename.apkg.
 ```rust
 #[derive(Debug, thiserror::Error)]
 enum DuoloadError {
-    #[error("Invalid or expired cookie")]
-    InvalidCookie,
+    #[error("Invalid or non-existent deck ID")]
+    InvalidDeckId,
     
     #[error("Network error: {0}")]
     Network(#[from] reqwest::Error),
@@ -292,11 +290,9 @@ enum DuoloadError {
 
 ## 9. Security Requirements
 
-### 9.1 Cookie Handling
-- Never log cookie values
-- Clear cookie from memory on program exit
-- No persistent storage of authentication data
-- Validate cookie format before use
+### 9.1 Deck ID Handling
+- Validate deck ID format before use
+- No persistent storage of deck ID
 
 ### 9.2 File Handling
 - Validate output path is within allowed directories
