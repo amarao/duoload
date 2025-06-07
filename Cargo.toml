@@ -16,6 +16,8 @@ anyhow = "1.0"
 genanki-rs = "0.4"
 thiserror = "1.0"
 tempfile = "3.10"
+base64 = "0.21"
+uuid = { version = "1.7", features = ["v4"] }
 
 [dev-dependencies]
 mockito = "1.3"

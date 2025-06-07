@@ -3,6 +3,21 @@ use thiserror::Error;
 use reqwest::header::InvalidHeaderValue;
 
 #[derive(Error, Debug)]
+pub enum DeckIdError {
+    #[error("Invalid base64 encoding: {0}")]
+    InvalidBase64(String),
+
+    #[error("Invalid deck ID format: {0}")]
+    InvalidFormat(String),
+
+    #[error("Invalid UUID: {0}")]
+    InvalidUuid(String),
+
+    #[error("UUID is not version 4: {0}")]
+    NotUuidV4(String),
+}
+
+#[derive(Error, Debug)]
 pub enum DuoloadError {
     #[error("IO error: {0}")]
     Io(#[from] io::Error),
@@ -21,6 +36,9 @@ pub enum DuoloadError {
 
     #[error("Authentication error: {0}")]
     Auth(#[from] crate::duocards::auth::AuthError),
+
+    #[error("Deck ID error: {0}")]
+    DeckId(#[from] DeckIdError),
 
     #[error("Other error: {0}")]
     Other(#[from] anyhow::Error),

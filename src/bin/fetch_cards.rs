@@ -1,5 +1,6 @@
 use anyhow::Result;
 use duoload::duocards::DuocardsClient;
+use duoload::error::DuoloadError;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -12,6 +13,12 @@ async fn main() -> Result<()> {
 
     let deck_id = &args[1];
     let client = DuocardsClient::new()?;
+    
+    // Validate deck ID before making the request
+    if let Err(e) = client.validate_deck_id(deck_id) {
+        eprintln!("Error: Invalid deck ID: {}", e);
+        std::process::exit(1);
+    }
     
     let response = client.fetch_page(deck_id, None).await?;
     println!("{}", serde_json::to_string_pretty(&response)?);
