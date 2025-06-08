@@ -1,5 +1,5 @@
 use crate::error::{Result, DuoloadError};
-use crate::duocards::{DuocardsClientTrait, models::{VocabularyCard, Card}};
+use crate::duocards::DuocardsClientTrait;
 use crate::anki::AnkiPackageBuilderTrait;
 use crate::transfer::DuplicateHandler;
 use std::path::Path;
@@ -80,7 +80,7 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::duocards::models::{DuocardsResponse, Card, CardEdge, CardConnection, PageInfo, Deck, ResponseData, Extensions, LearningStatus};
+    use crate::duocards::models::{DuocardsResponse, Card, CardEdge, CardConnection, PageInfo, Deck, ResponseData, Extensions, LearningStatus, VocabularyCard};
     use std::sync::Mutex;
     use std::sync::Arc;
 

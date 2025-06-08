@@ -1,8 +1,7 @@
 use std::time::Duration;
-use reqwest::{Client, header::{HeaderMap, HeaderValue, CONTENT_TYPE, ORIGIN, REFERER, ACCEPT, ACCEPT_LANGUAGE, ACCEPT_ENCODING, AUTHORIZATION}};
+use reqwest::{Client, header::{HeaderMap, HeaderValue, CONTENT_TYPE, ACCEPT_ENCODING}};
 use crate::error::{Result, DuoloadError, DeckIdError};
-use crate::duocards::{DuocardsClientTrait, models::{DuocardsResponse, VocabularyCard, CardsQuery, LearningStatus}};
-use serde_json::to_string_pretty;
+use crate::duocards::{DuocardsClientTrait, models::{DuocardsResponse, VocabularyCard, CardsQuery}};
 use base64::{Engine as _, engine::general_purpose::STANDARD as BASE64};
 use uuid::Uuid;
 use async_trait::async_trait;
@@ -127,6 +126,7 @@ impl DuocardsClientTrait for DuocardsClient {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::duocards::models::LearningStatus;
     use mockito::Server;
     use serde_json::json;
     use tokio_test::block_on;

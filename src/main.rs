@@ -7,7 +7,7 @@ mod anki;
 mod transfer;
 mod error;
 
-use error::{DuoloadError, Result};
+use error::Result;
 use duocards::DuocardsClient;
 use anki::AnkiPackageBuilder;
 use transfer::processor::TransferProcessor;

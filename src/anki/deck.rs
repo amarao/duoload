@@ -9,8 +9,7 @@ use genanki_rs::Deck;
 use anyhow::Result as AnyhowResult;
 use crate::duocards::models::VocabularyCard;
 use super::note::{VocabularyNote, create_vocabulary_model};
-use crate::error::{Result, DuoloadError};
-use crate::anki::AnkiPackageBuilderTrait;
+use crate::error::DuoloadError;
 
 /// Builder for creating Anki packages from vocabulary cards.
 /// 
@@ -95,12 +94,12 @@ impl AnkiPackageBuilder {
     }
 }
 
-impl AnkiPackageBuilderTrait for AnkiPackageBuilder {
-    fn add_note(&mut self, card: VocabularyCard) -> std::result::Result<bool, DuoloadError> {
+impl crate::anki::AnkiPackageBuilderTrait for AnkiPackageBuilder {
+    fn add_note(&mut self, card: VocabularyCard) -> crate::error::Result<bool> {
         self.add_note(card).map_err(DuoloadError::from)
     }
 
-    fn write_to_file<P: AsRef<Path>>(&self, path: P) -> std::result::Result<(), DuoloadError> {
+    fn write_to_file<P: AsRef<std::path::Path>>(&self, path: P) -> crate::error::Result<()> {
         self.write_to_file(path).map_err(DuoloadError::from)
     }
 }

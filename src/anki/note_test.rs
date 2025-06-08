@@ -2,7 +2,7 @@
 mod tests {
     use super::*;
     use crate::duocards::models::{VocabularyCard, LearningStatus};
-    use crate::anki::{VocabularyNote, note::create_vocabulary_model};
+    use crate::anki::note::{VocabularyNote, create_vocabulary_model};
     use genanki_rs::Note;
     use anyhow::Result;
 

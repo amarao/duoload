@@ -1,6 +1,5 @@
 use anyhow::Result;
 use duoload::duocards::DuocardsClient;
-use duoload::error::DuoloadError;
 
 #[tokio::main]
 async fn main() -> Result<()> {

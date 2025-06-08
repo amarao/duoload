@@ -1,4 +1,5 @@
-use duoload::anki::{AnkiPackageBuilder, VocabularyNote};
+use duoload::anki::{AnkiPackageBuilder};
+use duoload::anki::note::VocabularyNote;
 use duoload::duocards::models::{VocabularyCard, LearningStatus};
 use tempfile::NamedTempFile;
 use std::fs;
