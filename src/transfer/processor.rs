@@ -70,7 +70,7 @@ where
 
         loop {
             page_count += 1;
-            println!("Fetching page {}...", page_count);
+            eprintln!("Fetching page {}...", page_count);
 
             // Add a delay between page fetches (1 second)
             if page_count > 1 {
@@ -81,7 +81,7 @@ where
             let response = self.client.fetch_page(&self.deck_id, cursor).await?;
             let cards = self.client.convert_to_vocabulary_cards(&response);
             let cards_len = cards.len();
-            println!("Page {} fetched with {} cards", page_count, cards_len);
+            eprintln!("Page {} fetched with {} cards", page_count, cards_len);
 
             // Process each card
             for card in cards.into_iter() {
@@ -96,7 +96,7 @@ where
 
                 total_processed += 1;
                 if total_processed % 100 == 0 {
-                    println!(
+                    eprintln!(
                         "Processed {} cards so far ({} added, {} duplicates) at {:?}",
                         total_processed,
                         self.stats.total_cards,
@@ -108,24 +108,24 @@ where
 
             // Check if there are more pages
             if !response.data.node.cards.page_info.has_next_page {
-                println!("No more pages to process");
+                eprintln!("No more pages to process");
                 break;
             }
 
             cursor = response.data.node.cards.page_info.end_cursor;
         }
 
-        println!(
+        eprintln!(
             "All pages processed. Total cards: {}, Duplicates: {} in {:?}",
             self.stats.total_cards,
             self.stats.duplicates,
             self.start_time.elapsed()
         );
 
-        // Write the processed data to file
+        // Write the processed data to output
         self.write_output()?;
         
-        // Print final statistics
+        // Print final statistics to stderr
         self.print_stats();
 
         Ok(())
@@ -136,14 +136,14 @@ where
     }
 
     pub fn print_stats(&self) {
-        println!("Export completed successfully!");
-        println!("Total cards saved: {}", self.stats.total_cards);
-        println!("Duplicates skipped: {}", self.stats.duplicates);
-        println!("Total execution time: {:?}", self.start_time.elapsed());
+        eprintln!("Export completed successfully!");
+        eprintln!("Total cards saved: {}", self.stats.total_cards);
+        eprintln!("Duplicates skipped: {}", self.stats.duplicates);
+        eprintln!("Total execution time: {:?}", self.start_time.elapsed());
     }
 
     pub fn write_output(&self) -> Result<()> {
-        println!("Writing deck to output...");
+        eprintln!("Writing deck to output...");
         
         let result = if self.output_path.as_os_str() == "-" {
             // Write to stdout, ensure progress messages go to stderr
@@ -159,7 +159,7 @@ where
 
         match result {
             Ok(_) => {
-                println!("Deck written successfully");
+                eprintln!("Deck written successfully");
                 Ok(())
             }
             Err(e) => {

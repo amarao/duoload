@@ -41,6 +41,13 @@ struct Args {
         group = "output_format"
     )]
     json_file: Option<PathBuf>,
+
+    #[arg(
+        long,
+        help = "Output JSON to stdout (for piping to other tools)",
+        group = "output_format"
+    )]
+    json: bool,
 }
 
 #[tokio::main]
@@ -48,8 +55,8 @@ async fn main() -> Result<()> {
     let args = Args::parse();
 
     // Validate that exactly one output format is specified
-    if args.anki_file.is_none() && args.json_file.is_none() {
-        eprintln!("Error: Please specify either --anki-file or --json-file");
+    if args.anki_file.is_none() && args.json_file.is_none() && !args.json {
+        eprintln!("Error: Please specify either --anki-file, --json-file, or --json");
         exit(1);
     }
 
@@ -62,7 +69,7 @@ async fn main() -> Result<()> {
     };
 
     // Validate deck ID
-    println!("Validating deck ID...");
+    eprintln!("Validating deck ID...");
     if let Err(e) = deck::validate_deck_id(&args.deck_id) {
         eprintln!("Error: Invalid deck ID: {}", e);
         exit(1);
@@ -71,15 +78,22 @@ async fn main() -> Result<()> {
     let processor = TransferProcessor::new(client, args.deck_id);
 
     if let Some(path) = args.anki_file {
-        println!("Exporting to Anki package '{:?}'...", path);
+        eprintln!("Exporting to Anki package '{:?}'...", path);
         let mut processor = processor.output(
             AnkiPackageBuilder::new("Duocards Vocabulary"),
             path
         );
         processor.process().await?;
+    } else if args.json {
+        eprintln!("Exporting to stdout...");
+        let mut processor = processor.output(
+            JsonOutputBuilder::new(),
+            PathBuf::from("-")
+        );
+        processor.process().await?;
     } else {
         let path = args.json_file.unwrap();
-        println!("Exporting to JSON file '{:?}'...", path);
+        eprintln!("Exporting to JSON file '{:?}'...", path);
         let mut processor = processor.output(
             JsonOutputBuilder::new(),
             path
