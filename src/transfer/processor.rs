@@ -1,6 +1,6 @@
-use crate::anki::AnkiPackageBuilderTrait;
 use crate::duocards::DuocardsClientTrait;
 use crate::error::Result;
+use crate::output::OutputBuilder;
 use crate::transfer::DuplicateHandler;
 use std::path::Path;
 use std::time::{Duration, Instant};
@@ -15,7 +15,7 @@ pub struct TransferStats {
 pub struct TransferProcessor<C, B>
 where
     C: DuocardsClientTrait,
-    B: AnkiPackageBuilderTrait,
+    B: OutputBuilder,
 {
     client: C,
     builder: B,
@@ -27,7 +27,7 @@ where
 impl<C, B> TransferProcessor<C, B>
 where
     C: DuocardsClientTrait,
-    B: AnkiPackageBuilderTrait,
+    B: OutputBuilder,
 {
     pub fn new(client: C, builder: B, deck_id: String) -> Self {
         Self {
@@ -123,6 +123,7 @@ mod tests {
         Card, CardConnection, CardEdge, Deck, DuocardsResponse, Extensions, LearningStatus,
         PageInfo, ResponseData, VocabularyCard,
     };
+    use crate::output::OutputBuilder;
     use std::sync::Arc;
     use std::sync::Mutex;
 
@@ -194,7 +195,7 @@ mod tests {
         }
     }
 
-    impl crate::anki::AnkiPackageBuilderTrait for TestAnkiPackageBuilder {
+    impl OutputBuilder for TestAnkiPackageBuilder {
         fn add_note(&mut self, card: VocabularyCard) -> Result<bool> {
             let mut added_cards = self.added_cards.lock().unwrap();
             if added_cards.iter().any(|c| c.word == card.word) {

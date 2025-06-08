@@ -1,11 +1,7 @@
-//! Anki package builder module for creating and managing Anki decks.
-//!
-//! This module provides functionality to create Anki packages (.apkg files)
-//! from vocabulary cards, handling duplicate detection and proper note creation.
-
-use super::note::{VocabularyNote, create_vocabulary_model};
 use crate::duocards::models::VocabularyCard;
-use crate::error::DuoloadError;
+use crate::error::{Result, DuoloadError};
+use crate::output::OutputBuilder;
+use crate::anki::note::{VocabularyNote, create_vocabulary_model};
 use anyhow::Result as AnyhowResult;
 use genanki_rs::Deck;
 use std::collections::HashSet;
@@ -59,21 +55,10 @@ impl AnkiPackageBuilder {
     pub fn is_duplicate(&self, word: &str) -> bool {
         self.existing_words.contains(word)
     }
+}
 
-    /// Adds a vocabulary card to the deck.
-    ///
-    /// This method converts the vocabulary card to an Anki note and adds it to the deck.
-    /// Duplicate words are detected and skipped.
-    ///
-    /// # Arguments
-    ///
-    /// * `vocab_card` - The vocabulary card to add
-    ///
-    /// # Returns
-    ///
-    /// A Result containing a boolean indicating whether the card was added (true)
-    /// or was a duplicate (false), or an error if note creation fails.
-    pub fn add_note(&mut self, vocab_card: VocabularyCard) -> AnyhowResult<bool> {
+impl OutputBuilder for AnkiPackageBuilder {
+    fn add_note(&mut self, vocab_card: VocabularyCard) -> Result<bool> {
         // Check for duplicates before moving the card
         if self.existing_words.contains(&vocab_card.word) {
             return Ok(false); // Duplicate
@@ -89,16 +74,7 @@ impl AnkiPackageBuilder {
         Ok(true)
     }
 
-    /// Writes the deck to an Anki package file.
-    ///
-    /// # Arguments
-    ///
-    /// * `path` - The path where the .apkg file should be written
-    ///
-    /// # Returns
-    ///
-    /// A Result indicating success or failure of the write operation.
-    pub fn write_to_file<P: AsRef<Path>>(&self, path: P) -> AnyhowResult<()> {
+    fn write_to_file<P: AsRef<Path>>(&self, path: P) -> Result<()> {
         let result = self
             .deck
             .write_to_file(
@@ -120,24 +96,14 @@ impl AnkiPackageBuilder {
             ),
         }
 
-        result
-    }
-}
-
-impl crate::anki::AnkiPackageBuilderTrait for AnkiPackageBuilder {
-    fn add_note(&mut self, card: VocabularyCard) -> crate::error::Result<bool> {
-        self.add_note(card).map_err(DuoloadError::from)
-    }
-
-    fn write_to_file<P: AsRef<std::path::Path>>(&self, path: P) -> crate::error::Result<()> {
-        self.write_to_file(path).map_err(DuoloadError::from)
+        result.map_err(DuoloadError::from)
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::duocards::models::{LearningStatus, VocabularyCard};
+    use crate::duocards::models::LearningStatus;
     use std::fs;
     use tempfile::NamedTempFile;
 
@@ -238,4 +204,4 @@ mod tests {
         let metadata = fs::metadata(&temp_file).unwrap();
         assert!(metadata.len() > 0);
     }
-}
+} 

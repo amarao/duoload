@@ -6,9 +6,10 @@ use std::time::Instant;
 mod anki;
 mod duocards;
 mod error;
+mod output;
 mod transfer;
 
-use anki::AnkiPackageBuilder;
+use crate::output::anki::AnkiPackageBuilder;
 use duocards::DuocardsClient;
 use duocards::deck;
 use error::Result;
