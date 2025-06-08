@@ -125,10 +125,6 @@ mod tests {
                 })
                 .collect()
         }
-
-        fn validate_deck_id(&self, _deck_id: &str) -> Result<()> {
-            Ok(())
-        }
     }
 
     #[derive(Clone)]
