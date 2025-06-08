@@ -1,5 +1,6 @@
 use anyhow::Result;
 use duoload::duocards::DuocardsClient;
+use duoload::duocards::deck;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -14,7 +15,7 @@ async fn main() -> Result<()> {
     let client = DuocardsClient::new()?;
     
     // Validate deck ID before making the request
-    if let Err(e) = client.validate_deck_id(deck_id) {
+    if let Err(e) = deck::validate_deck_id(deck_id) {
         eprintln!("Error: Invalid deck ID: {}", e);
         std::process::exit(1);
     }

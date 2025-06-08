@@ -145,18 +145,23 @@ struct DuocardsClient {
 
 impl DuocardsClient {
     async fn fetch_page(&self, page: u32) -> Result<DuocardsResponse>;
-    async fn validate_deck(&self) -> Result<bool>;
 }
 ```
 
-### 4.2 Network Configuration
+### 4.2 Deck Validation
+```rust
+// In src/duocards/deck.rs
+pub fn validate_deck_id(deck_id: &str) -> Result<()>;
+```
+
+### 4.3 Network Configuration
 - Request timeout: 30 seconds
 - Retry mechanism: Exponential backoff (1s, 2s, 4s, 8s, max 16s)
 - Maximum retries: 3 attempts
 - Polite delay between requests: 1-2 seconds
 - User-Agent: "duoload/1.0"
 
-### 4.3 Error Handling
+### 4.4 Error Handling
 - Invalid deck ID detection
 - Network timeout handling
 - Rate limiting response handling

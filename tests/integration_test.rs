@@ -1,9 +1,7 @@
 use duoload::anki::{AnkiPackageBuilder};
-use duoload::anki::note::VocabularyNote;
 use duoload::duocards::models::{VocabularyCard, LearningStatus};
 use tempfile::NamedTempFile;
 use std::fs;
-use std::path::Path;
 
 fn create_test_card(word: &str, translation: &str, example: Option<&str>, status: LearningStatus) -> VocabularyCard {
     VocabularyCard {

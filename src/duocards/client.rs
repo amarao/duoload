@@ -5,11 +5,12 @@ use crate::duocards::{DuocardsClientTrait, models::{DuocardsResponse, Vocabulary
 use base64::{Engine as _, engine::general_purpose::STANDARD as BASE64};
 use uuid::Uuid;
 use async_trait::async_trait;
+use crate::duocards::deck;
 
 const BASE_URL: &str = "https://api.duocards.com/graphql";
 const USER_AGENT: &str = "duoload/1.0";
 const DEFAULT_TIMEOUT: Duration = Duration::from_secs(30);
-const DEFAULT_PAGE_SIZE: i32 = 30;
+const DEFAULT_PAGE_SIZE: i32 = 100;
 
 #[derive(Debug, Clone)]
 pub struct DuocardsClient {
@@ -77,7 +78,7 @@ impl DuocardsClient {
 
     pub async fn fetch_page(&self, deck_id: &str, cursor: Option<String>) -> Result<DuocardsResponse> {
         // Validate deck ID before making the request
-        self.validate_deck_id(deck_id)?;
+        deck::validate_deck_id(deck_id)?;
         
         let query = CardsQuery::new(deck_id, DEFAULT_PAGE_SIZE, cursor);
         

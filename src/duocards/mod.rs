@@ -3,6 +3,7 @@ use crate::duocards::models::{DuocardsResponse, VocabularyCard};
 
 mod client;
 pub mod models;
+pub mod deck;
 
 pub use client::DuocardsClient;
 

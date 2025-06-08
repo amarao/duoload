@@ -9,6 +9,7 @@ mod error;
 
 use error::Result;
 use duocards::DuocardsClient;
+use duocards::deck;
 use anki::AnkiPackageBuilder;
 use transfer::processor::TransferProcessor;
 
@@ -39,7 +40,7 @@ async fn main() -> Result<()> {
     };
 
     // Validate deck ID
-    if let Err(e) = client.validate_deck_id(&args.deck_id) {
+    if let Err(e) = deck::validate_deck_id(&args.deck_id) {
         eprintln!("Error: Invalid deck ID: {}", e);
         exit(1);
     }
