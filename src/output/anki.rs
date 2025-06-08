@@ -149,7 +149,12 @@ mod tests {
         let mut writer = BufWriter::new(file);
         let result = builder.write(&mut writer);
         assert!(result.is_err()); // Anki output only supports file output
-        assert!(result.unwrap_err().to_string().contains("Anki output is only supported for file output"));
+        assert!(
+            result
+                .unwrap_err()
+                .to_string()
+                .contains("Anki output is only supported for file output")
+        );
     }
 
     #[test]
@@ -161,7 +166,12 @@ mod tests {
         let mut buffer = Vec::new();
         let result = builder.write(&mut buffer);
         assert!(result.is_err()); // Anki output only supports file output
-        assert!(result.unwrap_err().to_string().contains("Anki output is only supported for file output"));
+        assert!(
+            result
+                .unwrap_err()
+                .to_string()
+                .contains("Anki output is only supported for file output")
+        );
     }
 
     #[test]
@@ -174,6 +184,11 @@ mod tests {
         // Should return error for any writer
         let result = builder.write(&mut writer);
         assert!(result.is_err()); // Anki output only supports file output
-        assert!(result.unwrap_err().to_string().contains("Anki output is only supported for file output"));
+        assert!(
+            result
+                .unwrap_err()
+                .to_string()
+                .contains("Anki output is only supported for file output")
+        );
     }
 }

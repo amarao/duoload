@@ -1,10 +1,10 @@
 use duoload::duocards::models::{LearningStatus, VocabularyCard};
 use duoload::output::OutputBuilder;
 use duoload::output::json::JsonOutputBuilder;
+use serde_json;
 use std::fs::File;
 use std::io::BufWriter;
 use tempfile::NamedTempFile;
-use serde_json;
 
 fn create_test_card(
     word: &str,
@@ -175,4 +175,4 @@ async fn test_large_json_deck_creation() {
         assert_eq!(cards[i].word, format!("word{}", i));
         assert_eq!(cards[i].translation, format!("translation{}", i));
     }
-} 
+}

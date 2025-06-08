@@ -2,12 +2,12 @@ use crate::duocards::DuocardsClientTrait;
 use crate::error::Result;
 use crate::output::OutputBuilder;
 use crate::transfer::DuplicateHandler;
+use std::fs::File;
+use std::io;
 use std::path::Path;
+use std::path::PathBuf;
 use std::time::{Duration, Instant};
 use tokio::time::sleep;
-use std::path::PathBuf;
-use std::io;
-use std::fs::File;
 
 #[derive(Debug, Default, PartialEq)]
 pub struct TransferStats {
@@ -45,7 +45,11 @@ where
         Self { client, deck_id }
     }
 
-    pub fn output<B: OutputBuilder, P: AsRef<Path>>(self, builder: B, path: P) -> TransferProcessorWithBuilder<C, B> {
+    pub fn output<B: OutputBuilder, P: AsRef<Path>>(
+        self,
+        builder: B,
+        path: P,
+    ) -> TransferProcessorWithBuilder<C, B> {
         TransferProcessorWithBuilder {
             client: self.client,
             builder,
@@ -124,7 +128,7 @@ where
 
         // Write the processed data to output
         self.write_output()?;
-        
+
         // Print final statistics to stderr
         self.print_stats();
 
@@ -145,7 +149,7 @@ where
 
     pub fn write_output(&self) -> Result<()> {
         eprintln!("Writing deck to output...");
-        
+
         let result = if self.output_path.as_os_str() == "-" {
             // Write to stdout, ensure progress messages go to stderr
             let stdout = io::stdout();
@@ -179,9 +183,9 @@ mod tests {
         PageInfo, ResponseData, VocabularyCard,
     };
     use crate::output::OutputBuilder;
+    use std::io::{Cursor, Write};
     use std::sync::Arc;
     use std::sync::Mutex;
-    use std::io::{Cursor, Write};
 
     // Test-specific implementations
     #[derive(Clone)]
@@ -462,10 +466,9 @@ mod tests {
     #[test]
     fn test_write_to_stdout() -> Result<()> {
         let builder = TestOutputBuilder::new();
-        let processor = TransferProcessor::new(
-            TestDuocardsClient::new(vec![]),
-            "test-deck".to_string(),
-        ).output(builder, Path::new("-"));
+        let processor =
+            TransferProcessor::new(TestDuocardsClient::new(vec![]), "test-deck".to_string())
+                .output(builder, Path::new("-"));
 
         let mut output = Vec::new();
         {
@@ -480,10 +483,9 @@ mod tests {
     fn test_write_to_file() -> Result<()> {
         let builder = TestOutputBuilder::new();
         let temp_file = tempfile::NamedTempFile::new()?;
-        let processor = TransferProcessor::new(
-            TestDuocardsClient::new(vec![]),
-            "test-deck".to_string(),
-        ).output(builder, temp_file.path());
+        let processor =
+            TransferProcessor::new(TestDuocardsClient::new(vec![]), "test-deck".to_string())
+                .output(builder, temp_file.path());
 
         processor.write_output()?;
         let contents = std::fs::read(temp_file.path())?;

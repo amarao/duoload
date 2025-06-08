@@ -79,25 +79,16 @@ async fn main() -> Result<()> {
 
     if let Some(path) = args.anki_file {
         eprintln!("Exporting to Anki package '{:?}'...", path);
-        let mut processor = processor.output(
-            AnkiPackageBuilder::new("Duocards Vocabulary"),
-            path
-        );
+        let mut processor = processor.output(AnkiPackageBuilder::new("Duocards Vocabulary"), path);
         processor.process().await?;
     } else if args.json {
         eprintln!("Exporting to stdout...");
-        let mut processor = processor.output(
-            JsonOutputBuilder::new(),
-            PathBuf::from("-")
-        );
+        let mut processor = processor.output(JsonOutputBuilder::new(), PathBuf::from("-"));
         processor.process().await?;
     } else {
         let path = args.json_file.unwrap();
         eprintln!("Exporting to JSON file '{:?}'...", path);
-        let mut processor = processor.output(
-            JsonOutputBuilder::new(),
-            path
-        );
+        let mut processor = processor.output(JsonOutputBuilder::new(), path);
         processor.process().await?;
     }
 

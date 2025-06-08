@@ -52,7 +52,12 @@ async fn test_end_to_end_anki_package_creation() {
     let mut writer = BufWriter::new(file);
     let result = builder.write(&mut writer);
     assert!(result.is_err()); // Anki output only supports file output
-    assert!(result.unwrap_err().to_string().contains("Anki output is only supported for file output"));
+    assert!(
+        result
+            .unwrap_err()
+            .to_string()
+            .contains("Anki output is only supported for file output")
+    );
 }
 
 #[tokio::test]
@@ -87,7 +92,12 @@ async fn test_anki_duplicate_handling() {
     let mut writer = BufWriter::new(file);
     let result = builder.write(&mut writer);
     assert!(result.is_err()); // Anki output only supports file output
-    assert!(result.unwrap_err().to_string().contains("Anki output is only supported for file output"));
+    assert!(
+        result
+            .unwrap_err()
+            .to_string()
+            .contains("Anki output is only supported for file output")
+    );
 }
 
 #[tokio::test]
@@ -100,7 +110,12 @@ async fn test_empty_anki_deck_creation() {
     // Should return error for any writer
     let result = builder.write(&mut writer);
     assert!(result.is_err()); // Anki output only supports file output
-    assert!(result.unwrap_err().to_string().contains("Anki output is only supported for file output"));
+    assert!(
+        result
+            .unwrap_err()
+            .to_string()
+            .contains("Anki output is only supported for file output")
+    );
 }
 
 #[tokio::test]
@@ -128,5 +143,10 @@ async fn test_large_anki_deck_creation() {
     let mut writer = BufWriter::new(file);
     let result = builder.write(&mut writer);
     assert!(result.is_err()); // Anki output only supports file output
-    assert!(result.unwrap_err().to_string().contains("Anki output is only supported for file output"));
-} 
+    assert!(
+        result
+            .unwrap_err()
+            .to_string()
+            .contains("Anki output is only supported for file output")
+    );
+}

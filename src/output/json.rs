@@ -177,7 +177,10 @@ mod tests {
         struct FailingWriter;
         impl Write for FailingWriter {
             fn write(&mut self, _buf: &[u8]) -> std::io::Result<usize> {
-                Err(std::io::Error::new(std::io::ErrorKind::Other, "Test write error"))
+                Err(std::io::Error::new(
+                    std::io::ErrorKind::Other,
+                    "Test write error",
+                ))
             }
             fn flush(&mut self) -> std::io::Result<()> {
                 Ok(())
