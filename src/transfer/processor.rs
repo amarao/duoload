@@ -5,6 +5,7 @@ use crate::transfer::DuplicateHandler;
 use std::path::Path;
 use std::time::{Duration, Instant};
 use tokio::time::sleep;
+use std::path::PathBuf;
 
 #[derive(Debug, Default, PartialEq)]
 pub struct TransferStats {
@@ -30,6 +31,8 @@ where
     duplicates: DuplicateHandler,
     stats: TransferStats,
     deck_id: String,
+    start_time: Instant,
+    output_path: PathBuf,
 }
 
 impl<C> TransferProcessor<C>
@@ -40,13 +43,15 @@ where
         Self { client, deck_id }
     }
 
-    pub fn output<B: OutputBuilder>(self, builder: B) -> TransferProcessorWithBuilder<C, B> {
+    pub fn output<B: OutputBuilder, P: AsRef<Path>>(self, builder: B, path: P) -> TransferProcessorWithBuilder<C, B> {
         TransferProcessorWithBuilder {
             client: self.client,
             builder,
             duplicates: DuplicateHandler::new(),
             stats: TransferStats::default(),
             deck_id: self.deck_id,
+            start_time: Instant::now(),
+            output_path: path.as_ref().to_path_buf(),
         }
     }
 }
@@ -57,7 +62,6 @@ where
     B: OutputBuilder,
 {
     pub async fn process(&mut self) -> Result<()> {
-        let start_time = Instant::now();
         let mut cursor = None;
         let mut page_count = 0;
         let mut total_processed = 0;
@@ -95,7 +99,7 @@ where
                         total_processed,
                         self.stats.total_cards,
                         self.stats.duplicates,
-                        start_time.elapsed()
+                        self.start_time.elapsed()
                     );
                 }
             }
@@ -113,8 +117,15 @@ where
             "All pages processed. Total cards: {}, Duplicates: {} in {:?}",
             self.stats.total_cards,
             self.stats.duplicates,
-            start_time.elapsed()
+            self.start_time.elapsed()
         );
+
+        // Write the processed data to file
+        self.write_to_file()?;
+        
+        // Print final statistics
+        self.print_stats();
+
         Ok(())
     }
 
@@ -122,16 +133,16 @@ where
         &self.stats
     }
 
-    pub fn print_stats(&self, start_time: Instant) {
+    pub fn print_stats(&self) {
         println!("Export completed successfully!");
         println!("Total cards saved: {}", self.stats.total_cards);
         println!("Duplicates skipped: {}", self.stats.duplicates);
-        println!("Total execution time: {:?}", start_time.elapsed());
+        println!("Total execution time: {:?}", self.start_time.elapsed());
     }
 
-    pub fn write_to_file<P: AsRef<Path>>(&self, path: P) -> Result<()> {
+    pub fn write_to_file(&self) -> Result<()> {
         println!("Writing deck to file...");
-        let result = self.builder.write_to_file(path);
+        let result = self.builder.write_to_file(&self.output_path);
         println!("Deck written successfully");
         result
     }
@@ -304,7 +315,7 @@ mod tests {
         let builder = TestAnkiPackageBuilder::new();
 
         // Create processor and process cards
-        let mut processor = TransferProcessor::new(client, "test-deck".to_string()).output(builder);
+        let mut processor = TransferProcessor::new(client, "test-deck".to_string()).output(builder, Path::new(""));
 
         processor.process().await?;
 
@@ -349,7 +360,7 @@ mod tests {
         let builder = TestAnkiPackageBuilder::new();
 
         // Create processor and process cards
-        let mut processor = TransferProcessor::new(client, "test-deck".to_string()).output(builder);
+        let mut processor = TransferProcessor::new(client, "test-deck".to_string()).output(builder, Path::new(""));
 
         processor.process().await?;
 
@@ -399,7 +410,7 @@ mod tests {
         let builder = TestAnkiPackageBuilder::new();
 
         // Create processor and process cards
-        let mut processor = TransferProcessor::new(client, "test-deck".to_string()).output(builder);
+        let mut processor = TransferProcessor::new(client, "test-deck".to_string()).output(builder, Path::new(""));
 
         processor.process().await?;
 

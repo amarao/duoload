@@ -1,7 +1,6 @@
 use clap::Parser;
 use std::path::PathBuf;
 use std::process::exit;
-use std::time::Instant;
 
 mod anki;
 mod duocards;
@@ -46,7 +45,6 @@ struct Args {
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    let start_time = Instant::now();
     let args = Args::parse();
 
     // Validate that exactly one output format is specified
@@ -74,17 +72,19 @@ async fn main() -> Result<()> {
 
     if let Some(path) = args.anki_file {
         println!("Exporting to Anki package '{:?}'...", path);
-        let mut processor = processor.output(AnkiPackageBuilder::new("Duocards Vocabulary"));
+        let mut processor = processor.output(
+            AnkiPackageBuilder::new("Duocards Vocabulary"),
+            path
+        );
         processor.process().await?;
-        processor.write_to_file(&path)?;
-        processor.print_stats(start_time);
     } else {
         let path = args.json_file.unwrap();
         println!("Exporting to JSON file '{:?}'...", path);
-        let mut processor = processor.output(JsonOutputBuilder::new());
+        let mut processor = processor.output(
+            JsonOutputBuilder::new(),
+            path
+        );
         processor.process().await?;
-        processor.write_to_file(&path)?;
-        processor.print_stats(start_time);
     }
 
     Ok(())
