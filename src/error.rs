@@ -34,9 +34,6 @@ pub enum DuoloadError {
     #[error("Invalid header value: {0}")]
     InvalidHeader(#[from] InvalidHeaderValue),
 
-    #[error("Authentication error: {0}")]
-    Auth(#[from] crate::duocards::auth::AuthError),
-
     #[error("Deck ID error: {0}")]
     DeckId(#[from] DeckIdError),
 

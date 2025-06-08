@@ -3,11 +3,9 @@ use crate::duocards::models::{DuocardsResponse, VocabularyCard};
 
 mod client;
 pub mod models;
-pub mod auth;
 
 pub use client::DuocardsClient;
 pub use models::{Card, CardEdge, CardConnection, PageInfo, Deck, ResponseData, Extensions, LearningStatus};
-pub use auth::AuthError;
 
 #[async_trait::async_trait]
 pub trait DuocardsClientTrait: Send + Sync {
