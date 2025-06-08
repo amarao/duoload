@@ -5,8 +5,6 @@ use crate::output::OutputBuilder;
 use genanki_rs::Deck;
 use std::collections::HashSet;
 use std::io::Write;
-use std::path::Path;
-use std::time::Instant;
 
 /// Builder for creating Anki packages from vocabulary cards.
 ///
@@ -18,7 +16,6 @@ pub struct AnkiPackageBuilder {
     pub deck: Deck,
     pub model: genanki_rs::Model,
     existing_words: HashSet<String>,
-    start_time: Instant,
 }
 
 impl AnkiPackageBuilder {
@@ -32,8 +29,6 @@ impl AnkiPackageBuilder {
     ///
     /// A new AnkiPackageBuilder instance configured with the specified deck name.
     pub fn new(deck_name: &str) -> Self {
-        let start_time = Instant::now();
-
         let model = create_vocabulary_model();
 
         let deck = Deck::new(
@@ -46,7 +41,6 @@ impl AnkiPackageBuilder {
             deck,
             model,
             existing_words: HashSet::new(),
-            start_time,
         }
     }
 }

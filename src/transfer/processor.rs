@@ -6,7 +6,7 @@ use std::path::Path;
 use std::time::{Duration, Instant};
 use tokio::time::sleep;
 use std::path::PathBuf;
-use std::io::{self, Write};
+use std::io;
 use std::fs::File;
 
 #[derive(Debug, Default, PartialEq)]
@@ -131,6 +131,7 @@ where
         Ok(())
     }
 
+    #[cfg(test)] // Used in tests
     pub fn stats(&self) -> &TransferStats {
         &self.stats
     }
@@ -180,7 +181,7 @@ mod tests {
     use crate::output::OutputBuilder;
     use std::sync::Arc;
     use std::sync::Mutex;
-    use std::io::Cursor;
+    use std::io::{Cursor, Write};
 
     // Test-specific implementations
     #[derive(Clone)]

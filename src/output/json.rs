@@ -3,12 +3,8 @@ use crate::error::Result;
 use crate::output::OutputBuilder;
 use serde_json;
 use std::collections::HashSet;
-use std::fs::File;
 use std::io::Write;
-use std::io::BufWriter;
-use std::path::Path;
 use std::time::Instant;
-use std::io::Cursor;
 
 /// Builder for creating JSON files from vocabulary cards.
 ///
@@ -76,7 +72,8 @@ impl OutputBuilder for JsonOutputBuilder {
 mod tests {
     use super::*;
     use crate::duocards::models::LearningStatus;
-    use std::fs;
+    use std::fs::{self, File};
+    use std::io::BufWriter;
     use tempfile::NamedTempFile;
 
     fn create_test_card(
