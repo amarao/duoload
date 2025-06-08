@@ -2,26 +2,31 @@
 
 ## Core Flow
 
-The application follows a simple, linear flow to transfer vocabulary from Duocards to Anki:
+The application follows a simple, linear flow to transfer vocabulary from Duocards to either Anki or JSON format:
 
 1. **User Input**
    ```
-   duoload --deck-id "RGVjazo0NmYyYjllZC1hYmYzLTRiZDgtYTA1NC02OGRmYTRhNDIwM2U=" --output-file "my_deck.apkg"
+   # For Anki output
+   duoload --deck-id "RGVjazo0NmYyYjllZC1hYmYzLTRiZDgtYTA1NC02OGRmYTRhNDIwM2U=" --anki-file "my_deck.apkg"
+   
+   # For JSON output
+   duoload --deck-id "RGVjazo0NmYyYjllZC1hYmYzLTRiZDgtYTA1NC02OGRmYTRhNDIwM2U=" --json-file "my_deck.json"
    ```
 
 2. **Data Flow**
    ```
-   Duocards API (public) → Transfer Processor → Anki Package
+   Duocards API (public) → Transfer Processor → (Anki Generator | JSON Generator)
    ```
 
 ## Components
 
 ### 1. CLI Interface (`src/main.rs`)
-- Parses deck ID and output file path
+- Parses deck ID and output format options
+- Validates mutually exclusive output options
 - Provides progress feedback
 - Example output:
   ```
-  Initializing new Anki file at 'my_deck.apkg'...
+  Initializing export to 'my_deck.apkg'...
   Processing page 1... done.
   Processing page 2... done.
   Export complete. 1250 cards saved to my_deck.apkg.
@@ -43,8 +48,9 @@ The application follows a simple, linear flow to transfer vocabulary from Duocar
 ### 3. Transfer Processor (`src/transfer/`)
 - Orchestrates the transfer process
 - Handles duplicate detection
-- Coordinates between Duocards client and Anki generator
+- Coordinates between Duocards client and output generators
 - Processes cards in a streaming fashion
+- Format-agnostic core logic
 
 ### 4. Anki Generator (`src/anki/`)
 - Creates Anki package using genanki-rs
@@ -55,14 +61,27 @@ The application follows a simple, linear flow to transfer vocabulary from Duocar
   - Status → Tag (duoload_new, duoload_learning, duoload_known)
 - Writes final .apkg file
 
+### 5. JSON Generator (`src/json/`)
+- Serializes vocabulary cards to JSON format
+- Maintains consistent structure:
+  ```json
+  {
+    "word": string,
+    "translation": string,
+    "example": string,
+    "learning_status": "new" | "learning" | "known"
+  }
+  ```
+- Writes UTF-8 encoded JSON file
+
 ## Happy Path Sequence
 
-1. User runs command with valid deck ID and output path
-2. CLI validates inputs and creates client
+1. User runs command with valid deck ID and output format
+2. CLI validates inputs and creates appropriate generator
 3. Client validates deck ID and fetches vocabulary pages from Duocards
 4. Transfer processor:
    - Receives cards from client
    - Checks for duplicates
-   - Streams processed cards to Anki generator
-5. Anki generator creates package and saves file
+   - Streams processed cards to selected generator
+5. Generator creates file in requested format
 6. User gets success message with card count

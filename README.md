@@ -2,7 +2,7 @@
 
 
 * I got it working on my machine (that means, I get apkg file with all my words from my Deck). `[done]`.
-* I want to cleanup code. There are multiple warnings I want to cleanup before doing anything else. `[plan]`
+* I want to cleanup code. There are multiple warnings I want to cleanup before doing anything else. `[done]`
 * I want to validate it works on someone's else machine and deck `[plan]`
 * I want to support json and csv outputs. I found apkg a bit hard to validate, and multiple outputs will be of a great help. `[plan]`
 * I want to support stdout in output. Trivial. `[plan]`

@@ -4,19 +4,21 @@ Version: 1.0
 Date: June 7, 2025
 1. Introduction & Vision
 
-duoload is a local, multi-platform command-line interface (CLI) utility designed to transfer a user's vocabulary data from the Duocards application into the Anki flashcard system. The project empowers users to own their learning data by migrating it from a closed platform to Anki's open and extensible ecosystem. The tool is designed for simplicity, reliability, and local execution, ensuring user data privacy.
+duoload is a local, multi-platform command-line interface (CLI) utility designed to transfer a user's vocabulary data from the Duocards application into either Anki flashcard system or a JSON format. The project empowers users to own their learning data by migrating it from a closed platform to either Anki's open and extensible ecosystem or a portable JSON format for custom processing. The tool is designed for simplicity, reliability, and local execution, ensuring user data privacy.
 2. Target Audience
 
 The primary user is a technically experienced computer user who is:
 
-    A language learner using both Duocards and Anki.
+    A language learner using Duocards and either:
+        Anki for flashcard-based learning, or
+        Custom tools that can process JSON data
     Comfortable running applications from a command line.
     Capable of finding their Duocards deck ID from the application.
     Using a Windows, macOS, or Linux operating system.
 
 3. User Problem
 
-Language learners invest significant time building vocabulary lists in applications like Duocards. However, this data is often locked within the app's ecosystem. Users who wish to consolidate their learning materials into a single, powerful, and open-source platform like Anki have no direct way to do so. This creates a barrier to long-term, customized learning and data ownership. duoload solves this by bridging the gap between Duocards and Anki.
+Language learners invest significant time building vocabulary lists in applications like Duocards. However, this data is often locked within the app's ecosystem. Users who wish to consolidate their learning materials into either a single, powerful, and open-source platform like Anki or process their data with custom tools have no direct way to do so. This creates a barrier to long-term, customized learning and data ownership. duoload solves this by bridging the gap between Duocards and both Anki and custom data processing workflows.
 4. Goals & Success Metrics
 
     Primary Goal: To provide a reliable method for users to export their vocabulary from Duocards and import it into Anki.
@@ -35,25 +37,42 @@ Language learners invest significant time building vocabulary lists in applicati
         Example of Use: The sentence demonstrating the word's usage.
         Learning Status: The current learning state of the word.
     Image and audio data will not be transferred.
+    The data will be processed into one of two output formats:
+        Anki package (.apkg) for direct import into Anki
+        JSON file containing an array of card objects
 
-5.2. Anki Integration
+5.2. Output Formats
 
-    The tool will generate a standard Anki package file (.apkg) that can be imported into the Anki desktop application.
-    Data Mapping:
-        Duocards Word → Anki Note Front field.
-        Duocards Translation → Anki Note Back field.
-        Duocards Example of Use → Anki Note Example field.
-    Learning Status Conversion: The Duocards status will be converted into an Anki tag on the note.
-        new → duoload_new tag
-        learning → duoload_learning tag
-        known → duoload_known tag
+    5.2.1 Anki Integration
+        The tool will generate a standard Anki package file (.apkg) that can be imported into the Anki desktop application.
+        Data Mapping:
+            Duocards Word → Anki Note Front field.
+            Duocards Translation → Anki Note Back field.
+            Duocards Example of Use → Anki Note Example field.
+        Learning Status Conversion: The Duocards status will be converted into an Anki tag on the note.
+            new → duoload_new tag
+            learning → duoload_learning tag
+            known → duoload_known tag
+
+    5.2.2 JSON Output
+        The tool will generate a JSON file containing an array of card objects.
+        Each card object will have the following structure:
+            {
+                "word": string,
+                "translation": string,
+                "example": string,
+                "learning_status": "new" | "learning" | "known"
+            }
+        The JSON file will be UTF-8 encoded and properly formatted for readability.
 
 5.4. CLI Functionality
 
     Deck ID: The user must provide their Duocards deck ID via a command-line argument:
         --deck-id "<deck_id>"
-    Output File: The user must specify the path for the output Anki file:
-        --output-file "path/to/my_deck.apkg"
+    Output File: The user must specify exactly one of the following output options:
+        --anki-file "path/to/my_deck.apkg" (for Anki format)
+        --json-file "path/to/my_deck.json" (for JSON format)
+    The application will require exactly one output option to be specified.
 
 5.5. Feedback & Error Handling
 
@@ -74,12 +93,12 @@ Language learners invest significant time building vocabulary lists in applicati
 
 7. CLI Design & User Flow
 
-Scenario 1: New Export
+Scenario 1: Export to Anki
 
-The user wants to export their entire collection to a new file.
+The user wants to export their entire collection to a new Anki file.
 Bash
 
-duoload --deck-id "RGVjazo1YjZmMTA3My1hZjA2LTQwMGMtYTQyNC05ZWM5YzFlMGEzZjg=" --output-file "duocards_export.apkg"
+duoload --deck-id "RGVjazo1YjZmMTA3My1hZjA2LTQwMGMtYTQyNC05ZWM5YzFlMGEzZjg=" --anki-file "duocards_export.apkg"
 
 Expected Output:
 
@@ -89,3 +108,19 @@ Processing page 2... done.
 ...
 Processing page 25... done.
 Export complete. 1250 cards saved to duocards_export.apkg.
+
+Scenario 2: Export to JSON
+
+The user wants to export their collection to a JSON file for custom processing.
+Bash
+
+duoload --deck-id "RGVjazo1YjZmMTA3My1hZjA2LTQwMGMtYTQyNC05ZWM5YzFlMGEzZjg=" --json-file "duocards_export.json"
+
+Expected Output:
+
+Initializing JSON export to 'duocards_export.json'...
+Processing page 1... done.
+Processing page 2... done.
+...
+Processing page 25... done.
+Export complete. 1250 cards saved to duocards_export.json.

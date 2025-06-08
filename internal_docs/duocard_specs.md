@@ -42,19 +42,23 @@ Using `clap` with derive macros:
 ```rust
 #[derive(Parser)]
 #[command(name = "duoload")]
-#[command(about = "Transfer vocabulary from Duocards to Anki")]
+#[command(about = "Export data from Duocards to Anki or JSON")]
 struct Args {
     #[arg(long, value_name = "DECK_ID", help = "Duocards deck ID")]
     deck_id: String,
     
-    #[arg(long, value_name = "FILE", help = "Output Anki package file path")]
-    output_file: PathBuf,
+    #[arg(long, value_name = "FILE", help = "Output Anki package file path (.apkg)")]
+    output_file: Option<PathBuf>,
+    
+    #[arg(long, value_name = "FILE", help = "Output JSON file path (.json)")]
+    json_file: Option<PathBuf>,
 }
 ```
 
 ### 2.2 Validation Requirements
-- Deck ID format validation (numeric string)
+- Deck ID format validation (base64 encoded Deck:UUID)
 - Output file path validation (writable directory)
+- Exactly one output format must be specified (either .apkg or .json)
 
 ## 3. Data Models
 
@@ -258,11 +262,20 @@ WARNING: Duplicate card found in source data: 'word'. Skipping.
 
 ### 7.1 Console Output Format
 ```
-Initializing new Anki file at 'filename.apkg'...
+Initializing export to 'filename.apkg'...
 Processing page 1... done.
 Processing page 2... done.
 ...
 Export complete. X cards saved to filename.apkg.
+```
+
+For JSON output:
+```
+Initializing JSON export to 'filename.json'...
+Processing page 1... done.
+Processing page 2... done.
+...
+Export complete. X cards saved to filename.json.
 ```
 
 ## 8. Error Handling Requirements
@@ -375,3 +388,42 @@ strip = true
 - Cookie extraction guide
 - Usage examples
 - Troubleshooting section
+
+## 15. Output Format Requirements
+
+### 15.1 Anki Package Format
+- Generates standard Anki package file (.apkg)
+- Uses genanki-rs for package creation
+- Maps Duocards fields to Anki note fields:
+  - Word → Front
+  - Translation → Back
+  - Example → Example field
+- Converts learning status to Anki tags:
+  - new → duoload_new
+  - learning → duoload_learning
+  - known → duoload_known
+
+### 15.2 JSON Format
+- Generates UTF-8 encoded JSON file
+- Array of card objects with the following structure:
+```json
+{
+    "word": string,
+    "translation": string,
+    "example": string | null,
+    "learning_status": "new" | "learning" | "known"
+}
+```
+- Pretty-printed for readability
+- Includes metadata about the export:
+```json
+{
+    "metadata": {
+        "deck_id": string,
+        "export_date": string,
+        "total_cards": number,
+        "duplicates_skipped": number
+    },
+    "cards": Card[]
+}
+```
