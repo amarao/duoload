@@ -82,9 +82,6 @@ impl DuocardsClient {
         
         let query = CardsQuery::new(deck_id, DEFAULT_PAGE_SIZE, cursor);
         
-        // Debug: Print the request body
-        println!("Request body:\n{}", to_string_pretty(&query)?);
-        
         let response = self.client
             .post(&self.base_url)
             .json(&query)
