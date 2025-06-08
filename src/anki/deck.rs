@@ -64,6 +64,7 @@ impl AnkiPackageBuilder {
     }
 
     /// Returns true if the word is a duplicate (has been added before)
+    #[cfg(test)]
     pub fn is_duplicate(&self, word: &str) -> bool {
         self.existing_words.contains(word)
     }

@@ -3,15 +3,13 @@ use crate::duocards::{
     DuocardsClientTrait,
     models::{CardsQuery, DuocardsResponse, VocabularyCard},
 };
-use crate::error::{DeckIdError, DuoloadError, Result};
+use crate::error::{DuoloadError, Result};
 use async_trait::async_trait;
-use base64::{Engine as _, engine::general_purpose::STANDARD as BASE64};
 use reqwest::{
     Client,
     header::{ACCEPT_ENCODING, CONTENT_TYPE, HeaderMap, HeaderValue},
 };
 use std::time::Duration;
-use uuid::Uuid;
 
 const BASE_URL: &str = "https://api.duocards.com/graphql";
 const USER_AGENT: &str = "duoload/1.0";

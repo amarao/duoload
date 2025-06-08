@@ -1,6 +1,6 @@
 use crate::anki::AnkiPackageBuilderTrait;
 use crate::duocards::DuocardsClientTrait;
-use crate::error::{DuoloadError, Result};
+use crate::error::Result;
 use crate::transfer::DuplicateHandler;
 use std::path::Path;
 use std::time::Instant;
@@ -58,7 +58,7 @@ where
             );
 
             // Process each card
-            for (i, card) in cards.into_iter().enumerate() {
+            for (_i, card) in cards.into_iter().enumerate() {
                 if self.duplicates.is_duplicate(&card.word) {
                     self.stats.duplicates += 1;
                     continue;
