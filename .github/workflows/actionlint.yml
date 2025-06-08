@@ -1,0 +1,24 @@
+name: Action Lint
+
+on:
+  push:
+    paths:
+      - '.github/workflows/**'
+
+jobs:
+  actionlint:
+    name: Action Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install actionlint
+        run: |
+          VERSION=1.6.25
+          curl -sSLo actionlint.tar.gz https://github.com/rhysd/actionlint/releases/download/v$VERSION/actionlint_${VERSION}_linux_amd64.tar.gz
+          tar xzf actionlint.tar.gz
+          sudo mv actionlint /usr/local/bin/
+          rm actionlint.tar.gz
+
+      - name: Run actionlint
+        run: actionlint
