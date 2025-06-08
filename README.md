@@ -3,13 +3,13 @@
 
 * I got it working on my machine (that means, I get apkg file with all my words from my Deck). `[done]`.
 * I want to cleanup code. There are multiple warnings I want to cleanup before doing anything else. `[done]`
-* I want to validate it works on someone's else machine and deck `[plan]`
 * I want to support json output. I found apkg a bit hard to validate, and multiple outputs will be of a great help. `[done]`
-* I want to support stdout in json output. Trivial. `[plan]`
+* I want to support stdout in json output. Trivial. `[done]`. It was hard.
 * I want to add a proper CI (there is plenty of tests to run) `[plan]`
 * I want to provide releases for all major architectures `[plan]`. I never cross-build rust applications before, going to be fun.
 * I want to provide a docker image (multi-arch) `[plan]`
 * I want to write/generate documentation on how to use it. Extracting deck id is not the simplest task. `[plan]`. Or should I find a way to automate it?
+* I want to validate it works on someone's else machine and deck `[plan]`
 
 # Duoload
 
