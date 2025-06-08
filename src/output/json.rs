@@ -1,95 +1,74 @@
 use crate::duocards::models::VocabularyCard;
-use crate::error::{Result, DuoloadError};
+use crate::error::Result;
 use crate::output::OutputBuilder;
-use crate::anki::note::{VocabularyNote, create_vocabulary_model};
-use genanki_rs::Deck;
+use serde_json;
 use std::collections::HashSet;
+use std::fs::File;
+use std::io::Write;
 use std::path::Path;
 use std::time::Instant;
 
-/// Builder for creating Anki packages from vocabulary cards.
+/// Builder for creating JSON files from vocabulary cards.
 ///
-/// This struct manages the creation of an Anki package, handling:
-/// - Deck creation and configuration
-/// - Note addition with duplicate detection
-/// - Package file generation
-pub struct AnkiPackageBuilder {
-    pub deck: Deck,
-    pub model: genanki_rs::Model,
+/// This struct manages the creation of a JSON file containing vocabulary cards, handling:
+/// - Card collection and duplicate detection
+/// - JSON file generation with pretty printing
+pub struct JsonOutputBuilder {
+    cards: Vec<VocabularyCard>,
     existing_words: HashSet<String>,
     start_time: Instant,
 }
 
-impl AnkiPackageBuilder {
-    /// Creates a new Anki package builder with the specified deck name.
-    ///
-    /// # Arguments
-    ///
-    /// * `deck_name` - The name of the deck to create
+impl JsonOutputBuilder {
+    /// Creates a new JSON output builder.
     ///
     /// # Returns
     ///
-    /// A new AnkiPackageBuilder instance configured with the specified deck name.
-    pub fn new(deck_name: &str) -> Self {
-        let start_time = Instant::now();
-
-        let model = create_vocabulary_model();
-
-        let deck = Deck::new(
-            2059400110, // Deck ID - fixed for consistency
-            deck_name,
-            "Vocabulary imported from Duocards",
-        );
-
+    /// A new JsonOutputBuilder instance.
+    #[cfg(test)]
+    pub fn new() -> Self {
         Self {
-            deck,
-            model,
+            cards: Vec::new(),
             existing_words: HashSet::new(),
-            start_time,
+            start_time: Instant::now(),
         }
     }
 }
 
-impl OutputBuilder for AnkiPackageBuilder {
-    fn add_note(&mut self, vocab_card: VocabularyCard) -> Result<bool> {
-        // Check for duplicates before moving the card
-        if self.existing_words.contains(&vocab_card.word) {
+impl OutputBuilder for JsonOutputBuilder {
+    fn add_note(&mut self, card: VocabularyCard) -> Result<bool> {
+        // Check for duplicates
+        if self.existing_words.contains(&card.word) {
             return Ok(false); // Duplicate
         }
 
         // Clone the word before moving the card
-        let word = vocab_card.word.clone();
-
-        // Create and add the note
-        let note = VocabularyNote::from(vocab_card).to_anki_note(&self.model)?;
-        self.deck.add_note(note);
+        let word = card.word.clone();
+        
+        // Add the card
+        self.cards.push(card);
         self.existing_words.insert(word);
         Ok(true)
     }
 
     fn write_to_file<P: AsRef<Path>>(&self, path: P) -> Result<()> {
-        let result = self
-            .deck
-            .write_to_file(
-                path.as_ref()
-                    .to_str()
-                    .ok_or_else(|| anyhow::anyhow!("Invalid file path: {:?}", path.as_ref()))?,
-            )
-            .map_err(|e| anyhow::anyhow!("Failed to write Anki package: {}", e));
+        // Convert cards to JSON with pretty printing
+        let json = serde_json::to_string_pretty(&self.cards)
+            .map_err(|e| anyhow::anyhow!("Failed to serialize cards to JSON: {}", e))?;
 
-        match &result {
-            Ok(_) => println!(
-                "Deck written successfully at {:?}",
-                self.start_time.elapsed()
-            ),
-            Err(e) => println!(
-                "Failed to write deck: {} at {:?}",
-                e,
-                self.start_time.elapsed()
-            ),
-        }
+        // Write to file
+        let mut file = File::create(path.as_ref())
+            .map_err(|e| anyhow::anyhow!("Failed to create JSON file: {}", e))?;
+        
+        file.write_all(json.as_bytes())
+            .map_err(|e| anyhow::anyhow!("Failed to write JSON file: {}", e))?;
 
-        result.map_err(DuoloadError::from)
+        println!(
+            "JSON file written successfully at {:?}",
+            self.start_time.elapsed()
+        );
+
+        Ok(())
     }
 }
 
@@ -116,7 +95,7 @@ mod tests {
 
     #[test]
     fn test_new_builder() {
-        let mut builder = AnkiPackageBuilder::new("Test Deck");
+        let mut builder = JsonOutputBuilder::new();
         assert!(builder.existing_words.is_empty());
 
         // Verify we can add a note to a new builder
@@ -126,7 +105,7 @@ mod tests {
 
     #[test]
     fn test_add_note() {
-        let mut builder = AnkiPackageBuilder::new("Test Deck");
+        let mut builder = JsonOutputBuilder::new();
 
         // Add first note
         let card1 = create_test_card("hello", "hola", Some("Hello, world!"), LearningStatus::New);
@@ -153,7 +132,7 @@ mod tests {
 
     #[test]
     fn test_write_to_file() {
-        let mut builder = AnkiPackageBuilder::new("Test Deck");
+        let mut builder = JsonOutputBuilder::new();
 
         // Add some notes
         let card1 = create_test_card("hello", "hola", Some("Hello, world!"), LearningStatus::New);
@@ -174,11 +153,18 @@ mod tests {
         // Verify file exists and has content
         let metadata = fs::metadata(&temp_file).unwrap();
         assert!(metadata.len() > 0);
+
+        // Verify JSON content
+        let content = fs::read_to_string(&temp_file).unwrap();
+        let cards: Vec<VocabularyCard> = serde_json::from_str(&content).unwrap();
+        assert_eq!(cards.len(), 2);
+        assert_eq!(cards[0].word, "hello");
+        assert_eq!(cards[1].word, "goodbye");
     }
 
     #[test]
     fn test_write_to_file_invalid_path() {
-        let builder = AnkiPackageBuilder::new("Test Deck");
+        let builder = JsonOutputBuilder::new();
 
         // Try to write to an invalid path
         let result = builder.write_to_file("/invalid/path/with/nulls/\0");
@@ -187,14 +173,15 @@ mod tests {
 
     #[test]
     fn test_empty_deck() {
-        let builder = AnkiPackageBuilder::new("Empty Deck");
+        let builder = JsonOutputBuilder::new();
         let temp_file = NamedTempFile::new().unwrap();
 
         // Should still be able to write an empty deck
         builder.write_to_file(&temp_file).unwrap();
 
-        // Verify file exists
-        let metadata = fs::metadata(&temp_file).unwrap();
-        assert!(metadata.len() > 0);
+        // Verify file exists and contains empty array
+        let content = fs::read_to_string(&temp_file).unwrap();
+        let cards: Vec<VocabularyCard> = serde_json::from_str(&content).unwrap();
+        assert!(cards.is_empty());
     }
 } 

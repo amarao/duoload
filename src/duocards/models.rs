@@ -69,7 +69,7 @@ pub struct Extensions {
 }
 
 // Our internal representation of a vocabulary card
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct VocabularyCard {
     pub word: String,
     pub translation: String,
@@ -77,10 +77,13 @@ pub struct VocabularyCard {
     pub status: LearningStatus,
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub enum LearningStatus {
+    #[serde(rename = "new")]
     New,
+    #[serde(rename = "learning")]
     Learning,
+    #[serde(rename = "known")]
     Known,
 }
 
