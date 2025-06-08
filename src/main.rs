@@ -11,7 +11,6 @@ mod transfer;
 
 use crate::output::anki::AnkiPackageBuilder;
 use crate::output::json::JsonOutputBuilder;
-use crate::output::OutputBuilder;
 use duocards::DuocardsClient;
 use duocards::deck;
 use error::Result;

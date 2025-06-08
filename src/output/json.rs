@@ -19,6 +19,12 @@ pub struct JsonOutputBuilder {
     start_time: Instant,
 }
 
+impl Default for JsonOutputBuilder {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl JsonOutputBuilder {
     /// Creates a new JSON output builder.
     ///
