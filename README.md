@@ -1,4 +1,15 @@
-(!) This project is under writing. Nothing is working yet, but I hope it will.
+# Current state and plans
+
+
+* I got it working on my machine (that means, I get apkg file with all my words from my Deck). `[done]`.
+* I want to cleanup code. There are multiple warnings I want to cleanup before doing anything else. `[plan]`
+* I want to validate it works on someone's else machine and deck `[plan]`
+* I want to support json and csv outputs. I found apkg a bit hard to validate, and multiple outputs will be of a great help. `[plan]`
+* I want to support stdout in output. Trivial. `[plan]`
+* I want to add a proper CI (there is plenty of tests to run) `[plan]`
+* I want to provide releases for all major architectures `[plan]`. I never cross-build rust applications before, going to be fun.
+* I want to provide a docker image (multi-arch) `[plan]`
+* I want to write/generate documentation on how to use it. Extracting deck id is not the simplest task. `[plan]`. Or should I find a way to automate it?
 
 # Duoload
 
