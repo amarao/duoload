@@ -64,7 +64,7 @@ impl OutputBuilder for AnkiPackageBuilder {
 
     fn write<W: Write>(&self, _writer: &mut W) -> Result<()> {
         // Anki output is only supported for file output
-        Err(DuoloadError::AnkiOutputNotSupported.into())
+        Err(DuoloadError::AnkiOutputNotSupported)
     }
 }
 

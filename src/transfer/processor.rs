@@ -462,7 +462,7 @@ mod tests {
     #[test]
     fn test_write_to_stdout() -> Result<()> {
         let builder = TestOutputBuilder::new();
-        let mut processor = TransferProcessor::new(
+        let processor = TransferProcessor::new(
             TestDuocardsClient::new(vec![]),
             "test-deck".to_string(),
         ).output(builder, Path::new("-"));
@@ -480,7 +480,7 @@ mod tests {
     fn test_write_to_file() -> Result<()> {
         let builder = TestOutputBuilder::new();
         let temp_file = tempfile::NamedTempFile::new()?;
-        let mut processor = TransferProcessor::new(
+        let processor = TransferProcessor::new(
             TestDuocardsClient::new(vec![]),
             "test-deck".to_string(),
         ).output(builder, temp_file.path());

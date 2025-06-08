@@ -2,7 +2,7 @@ use duoload::duocards::models::{LearningStatus, VocabularyCard};
 use duoload::output::OutputBuilder;
 use duoload::output::anki::AnkiPackageBuilder;
 use std::fs::File;
-use std::io::{BufWriter, Write};
+use std::io::BufWriter;
 use tempfile::NamedTempFile;
 
 fn create_test_card(
@@ -21,10 +21,6 @@ fn create_test_card(
 
 #[tokio::test]
 async fn test_end_to_end_anki_package_creation() {
-    // Create a temporary file for the package
-    let temp_file = NamedTempFile::new().unwrap();
-    let package_path = temp_file.path();
-
     // Create a new deck
     let mut builder = AnkiPackageBuilder::new("Integration Test Deck");
 

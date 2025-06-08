@@ -2,7 +2,7 @@ use duoload::duocards::models::{LearningStatus, VocabularyCard};
 use duoload::output::OutputBuilder;
 use duoload::output::json::JsonOutputBuilder;
 use std::fs::File;
-use std::io::{BufWriter, Write};
+use std::io::BufWriter;
 use tempfile::NamedTempFile;
 use serde_json;
 
