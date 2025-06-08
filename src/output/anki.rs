@@ -2,7 +2,6 @@ use crate::duocards::models::VocabularyCard;
 use crate::error::{Result, DuoloadError};
 use crate::output::OutputBuilder;
 use crate::anki::note::{VocabularyNote, create_vocabulary_model};
-use anyhow::Result as AnyhowResult;
 use genanki_rs::Deck;
 use std::collections::HashSet;
 use std::path::Path;
