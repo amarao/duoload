@@ -1,9 +1,9 @@
-use std::path::Path;
-use crate::error::Result;
 use crate::duocards::models::VocabularyCard;
+use crate::error::Result;
+use std::path::Path;
 
-pub mod note;
 pub mod deck;
+pub mod note;
 
 pub use deck::AnkiPackageBuilder;
 

@@ -1,9 +1,9 @@
-use crate::error::Result;
 use crate::duocards::models::{DuocardsResponse, VocabularyCard};
+use crate::error::Result;
 
 mod client;
-pub mod models;
 pub mod deck;
+pub mod models;
 
 pub use client::DuocardsClient;
 

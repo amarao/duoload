@@ -1,6 +1,6 @@
+use reqwest::header::InvalidHeaderValue;
 use std::io;
 use thiserror::Error;
-use reqwest::header::InvalidHeaderValue;
 
 #[derive(Error, Debug)]
 pub enum DeckIdError {

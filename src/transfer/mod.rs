@@ -1,4 +1,4 @@
-pub mod processor;
 pub mod duplicates;
+pub mod processor;
 
 pub use duplicates::DuplicateHandler;

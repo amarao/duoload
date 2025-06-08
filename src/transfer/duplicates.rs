@@ -29,14 +29,14 @@ mod tests {
     #[test]
     fn test_duplicate_handler_basic() {
         let mut handler = DuplicateHandler::new();
-        
+
         // First time seeing a word
         assert!(!handler.is_duplicate("hello"));
         assert!(handler.processed_words.contains("hello"));
-        
+
         // Second time seeing the same word
         assert!(handler.is_duplicate("hello"));
-        
+
         // Different word
         assert!(!handler.is_duplicate("world"));
         assert!(handler.processed_words.contains("world"));
@@ -45,7 +45,7 @@ mod tests {
     #[test]
     fn test_duplicate_handler_case_sensitive() {
         let mut handler = DuplicateHandler::new();
-        
+
         assert!(!handler.is_duplicate("Hello"));
         assert!(!handler.is_duplicate("hello")); // Different due to case
         assert!(handler.is_duplicate("Hello")); // Duplicate

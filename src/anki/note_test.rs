@@ -1,10 +1,15 @@
 #[cfg(test)]
 mod tests {
-    use crate::duocards::models::{VocabularyCard, LearningStatus};
     use crate::anki::note::{VocabularyNote, create_vocabulary_model};
+    use crate::duocards::models::{LearningStatus, VocabularyCard};
     use anyhow::Result;
 
-    fn create_test_card(word: &str, translation: &str, example: Option<&str>, status: LearningStatus) -> VocabularyCard {
+    fn create_test_card(
+        word: &str,
+        translation: &str,
+        example: Option<&str>,
+        status: LearningStatus,
+    ) -> VocabularyCard {
         VocabularyCard {
             word: word.to_string(),
             translation: translation.to_string(),
@@ -30,12 +35,7 @@ mod tests {
 
     #[test]
     fn test_from_vocabulary_card_no_example() {
-        let card = create_test_card(
-            "hello",
-            "hola",
-            None,
-            LearningStatus::New,
-        );
+        let card = create_test_card("hello", "hola", None, LearningStatus::New);
         let note = VocabularyNote::from(card);
         assert_eq!(note.word, "hello");
         assert_eq!(note.translation, "hola");
@@ -54,7 +54,7 @@ mod tests {
         let note = VocabularyNote::from(card);
         let model = create_vocabulary_model();
         let anki_note = note.to_anki_note(&model)?;
-        
+
         // We can't directly test the note's fields as they're private in genanki_rs
         // Instead, we'll verify the note was created successfully by writing it to a deck
         let mut deck = genanki_rs::Deck::new(1234, "Test Deck", "Test");
@@ -81,20 +81,15 @@ mod tests {
         let note = VocabularyNote::from(card);
         let model = create_vocabulary_model();
         let anki_note = note.to_anki_note(&model).unwrap();
-        
+
         // Verify the note was created by adding it to a deck
         let mut deck = genanki_rs::Deck::new(1234, "Test Deck", "Test");
         deck.add_note(anki_note);
 
         // Test without example
-        let card = create_test_card(
-            "hello",
-            "hola",
-            None,
-            LearningStatus::New,
-        );
+        let card = create_test_card("hello", "hola", None, LearningStatus::New);
         let note = VocabularyNote::from(card);
         let anki_note = note.to_anki_note(&model).unwrap();
         deck.add_note(anki_note);
     }
-} 
+}

@@ -1,11 +1,11 @@
 //! Vocabulary note module for converting vocabulary cards to Anki notes.
-//! 
+//!
 //! This module provides functionality to convert vocabulary cards to Anki notes,
 //! handling the mapping between our vocabulary model and Anki's note format.
 
-use anyhow::Result;
-use genanki_rs::{Note, Model, Field, Template};
 use crate::duocards::models::VocabularyCard;
+use anyhow::Result;
+use genanki_rs::{Field, Model, Note, Template};
 
 /// A note representing a vocabulary item that can be converted to an Anki note.
 #[derive(Debug)]
@@ -20,7 +20,9 @@ impl From<VocabularyCard> for VocabularyNote {
     fn from(card: VocabularyCard) -> Self {
         let tags = match card.status {
             crate::duocards::models::LearningStatus::New => vec!["duoload_new".to_string()],
-            crate::duocards::models::LearningStatus::Learning => vec!["duoload_learning".to_string()],
+            crate::duocards::models::LearningStatus::Learning => {
+                vec!["duoload_learning".to_string()]
+            }
             crate::duocards::models::LearningStatus::Known => vec!["duoload_known".to_string()],
         };
 
@@ -35,13 +37,13 @@ impl From<VocabularyCard> for VocabularyNote {
 
 impl VocabularyNote {
     /// Creates a new Anki note from this vocabulary note.
-    /// 
+    ///
     /// # Arguments
-    /// 
+    ///
     /// * `model` - The Anki model to use for the note
-    /// 
+    ///
     /// # Returns
-    /// 
+    ///
     /// A Result containing either the created Anki note or an error if creation fails.
     pub fn to_anki_note(&self, model: &Model) -> Result<Note> {
         let fields = vec![
@@ -57,7 +59,7 @@ impl VocabularyNote {
 }
 
 /// Creates a vocabulary model for Anki notes.
-/// 
+///
 /// This model defines the structure of vocabulary notes in Anki,
 /// including fields for the word, translation, and example.
 pub fn create_vocabulary_model() -> Model {
@@ -83,7 +85,12 @@ mod tests {
     use crate::duocards::models::LearningStatus;
     use anyhow::Result;
 
-    fn create_test_card(word: &str, translation: &str, example: Option<&str>, status: LearningStatus) -> VocabularyCard {
+    fn create_test_card(
+        word: &str,
+        translation: &str,
+        example: Option<&str>,
+        status: LearningStatus,
+    ) -> VocabularyCard {
         VocabularyCard {
             word: word.to_string(),
             translation: translation.to_string(),
@@ -109,12 +116,7 @@ mod tests {
 
     #[test]
     fn test_from_vocabulary_card_no_example() {
-        let card = create_test_card(
-            "hello",
-            "hola",
-            None,
-            LearningStatus::New,
-        );
+        let card = create_test_card("hello", "hola", None, LearningStatus::New);
         let note = VocabularyNote::from(card);
         assert_eq!(note.word, "hello");
         assert_eq!(note.translation, "hola");
@@ -133,7 +135,7 @@ mod tests {
         let note = VocabularyNote::from(card);
         let model = create_vocabulary_model();
         let anki_note = note.to_anki_note(&model)?;
-        
+
         // We can't directly test the note's fields as they're private in genanki_rs
         // Instead, we'll verify the note was created successfully by writing it to a deck
         let mut deck = genanki_rs::Deck::new(1234, "Test Deck", "Test");
@@ -160,18 +162,13 @@ mod tests {
         let note = VocabularyNote::from(card);
         let model = create_vocabulary_model();
         let anki_note = note.to_anki_note(&model).unwrap();
-        
+
         // Verify the note was created by adding it to a deck
         let mut deck = genanki_rs::Deck::new(1234, "Test Deck", "Test");
         deck.add_note(anki_note);
 
         // Test without example
-        let card = create_test_card(
-            "hello",
-            "hola",
-            None,
-            LearningStatus::New,
-        );
+        let card = create_test_card("hello", "hola", None, LearningStatus::New);
         let note = VocabularyNote::from(card);
         let anki_note = note.to_anki_note(&model).unwrap();
         deck.add_note(anki_note);

@@ -1,11 +1,17 @@
-use std::time::Duration;
-use reqwest::{Client, header::{HeaderMap, HeaderValue, CONTENT_TYPE, ACCEPT_ENCODING}};
-use crate::error::{Result, DuoloadError, DeckIdError};
-use crate::duocards::{DuocardsClientTrait, models::{DuocardsResponse, VocabularyCard, CardsQuery}};
-use base64::{Engine as _, engine::general_purpose::STANDARD as BASE64};
-use uuid::Uuid;
-use async_trait::async_trait;
 use crate::duocards::deck;
+use crate::duocards::{
+    DuocardsClientTrait,
+    models::{CardsQuery, DuocardsResponse, VocabularyCard},
+};
+use crate::error::{DeckIdError, DuoloadError, Result};
+use async_trait::async_trait;
+use base64::{Engine as _, engine::general_purpose::STANDARD as BASE64};
+use reqwest::{
+    Client,
+    header::{ACCEPT_ENCODING, CONTENT_TYPE, HeaderMap, HeaderValue},
+};
+use std::time::Duration;
+use uuid::Uuid;
 
 const BASE_URL: &str = "https://api.duocards.com/graphql";
 const USER_AGENT: &str = "duoload/1.0";
@@ -24,7 +30,10 @@ impl DuocardsClient {
         headers.insert(CONTENT_TYPE, HeaderValue::from_static("application/json"));
         // headers.insert(ORIGIN, HeaderValue::from_static("https://app.duocards.com"));
         // headers.insert(REFERER, HeaderValue::from_static("https://app.duocards.com/"));
-        headers.insert(ACCEPT_ENCODING, HeaderValue::from_static("gzip, deflate, br, zstd"));
+        headers.insert(
+            ACCEPT_ENCODING,
+            HeaderValue::from_static("gzip, deflate, br, zstd"),
+        );
 
         let client = Client::builder()
             .user_agent(USER_AGENT)
@@ -38,17 +47,17 @@ impl DuocardsClient {
         })
     }
 
-    pub async fn fetch_page(&self, deck_id: &str, cursor: Option<String>) -> Result<DuocardsResponse> {
+    pub async fn fetch_page(
+        &self,
+        deck_id: &str,
+        cursor: Option<String>,
+    ) -> Result<DuocardsResponse> {
         // Validate deck ID before making the request
         deck::validate_deck_id(deck_id)?;
-        
+
         let query = CardsQuery::new(deck_id, DEFAULT_PAGE_SIZE, cursor);
-        
-        let response = self.client
-            .post(&self.base_url)
-            .json(&query)
-            .send()
-            .await?;
+
+        let response = self.client.post(&self.base_url).json(&query).send().await?;
 
         if !response.status().is_success() {
             return Err(DuoloadError::Api(format!(
@@ -64,7 +73,11 @@ impl DuocardsClient {
 
     // Helper method to convert API response to our internal card format
     pub fn convert_to_vocabulary_cards(&self, response: &DuocardsResponse) -> Vec<VocabularyCard> {
-        response.data.node.cards.edges
+        response
+            .data
+            .node
+            .cards
+            .edges
             .iter()
             .map(|edge| VocabularyCard::from(edge.node.clone()))
             .collect()
@@ -131,7 +144,8 @@ mod tests {
     #[test]
     fn test_fetch_page() {
         let mut server = Server::new();
-        let mock = server.mock("POST", "/graphql")
+        let mock = server
+            .mock("POST", "/graphql")
             .match_header("content-type", "application/json")
             .with_status(200)
             .with_header("content-type", "application/json")
@@ -150,14 +164,18 @@ mod tests {
         assert_eq!(response.data.node.cards.edges[0].node.front, "hello");
         assert_eq!(response.data.node.cards.edges[0].node.back, "hola");
         assert_eq!(response.data.node.cards.edges[0].node.known_count, 5);
-        assert_eq!(response.data.node.cards.page_info.end_cursor, Some("0".to_string()));
+        assert_eq!(
+            response.data.node.cards.page_info.end_cursor,
+            Some("0".to_string())
+        );
         assert!(response.data.node.cards.page_info.has_next_page);
     }
 
     #[test]
     fn test_convert_to_vocabulary_cards() {
         let mut server = Server::new();
-        let mock = server.mock("POST", "/graphql")
+        let mock = server
+            .mock("POST", "/graphql")
             .match_header("content-type", "application/json")
             .with_status(200)
             .with_header("content-type", "application/json")
