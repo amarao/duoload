@@ -48,17 +48,21 @@ struct Args {
     deck_id: String,
     
     #[arg(long, value_name = "FILE", help = "Output Anki package file path (.apkg)")]
-    output_file: Option<PathBuf>,
+    anki_file: Option<PathBuf>,
     
     #[arg(long, value_name = "FILE", help = "Output JSON file path (.json)")]
     json_file: Option<PathBuf>,
+
+    #[arg(long, help = "Output JSON to stdout")]
+    json: bool,
 }
 ```
 
 ### 2.2 Validation Requirements
 - Deck ID format validation (base64 encoded Deck:UUID)
 - Output file path validation (writable directory)
-- Exactly one output format must be specified (either .apkg or .json)
+- Exactly one output format must be specified (either --anki-file, --json-file, or --json)
+- When using --json, ensure stdout is not a terminal if progress messages are enabled
 
 ## 3. Data Models
 
@@ -261,6 +265,7 @@ WARNING: Duplicate card found in source data: 'word'. Skipping.
 ## 7. Progress Reporting
 
 ### 7.1 Console Output Format
+For Anki output:
 ```
 Initializing export to 'filename.apkg'...
 Processing page 1... done.
@@ -269,14 +274,15 @@ Processing page 2... done.
 Export complete. X cards saved to filename.apkg.
 ```
 
-For JSON output:
+For JSON output (both file and stdout):
 ```
-Initializing JSON export to 'filename.json'...
 Processing page 1... done.
 Processing page 2... done.
 ...
-Export complete. X cards saved to filename.json.
+Export complete. X cards processed.
 ```
+
+Note: When using stdout output, progress messages are written to stderr to avoid corrupting the JSON output.
 
 ## 9. Security Requirements
 
@@ -324,11 +330,17 @@ Export complete. X cards saved to filename.json.
 - Duplicate detection logic
 - Anki package generation
 - Error handling scenarios
+- JSON output validation for both file and stdout paths
+- Progress message separation for stdout output
+- Pipe operation testing
 
 ### 12.2 Integration Tests
 - End-to-end transfer simulation
 - Error recovery testing
 - Cross-platform compatibility
+- JSON stdout output with pipe operations
+- Progress message handling in pipe scenarios
+- Large dataset handling via stdout
 
 ## 13. Build and Deployment
 
@@ -376,7 +388,10 @@ strip = true
   - known → duoload_known
 
 ### 15.2 JSON Format
-- Generates UTF-8 encoded JSON file
+- Supports two output destinations through the processor:
+  1. File output (--json-file): Writes to specified file path
+  2. Standard output (--json): Writes directly to stdout
+- Generates UTF-8 encoded JSON
 - Array of card objects with the following structure:
 ```json
 [
@@ -395,3 +410,46 @@ strip = true
 ]
 ```
 - Pretty-printed for readability
+- Progress messages written to stderr when using stdout output
+
+### 15.3 Output Stream Handling
+The processor handles output destination selection:
+
+```rust
+pub struct TransferProcessorWithBuilder<C, B>
+where
+    C: DuocardsClientTrait,
+    B: OutputBuilder,
+{
+    client: C,
+    builder: B,
+    duplicates: DuplicateHandler,
+    stats: TransferStats,
+    deck_id: String,
+    start_time: Instant,
+    output_path: Option<PathBuf>,  // None indicates stdout output
+}
+
+impl<C, B> TransferProcessorWithBuilder<C, B>
+where
+    C: DuocardsClientTrait,
+    B: OutputBuilder,
+{
+    pub fn write_to_output(&self) -> Result<()> {
+        match &self.output_path {
+            Some(path) => {
+                // Write to file
+                self.builder.write_to_file(path)
+            }
+            None => {
+                // Write to stdout
+                let stdout = std::io::stdout();
+                let mut handle = stdout.lock();
+                self.builder.write_to_writer(&mut handle)
+            }
+        }
+    }
+}
+```
+
+The `JsonOutputBuilder` remains unchanged, focusing only on JSON generation and duplicate handling. The processor handles the decision of where to write the output based on the presence of a path.

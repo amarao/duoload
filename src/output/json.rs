@@ -5,8 +5,10 @@ use serde_json;
 use std::collections::HashSet;
 use std::fs::File;
 use std::io::Write;
+use std::io::BufWriter;
 use std::path::Path;
 use std::time::Instant;
+use std::io::Cursor;
 
 /// Builder for creating JSON files from vocabulary cards.
 ///
@@ -56,20 +58,13 @@ impl OutputBuilder for JsonOutputBuilder {
         Ok(true)
     }
 
-    fn write_to_file<P: AsRef<Path>>(&self, path: P) -> Result<()> {
-        // Convert cards to JSON with pretty printing
-        let json = serde_json::to_string_pretty(&self.cards)
-            .map_err(|e| anyhow::anyhow!("Failed to serialize cards to JSON: {}", e))?;
-
-        // Write to file
-        let mut file = File::create(path.as_ref())
-            .map_err(|e| anyhow::anyhow!("Failed to create JSON file: {}", e))?;
-
-        file.write_all(json.as_bytes())
-            .map_err(|e| anyhow::anyhow!("Failed to write JSON file: {}", e))?;
+    fn write<W: Write>(&self, writer: &mut W) -> Result<()> {
+        // Convert cards to JSON with pretty printing and write directly to the writer
+        serde_json::to_writer_pretty(writer, &self.cards)
+            .map_err(|e| anyhow::anyhow!("Failed to write JSON: {}", e))?;
 
         println!(
-            "JSON file written successfully at {:?}",
+            "JSON written successfully at {:?}",
             self.start_time.elapsed()
         );
 
@@ -153,7 +148,10 @@ mod tests {
 
         // Write to temporary file
         let temp_file = NamedTempFile::new().unwrap();
-        builder.write_to_file(&temp_file).unwrap();
+        let file = File::create(&temp_file).unwrap();
+        let mut writer = BufWriter::new(file);
+        builder.write(&mut writer).unwrap();
+        writer.flush().unwrap();
 
         // Verify file exists and has content
         let metadata = fs::metadata(&temp_file).unwrap();
@@ -168,21 +166,43 @@ mod tests {
     }
 
     #[test]
-    fn test_write_to_file_invalid_path() {
-        let builder = JsonOutputBuilder::new();
+    fn test_write_invalid_path() {
+        let mut builder = JsonOutputBuilder::new();
+        let card = VocabularyCard {
+            word: "test".to_string(),
+            translation: "prueba".to_string(),
+            example: Some("This is a test".to_string()),
+            status: LearningStatus::New,
+        };
+        builder.add_note(card).unwrap();
 
-        // Try to write to an invalid path
-        let result = builder.write_to_file("/invalid/path/with/nulls/\0");
+        // Create a writer that will fail on write
+        struct FailingWriter;
+        impl Write for FailingWriter {
+            fn write(&mut self, _buf: &[u8]) -> std::io::Result<usize> {
+                Err(std::io::Error::new(std::io::ErrorKind::Other, "Test write error"))
+            }
+            fn flush(&mut self) -> std::io::Result<()> {
+                Ok(())
+            }
+        }
+
+        let mut writer = FailingWriter;
+        let result = builder.write(&mut writer);
         assert!(result.is_err());
+        assert!(result.unwrap_err().to_string().contains("Test write error"));
     }
 
     #[test]
     fn test_empty_deck() {
         let builder = JsonOutputBuilder::new();
         let temp_file = NamedTempFile::new().unwrap();
+        let file = File::create(&temp_file).unwrap();
+        let mut writer = BufWriter::new(file);
 
         // Should still be able to write an empty deck
-        builder.write_to_file(&temp_file).unwrap();
+        builder.write(&mut writer).unwrap();
+        writer.flush().unwrap();
 
         // Verify file exists and contains empty array
         let content = fs::read_to_string(&temp_file).unwrap();

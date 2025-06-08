@@ -55,7 +55,9 @@ Language learners invest significant time building vocabulary lists in applicati
             known → duoload_known tag
 
     5.2.2 JSON Output
-        The tool will generate a JSON file containing an array of card objects.
+        The tool will generate JSON output in one of two ways:
+            a. JSON File: Write to a specified file path
+            b. Standard Output: Write directly to stdout for piping to other tools
         Each card object will have the following structure:
             {
                 "word": string,
@@ -63,15 +65,17 @@ Language learners invest significant time building vocabulary lists in applicati
                 "example": string,
                 "learning_status": "new" | "learning" | "known"
             }
-        The JSON file will be UTF-8 encoded and properly formatted for readability.
+        The JSON output will be UTF-8 encoded and properly formatted for readability.
+        When writing to stdout, the output will be a single JSON array containing all cards.
 
 5.4. CLI Functionality
 
     Deck ID: The user must provide their Duocards deck ID via a command-line argument:
         --deck-id "<deck_id>"
-    Output File: The user must specify exactly one of the following output options:
+    Output Format: The user must specify exactly one of the following output options:
         --anki-file "path/to/my_deck.apkg" (for Anki format)
-        --json-file "path/to/my_deck.json" (for JSON format)
+        --json-file "path/to/my_deck.json" (for JSON format to file)
+        --json (for JSON format to stdout)
     The application will require exactly one output option to be specified.
 
 5.5. Feedback & Error Handling
@@ -109,7 +113,7 @@ Processing page 2... done.
 Processing page 25... done.
 Export complete. 1250 cards saved to duocards_export.apkg.
 
-Scenario 2: Export to JSON
+Scenario 2: Export to JSON File
 
 The user wants to export their collection to a JSON file for custom processing.
 Bash
@@ -124,3 +128,19 @@ Processing page 2... done.
 ...
 Processing page 25... done.
 Export complete. 1250 cards saved to duocards_export.json.
+
+Scenario 3: Export to JSON via stdout
+
+The user wants to pipe the JSON output directly to another tool.
+Bash
+
+duoload --deck-id "RGVjazo1YjZmMTA3My1hZjA2LTQwMGMtYTQyNC05ZWM5YzFlMGEzZjg=" --json | jq '.[] | select(.learning_status == "new")'
+
+Expected Output:
+
+Processing page 1... done.
+Processing page 2... done.
+...
+Processing page 25... done.
+Export complete. 1250 cards processed.
+[{"word": "hello", "translation": "hola", "example": "Hello, world!", "learning_status": "new"}, ...]

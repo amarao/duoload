@@ -39,6 +39,9 @@ pub enum DuoloadError {
 
     #[error("Other error: {0}")]
     Other(#[from] anyhow::Error),
+
+    #[error("Anki output is only supported for file output")]
+    AnkiOutputNotSupported,
 }
 
 pub type Result<T> = std::result::Result<T, DuoloadError>;

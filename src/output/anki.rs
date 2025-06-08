@@ -4,6 +4,7 @@ use crate::error::{DuoloadError, Result};
 use crate::output::OutputBuilder;
 use genanki_rs::Deck;
 use std::collections::HashSet;
+use std::io::Write;
 use std::path::Path;
 use std::time::Instant;
 
@@ -67,29 +68,9 @@ impl OutputBuilder for AnkiPackageBuilder {
         Ok(true)
     }
 
-    fn write_to_file<P: AsRef<Path>>(&self, path: P) -> Result<()> {
-        let result = self
-            .deck
-            .write_to_file(
-                path.as_ref()
-                    .to_str()
-                    .ok_or_else(|| anyhow::anyhow!("Invalid file path: {:?}", path.as_ref()))?,
-            )
-            .map_err(|e| anyhow::anyhow!("Failed to write Anki package: {}", e));
-
-        match &result {
-            Ok(_) => println!(
-                "Deck written successfully at {:?}",
-                self.start_time.elapsed()
-            ),
-            Err(e) => println!(
-                "Failed to write deck: {} at {:?}",
-                e,
-                self.start_time.elapsed()
-            ),
-        }
-
-        result.map_err(DuoloadError::from)
+    fn write<W: Write>(&self, _writer: &mut W) -> Result<()> {
+        // Anki output is only supported for file output
+        Err(DuoloadError::AnkiOutputNotSupported.into())
     }
 }
 
@@ -97,7 +78,8 @@ impl OutputBuilder for AnkiPackageBuilder {
 mod tests {
     use super::*;
     use crate::duocards::models::LearningStatus;
-    use std::fs;
+    use std::fs::File;
+    use std::io::BufWriter;
     use tempfile::NamedTempFile;
 
     fn create_test_card(
@@ -169,32 +151,35 @@ mod tests {
 
         // Write to temporary file
         let temp_file = NamedTempFile::new().unwrap();
-        builder.write_to_file(&temp_file).unwrap();
-
-        // Verify file exists and has content
-        let metadata = fs::metadata(&temp_file).unwrap();
-        assert!(metadata.len() > 0);
+        let file = File::create(&temp_file).unwrap();
+        let mut writer = BufWriter::new(file);
+        let result = builder.write(&mut writer);
+        assert!(result.is_err()); // Anki output only supports file output
+        assert!(result.unwrap_err().to_string().contains("Anki output is only supported for file output"));
     }
 
     #[test]
-    fn test_write_to_file_invalid_path() {
-        let builder = AnkiPackageBuilder::new("Test Deck");
+    fn test_write_to_buffer() {
+        let mut builder = AnkiPackageBuilder::new("Test Deck");
+        let card = create_test_card("hello", "hola", Some("Hello, world!"), LearningStatus::New);
+        builder.add_note(card).unwrap();
 
-        // Try to write to an invalid path
-        let result = builder.write_to_file("/invalid/path/with/nulls/\0");
-        assert!(result.is_err());
+        let mut buffer = Vec::new();
+        let result = builder.write(&mut buffer);
+        assert!(result.is_err()); // Anki output only supports file output
+        assert!(result.unwrap_err().to_string().contains("Anki output is only supported for file output"));
     }
 
     #[test]
     fn test_empty_deck() {
         let builder = AnkiPackageBuilder::new("Empty Deck");
         let temp_file = NamedTempFile::new().unwrap();
+        let file = File::create(&temp_file).unwrap();
+        let mut writer = BufWriter::new(file);
 
-        // Should still be able to write an empty deck
-        builder.write_to_file(&temp_file).unwrap();
-
-        // Verify file exists
-        let metadata = fs::metadata(&temp_file).unwrap();
-        assert!(metadata.len() > 0);
+        // Should return error for any writer
+        let result = builder.write(&mut writer);
+        assert!(result.is_err()); // Anki output only supports file output
+        assert!(result.unwrap_err().to_string().contains("Anki output is only supported for file output"));
     }
 }

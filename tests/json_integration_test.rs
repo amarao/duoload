@@ -1,7 +1,8 @@
 use duoload::duocards::models::{LearningStatus, VocabularyCard};
 use duoload::output::OutputBuilder;
 use duoload::output::json::JsonOutputBuilder;
-use std::fs;
+use std::fs::File;
+use std::io::{BufWriter, Write};
 use tempfile::NamedTempFile;
 use serde_json;
 
@@ -21,11 +22,7 @@ fn create_test_card(
 
 #[tokio::test]
 async fn test_end_to_end_json_creation() {
-    // Create a temporary file for the JSON output
-    let temp_file = NamedTempFile::new().unwrap();
-    let json_path = temp_file.path();
-
-    // Create a new JSON builder
+    // Create a new builder
     let mut builder = JsonOutputBuilder::new();
 
     // Add some test cards
@@ -50,20 +47,26 @@ async fn test_end_to_end_json_creation() {
         assert!(builder.add_note(card).unwrap());
     }
 
-    // Write the JSON file
-    builder.write_to_file(json_path).unwrap();
+    // Write to temporary file
+    let temp_file = NamedTempFile::new().unwrap();
+    {
+        let file = File::create(&temp_file).unwrap();
+        let mut writer = BufWriter::new(file);
+        builder.write(&mut writer).unwrap();
+        // Ensure writer is dropped (and flushed) before checking file contents
+    }
 
-    // Verify the file exists and has content
-    let metadata = fs::metadata(json_path).unwrap();
-    assert!(metadata.len() > 0);
+    // Verify file exists and has content
+    let metadata = std::fs::metadata(&temp_file).unwrap();
+    assert!(metadata.len() > 0, "File should not be empty");
 
-    // Verify the JSON content is valid and contains our cards
-    let content = fs::read_to_string(json_path).unwrap();
-    let parsed_cards: Vec<VocabularyCard> = serde_json::from_str(&content).unwrap();
-    assert_eq!(parsed_cards.len(), 3);
-    assert_eq!(parsed_cards[0].word, "hello");
-    assert_eq!(parsed_cards[1].word, "goodbye");
-    assert_eq!(parsed_cards[2].word, "thank you");
+    // Verify JSON content
+    let content = std::fs::read_to_string(&temp_file).unwrap();
+    let cards: Vec<VocabularyCard> = serde_json::from_str(&content).unwrap();
+    assert_eq!(cards.len(), 3);
+    assert_eq!(cards[0].word, "hello");
+    assert_eq!(cards[1].word, "goodbye");
+    assert_eq!(cards[2].word, "thank you");
 }
 
 #[tokio::test]
@@ -92,38 +95,44 @@ async fn test_json_duplicate_handling() {
     );
     assert!(builder.add_note(card3).unwrap());
 
-    // Verify we can write the JSON file
+    // Write to temporary file
     let temp_file = NamedTempFile::new().unwrap();
-    builder.write_to_file(&temp_file).unwrap();
+    {
+        let file = File::create(&temp_file).unwrap();
+        let mut writer = BufWriter::new(file);
+        builder.write(&mut writer).unwrap();
+        // Ensure writer is dropped (and flushed) before checking file contents
+    }
 
     // Verify file exists and has content
-    let metadata = fs::metadata(&temp_file).unwrap();
-    assert!(metadata.len() > 0);
+    let metadata = std::fs::metadata(&temp_file).unwrap();
+    assert!(metadata.len() > 0, "File should not be empty");
 
     // Verify JSON content
-    let content = fs::read_to_string(&temp_file).unwrap();
-    let parsed_cards: Vec<VocabularyCard> = serde_json::from_str(&content).unwrap();
-    assert_eq!(parsed_cards.len(), 2);
-    assert_eq!(parsed_cards[0].word, "hello");
-    assert_eq!(parsed_cards[1].word, "goodbye");
+    let content = std::fs::read_to_string(&temp_file).unwrap();
+    let cards: Vec<VocabularyCard> = serde_json::from_str(&content).unwrap();
+    assert_eq!(cards.len(), 2);
+    assert_eq!(cards[0].word, "hello");
+    assert_eq!(cards[1].word, "goodbye");
 }
 
 #[tokio::test]
 async fn test_empty_json_deck_creation() {
     let builder = JsonOutputBuilder::new();
+
+    // Write to temporary file
     let temp_file = NamedTempFile::new().unwrap();
+    {
+        let file = File::create(&temp_file).unwrap();
+        let mut writer = BufWriter::new(file);
+        builder.write(&mut writer).unwrap();
+        // Ensure writer is dropped (and flushed) before checking file contents
+    }
 
-    // Should be able to write an empty deck
-    builder.write_to_file(&temp_file).unwrap();
-
-    // Verify file exists and has content
-    let metadata = fs::metadata(&temp_file).unwrap();
-    assert!(metadata.len() > 0);
-
-    // Verify JSON content is an empty array
-    let content = fs::read_to_string(&temp_file).unwrap();
-    let parsed_cards: Vec<VocabularyCard> = serde_json::from_str(&content).unwrap();
-    assert!(parsed_cards.is_empty());
+    // Verify file exists and contains empty array
+    let content = std::fs::read_to_string(&temp_file).unwrap();
+    let cards: Vec<VocabularyCard> = serde_json::from_str(&content).unwrap();
+    assert!(cards.is_empty());
 }
 
 #[tokio::test]
@@ -145,21 +154,25 @@ async fn test_large_json_deck_creation() {
         assert!(builder.add_note(card).unwrap());
     }
 
-    // Write the JSON file
+    // Write to temporary file
     let temp_file = NamedTempFile::new().unwrap();
-    builder.write_to_file(&temp_file).unwrap();
+    {
+        let file = File::create(&temp_file).unwrap();
+        let mut writer = BufWriter::new(file);
+        builder.write(&mut writer).unwrap();
+        // Ensure writer is dropped (and flushed) before checking file contents
+    }
 
     // Verify file exists and has content
-    let metadata = fs::metadata(&temp_file).unwrap();
-    assert!(metadata.len() > 0);
+    let metadata = std::fs::metadata(&temp_file).unwrap();
+    assert!(metadata.len() > 0, "File should not be empty");
 
     // Verify JSON content
-    let content = fs::read_to_string(&temp_file).unwrap();
-    let parsed_cards: Vec<VocabularyCard> = serde_json::from_str(&content).unwrap();
-    assert_eq!(parsed_cards.len(), 100);
-    
-    // Verify a few random cards
-    assert_eq!(parsed_cards[0].word, "word0");
-    assert_eq!(parsed_cards[50].word, "word50");
-    assert_eq!(parsed_cards[99].word, "word99");
+    let content = std::fs::read_to_string(&temp_file).unwrap();
+    let cards: Vec<VocabularyCard> = serde_json::from_str(&content).unwrap();
+    assert_eq!(cards.len(), 100);
+    for i in 0..100 {
+        assert_eq!(cards[i].word, format!("word{}", i));
+        assert_eq!(cards[i].translation, format!("translation{}", i));
+    }
 } 

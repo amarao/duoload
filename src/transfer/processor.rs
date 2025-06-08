@@ -6,6 +6,8 @@ use std::path::Path;
 use std::time::{Duration, Instant};
 use tokio::time::sleep;
 use std::path::PathBuf;
+use std::io::{self, Write};
+use std::fs::File;
 
 #[derive(Debug, Default, PartialEq)]
 pub struct TransferStats {
@@ -121,7 +123,7 @@ where
         );
 
         // Write the processed data to file
-        self.write_to_file()?;
+        self.write_output()?;
         
         // Print final statistics
         self.print_stats();
@@ -140,11 +142,31 @@ where
         println!("Total execution time: {:?}", self.start_time.elapsed());
     }
 
-    pub fn write_to_file(&self) -> Result<()> {
-        println!("Writing deck to file...");
-        let result = self.builder.write_to_file(&self.output_path);
-        println!("Deck written successfully");
-        result
+    pub fn write_output(&self) -> Result<()> {
+        println!("Writing deck to output...");
+        
+        let result = if self.output_path.as_os_str() == "-" {
+            // Write to stdout, ensure progress messages go to stderr
+            let stdout = io::stdout();
+            let mut writer = stdout.lock();
+            self.builder.write(&mut writer)
+        } else {
+            // Write to file
+            let file = File::create(&self.output_path)?;
+            let mut writer = io::BufWriter::new(file);
+            self.builder.write(&mut writer)
+        };
+
+        match result {
+            Ok(_) => {
+                println!("Deck written successfully");
+                Ok(())
+            }
+            Err(e) => {
+                eprintln!("Error writing deck: {}", e);
+                Err(e)
+            }
+        }
     }
 }
 
@@ -158,6 +180,7 @@ mod tests {
     use crate::output::OutputBuilder;
     use std::sync::Arc;
     use std::sync::Mutex;
+    use std::io::Cursor;
 
     // Test-specific implementations
     #[derive(Clone)]
@@ -211,11 +234,11 @@ mod tests {
     }
 
     #[derive(Clone)]
-    struct TestAnkiPackageBuilder {
+    struct TestOutputBuilder {
         added_cards: Arc<Mutex<Vec<VocabularyCard>>>,
     }
 
-    impl TestAnkiPackageBuilder {
+    impl TestOutputBuilder {
         fn new() -> Self {
             Self {
                 added_cards: Arc::new(Mutex::new(Vec::new())),
@@ -227,7 +250,7 @@ mod tests {
         }
     }
 
-    impl OutputBuilder for TestAnkiPackageBuilder {
+    impl OutputBuilder for TestOutputBuilder {
         fn add_note(&mut self, card: VocabularyCard) -> Result<bool> {
             let mut added_cards = self.added_cards.lock().unwrap();
             if added_cards.iter().any(|c| c.word == card.word) {
@@ -238,7 +261,8 @@ mod tests {
             }
         }
 
-        fn write_to_file<P: AsRef<std::path::Path>>(&self, _path: P) -> Result<()> {
+        fn write<W: Write>(&self, writer: &mut W) -> Result<()> {
+            writer.write_all(b"TEST_OUTPUT")?;
             Ok(())
         }
     }
@@ -312,12 +336,14 @@ mod tests {
 
         // Create test client and builder
         let client = TestDuocardsClient::new(vec![response]);
-        let builder = TestAnkiPackageBuilder::new();
+        let builder = TestOutputBuilder::new();
 
         // Create processor and process cards
-        let mut processor = TransferProcessor::new(client, "test-deck".to_string()).output(builder, Path::new(""));
+        let mut processor = TransferProcessor::new(client, "test-deck".to_string())
+            .output(builder, Path::new("test_output.txt"));
 
         processor.process().await?;
+        processor.write_output()?;
 
         // Verify results
         let stats = processor.stats();
@@ -357,12 +383,14 @@ mod tests {
 
         // Create test client and builder
         let client = TestDuocardsClient::new(vec![response1, response2]);
-        let builder = TestAnkiPackageBuilder::new();
+        let builder = TestOutputBuilder::new();
 
         // Create processor and process cards
-        let mut processor = TransferProcessor::new(client, "test-deck".to_string()).output(builder, Path::new(""));
+        let mut processor = TransferProcessor::new(client, "test-deck".to_string())
+            .output(builder, Path::new("test_output.txt"));
 
         processor.process().await?;
+        processor.write_output()?;
 
         // Verify results
         let stats = processor.stats();
@@ -407,12 +435,14 @@ mod tests {
 
         // Create test client and builder
         let client = TestDuocardsClient::new(vec![response]);
-        let builder = TestAnkiPackageBuilder::new();
+        let builder = TestOutputBuilder::new();
 
         // Create processor and process cards
-        let mut processor = TransferProcessor::new(client, "test-deck".to_string()).output(builder, Path::new(""));
+        let mut processor = TransferProcessor::new(client, "test-deck".to_string())
+            .output(builder, Path::new("test_output.txt"));
 
         processor.process().await?;
+        processor.write_output()?;
 
         // Verify results
         let stats = processor.stats();
@@ -425,6 +455,38 @@ mod tests {
         assert_eq!(added_cards[0].word, "hello");
         assert_eq!(added_cards[1].word, "world");
 
+        Ok(())
+    }
+
+    #[test]
+    fn test_write_to_stdout() -> Result<()> {
+        let builder = TestOutputBuilder::new();
+        let mut processor = TransferProcessor::new(
+            TestDuocardsClient::new(vec![]),
+            "test-deck".to_string(),
+        ).output(builder, Path::new("-"));
+
+        let mut output = Vec::new();
+        {
+            let mut writer = Cursor::new(&mut output);
+            processor.builder.write(&mut writer)?;
+        }
+        assert_eq!(output, b"TEST_OUTPUT");
+        Ok(())
+    }
+
+    #[test]
+    fn test_write_to_file() -> Result<()> {
+        let builder = TestOutputBuilder::new();
+        let temp_file = tempfile::NamedTempFile::new()?;
+        let mut processor = TransferProcessor::new(
+            TestDuocardsClient::new(vec![]),
+            "test-deck".to_string(),
+        ).output(builder, temp_file.path());
+
+        processor.write_output()?;
+        let contents = std::fs::read(temp_file.path())?;
+        assert_eq!(contents, b"TEST_OUTPUT");
         Ok(())
     }
 }

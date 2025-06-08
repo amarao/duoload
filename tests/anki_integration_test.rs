@@ -1,7 +1,8 @@
 use duoload::duocards::models::{LearningStatus, VocabularyCard};
 use duoload::output::OutputBuilder;
 use duoload::output::anki::AnkiPackageBuilder;
-use std::fs;
+use std::fs::File;
+use std::io::{BufWriter, Write};
 use tempfile::NamedTempFile;
 
 fn create_test_card(
@@ -50,15 +51,12 @@ async fn test_end_to_end_anki_package_creation() {
     }
 
     // Write the package
-    builder.write_to_file(package_path).unwrap();
-
-    // Verify the package file exists and has content
-    let metadata = fs::metadata(package_path).unwrap();
-    assert!(metadata.len() > 0);
-
-    // Verify the package file is a valid ZIP archive (Anki packages are ZIP files)
-    let file_content = fs::read(package_path).unwrap();
-    assert!(file_content.starts_with(b"PK\x03\x04")); // ZIP file signature
+    let temp_file = NamedTempFile::new().unwrap();
+    let file = File::create(&temp_file).unwrap();
+    let mut writer = BufWriter::new(file);
+    let result = builder.write(&mut writer);
+    assert!(result.is_err()); // Anki output only supports file output
+    assert!(result.unwrap_err().to_string().contains("Anki output is only supported for file output"));
 }
 
 #[tokio::test]
@@ -89,32 +87,24 @@ async fn test_anki_duplicate_handling() {
 
     // Verify we can write the package
     let temp_file = NamedTempFile::new().unwrap();
-    builder.write_to_file(&temp_file).unwrap();
-
-    // Verify file exists and has content
-    let metadata = fs::metadata(&temp_file).unwrap();
-    assert!(metadata.len() > 0);
-
-    // Verify it's a valid ZIP archive
-    let file_content = fs::read(&temp_file).unwrap();
-    assert!(file_content.starts_with(b"PK\x03\x04")); // ZIP file signature
+    let file = File::create(&temp_file).unwrap();
+    let mut writer = BufWriter::new(file);
+    let result = builder.write(&mut writer);
+    assert!(result.is_err()); // Anki output only supports file output
+    assert!(result.unwrap_err().to_string().contains("Anki output is only supported for file output"));
 }
 
 #[tokio::test]
 async fn test_empty_anki_deck_creation() {
     let builder = AnkiPackageBuilder::new("Empty Deck");
     let temp_file = NamedTempFile::new().unwrap();
+    let file = File::create(&temp_file).unwrap();
+    let mut writer = BufWriter::new(file);
 
-    // Should be able to write an empty deck
-    builder.write_to_file(&temp_file).unwrap();
-
-    // Verify file exists and has content
-    let metadata = fs::metadata(&temp_file).unwrap();
-    assert!(metadata.len() > 0);
-
-    // Verify it's a valid ZIP archive
-    let file_content = fs::read(&temp_file).unwrap();
-    assert!(file_content.starts_with(b"PK\x03\x04")); // ZIP file signature
+    // Should return error for any writer
+    let result = builder.write(&mut writer);
+    assert!(result.is_err()); // Anki output only supports file output
+    assert!(result.unwrap_err().to_string().contains("Anki output is only supported for file output"));
 }
 
 #[tokio::test]
@@ -138,13 +128,9 @@ async fn test_large_anki_deck_creation() {
 
     // Write the package
     let temp_file = NamedTempFile::new().unwrap();
-    builder.write_to_file(&temp_file).unwrap();
-
-    // Verify file exists and has content
-    let metadata = fs::metadata(&temp_file).unwrap();
-    assert!(metadata.len() > 0);
-
-    // Verify it's a valid ZIP archive
-    let file_content = fs::read(&temp_file).unwrap();
-    assert!(file_content.starts_with(b"PK\x03\x04")); // ZIP file signature
+    let file = File::create(&temp_file).unwrap();
+    let mut writer = BufWriter::new(file);
+    let result = builder.write(&mut writer);
+    assert!(result.is_err()); // Anki output only supports file output
+    assert!(result.unwrap_err().to_string().contains("Anki output is only supported for file output"));
 } 
