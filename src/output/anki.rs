@@ -1,7 +1,7 @@
-use crate::duocards::models::VocabularyCard;
-use crate::error::{Result, DuoloadError};
-use crate::output::OutputBuilder;
 use crate::anki::note::{VocabularyNote, create_vocabulary_model};
+use crate::duocards::models::VocabularyCard;
+use crate::error::{DuoloadError, Result};
+use crate::output::OutputBuilder;
 use genanki_rs::Deck;
 use std::collections::HashSet;
 use std::path::Path;
@@ -197,4 +197,4 @@ mod tests {
         let metadata = fs::metadata(&temp_file).unwrap();
         assert!(metadata.len() > 0);
     }
-} 
+}

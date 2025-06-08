@@ -12,7 +12,15 @@ pub struct TransferStats {
     pub duplicates: usize,
 }
 
-pub struct TransferProcessor<C, B>
+pub struct TransferProcessor<C>
+where
+    C: DuocardsClientTrait,
+{
+    client: C,
+    deck_id: String,
+}
+
+pub struct TransferProcessorWithBuilder<C, B>
 where
     C: DuocardsClientTrait,
     B: OutputBuilder,
@@ -24,22 +32,31 @@ where
     deck_id: String,
 }
 
-impl<C, B> TransferProcessor<C, B>
+impl<C> TransferProcessor<C>
+where
+    C: DuocardsClientTrait,
+{
+    pub fn new(client: C, deck_id: String) -> Self {
+        Self { client, deck_id }
+    }
+
+    pub fn output<B: OutputBuilder>(self, builder: B) -> TransferProcessorWithBuilder<C, B> {
+        TransferProcessorWithBuilder {
+            client: self.client,
+            builder,
+            duplicates: DuplicateHandler::new(),
+            stats: TransferStats::default(),
+            deck_id: self.deck_id,
+        }
+    }
+}
+
+impl<C, B> TransferProcessorWithBuilder<C, B>
 where
     C: DuocardsClientTrait,
     B: OutputBuilder,
 {
-    pub fn new(client: C, builder: B, deck_id: String) -> Self {
-        Self {
-            client,
-            builder,
-            duplicates: DuplicateHandler::new(),
-            stats: TransferStats::default(),
-            deck_id,
-        }
-    }
-
-    pub async fn process_all(&mut self) -> Result<()> {
+    pub async fn process(&mut self) -> Result<()> {
         let start_time = Instant::now();
         let mut cursor = None;
         let mut page_count = 0;
@@ -58,10 +75,7 @@ where
             let response = self.client.fetch_page(&self.deck_id, cursor).await?;
             let cards = self.client.convert_to_vocabulary_cards(&response);
             let cards_len = cards.len();
-            println!(
-                "Page {} fetched with {} cards",
-                page_count, cards_len
-            );
+            println!("Page {} fetched with {} cards", page_count, cards_len);
 
             // Process each card
             for card in cards.into_iter() {
@@ -106,6 +120,13 @@ where
 
     pub fn stats(&self) -> &TransferStats {
         &self.stats
+    }
+
+    pub fn print_stats(&self, start_time: Instant) {
+        println!("Export completed successfully!");
+        println!("Total cards saved: {}", self.stats.total_cards);
+        println!("Duplicates skipped: {}", self.stats.duplicates);
+        println!("Total execution time: {:?}", start_time.elapsed());
     }
 
     pub fn write_to_file<P: AsRef<Path>>(&self, path: P) -> Result<()> {
@@ -258,7 +279,7 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn test_process_all_single_page() -> Result<()> {
+    async fn test_process_single_page() -> Result<()> {
         // Create test cards
         let cards = vec![
             VocabularyCard {
@@ -283,9 +304,9 @@ mod tests {
         let builder = TestAnkiPackageBuilder::new();
 
         // Create processor and process cards
-        let mut processor = TransferProcessor::new(client, builder, "test-deck".to_string());
+        let mut processor = TransferProcessor::new(client, "test-deck".to_string()).output(builder);
 
-        processor.process_all().await?;
+        processor.process().await?;
 
         // Verify results
         let stats = processor.stats();
@@ -302,7 +323,7 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn test_process_all_multiple_pages() -> Result<()> {
+    async fn test_process_multiple_pages() -> Result<()> {
         // Create test cards for two pages
         let page1_cards = vec![VocabularyCard {
             word: "hello".to_string(),
@@ -328,9 +349,9 @@ mod tests {
         let builder = TestAnkiPackageBuilder::new();
 
         // Create processor and process cards
-        let mut processor = TransferProcessor::new(client, builder, "test-deck".to_string());
+        let mut processor = TransferProcessor::new(client, "test-deck".to_string()).output(builder);
 
-        processor.process_all().await?;
+        processor.process().await?;
 
         // Verify results
         let stats = processor.stats();
@@ -347,7 +368,7 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn test_process_all_with_duplicates() -> Result<()> {
+    async fn test_process_with_duplicates() -> Result<()> {
         // Create test cards with duplicates
         let cards = vec![
             VocabularyCard {
@@ -378,9 +399,9 @@ mod tests {
         let builder = TestAnkiPackageBuilder::new();
 
         // Create processor and process cards
-        let mut processor = TransferProcessor::new(client, builder, "test-deck".to_string());
+        let mut processor = TransferProcessor::new(client, "test-deck".to_string()).output(builder);
 
-        processor.process_all().await?;
+        processor.process().await?;
 
         // Verify results
         let stats = processor.stats();

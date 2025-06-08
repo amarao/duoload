@@ -70,39 +70,21 @@ async fn main() -> Result<()> {
         exit(1);
     }
 
+    let processor = TransferProcessor::new(client, args.deck_id);
+
     if let Some(path) = args.anki_file {
         println!("Exporting to Anki package '{:?}'...", path);
-        let mut processor = TransferProcessor::new(
-            client,
-            AnkiPackageBuilder::new("Duocards Vocabulary"),
-            args.deck_id
-        );
-        processor.process_all().await?;
+        let mut processor = processor.output(AnkiPackageBuilder::new("Duocards Vocabulary"));
+        processor.process().await?;
         processor.write_to_file(&path)?;
-
-        // Print success message
-        let stats = processor.stats();
-        println!("Export completed successfully!");
-        println!("Total cards saved: {}", stats.total_cards);
-        println!("Duplicates skipped: {}", stats.duplicates);
-        println!("Total execution time: {:?}", start_time.elapsed());
+        processor.print_stats(start_time);
     } else {
         let path = args.json_file.unwrap();
         println!("Exporting to JSON file '{:?}'...", path);
-        let mut processor = TransferProcessor::new(
-            client,
-            JsonOutputBuilder::new(),
-            args.deck_id
-        );
-        processor.process_all().await?;
+        let mut processor = processor.output(JsonOutputBuilder::new());
+        processor.process().await?;
         processor.write_to_file(&path)?;
-
-        // Print success message
-        let stats = processor.stats();
-        println!("Export completed successfully!");
-        println!("Total cards saved: {}", stats.total_cards);
-        println!("Duplicates skipped: {}", stats.duplicates);
-        println!("Total execution time: {:?}", start_time.elapsed());
+        processor.print_stats(start_time);
     }
 
     Ok(())

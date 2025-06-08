@@ -49,7 +49,7 @@ impl OutputBuilder for JsonOutputBuilder {
 
         // Clone the word before moving the card
         let word = card.word.clone();
-        
+
         // Add the card
         self.cards.push(card);
         self.existing_words.insert(word);
@@ -64,7 +64,7 @@ impl OutputBuilder for JsonOutputBuilder {
         // Write to file
         let mut file = File::create(path.as_ref())
             .map_err(|e| anyhow::anyhow!("Failed to create JSON file: {}", e))?;
-        
+
         file.write_all(json.as_bytes())
             .map_err(|e| anyhow::anyhow!("Failed to write JSON file: {}", e))?;
 
@@ -189,4 +189,4 @@ mod tests {
         let cards: Vec<VocabularyCard> = serde_json::from_str(&content).unwrap();
         assert!(cards.is_empty());
     }
-} 
+}
