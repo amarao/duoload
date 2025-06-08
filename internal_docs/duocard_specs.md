@@ -278,34 +278,6 @@ Processing page 2... done.
 Export complete. X cards saved to filename.json.
 ```
 
-## 8. Error Handling Requirements
-
-### 8.1 Custom Error Types
-```rust
-#[derive(Debug, thiserror::Error)]
-enum DuoloadError {
-    #[error("Invalid or non-existent deck ID")]
-    InvalidDeckId,
-    
-    #[error("Network error: {0}")]
-    Network(#[from] reqwest::Error),
-    
-    #[error("File I/O error: {0}")]
-    Io(#[from] std::io::Error),
-    
-    #[error("Anki package error: {0}")]
-    AnkiPackage(String),
-    
-    #[error("Data parsing error: {0}")]
-    Parse(#[from] serde_json::Error),
-}
-```
-
-### 8.2 Graceful Error Messages
-- Clear, actionable error messages
-- No technical stack traces in user output
-- Proper exit codes (0 = success, 1 = error)
-
 ## 9. Security Requirements
 
 ### 9.1 Deck ID Handling
@@ -407,23 +379,19 @@ strip = true
 - Generates UTF-8 encoded JSON file
 - Array of card objects with the following structure:
 ```json
-{
-    "word": string,
-    "translation": string,
-    "example": string | null,
-    "learning_status": "new" | "learning" | "known"
-}
+[
+    {
+        "word": "hello",
+        "translation": "hallo",
+        "example": "Hallo, wie geht's?",
+        "learning_status": "new"
+    },
+    {
+        "word": "world",
+        "translation": "Welt",
+        "example": "Die Welt ist schön.",
+        "learning_status": "learning"
+    }
+]
 ```
 - Pretty-printed for readability
-- Includes metadata about the export:
-```json
-{
-    "metadata": {
-        "deck_id": string,
-        "export_date": string,
-        "total_cards": number,
-        "duplicates_skipped": number
-    },
-    "cards": Card[]
-}
-```
