@@ -36,24 +36,15 @@ impl AnkiPackageBuilder {
     ///
     /// A new AnkiPackageBuilder instance configured with the specified deck name.
     pub fn new(deck_name: &str) -> Self {
-        println!(
-            "[DEBUG] Creating new AnkiPackageBuilder with deck name: {}",
-            deck_name
-        );
         let start_time = Instant::now();
 
         let model = create_vocabulary_model();
-        println!(
-            "[DEBUG] Vocabulary model created at {:?}",
-            start_time.elapsed()
-        );
 
         let deck = Deck::new(
             2059400110, // Deck ID - fixed for consistency
             deck_name,
             "Vocabulary imported from Duocards",
         );
-        println!("[DEBUG] Deck created at {:?}", start_time.elapsed());
 
         Self {
             deck,
@@ -108,11 +99,6 @@ impl AnkiPackageBuilder {
     ///
     /// A Result indicating success or failure of the write operation.
     pub fn write_to_file<P: AsRef<Path>>(&self, path: P) -> AnyhowResult<()> {
-        println!(
-            "[DEBUG] Starting deck write to file: {:?} at {:?}",
-            path.as_ref(),
-            self.start_time.elapsed()
-        );
         let result = self
             .deck
             .write_to_file(
@@ -124,11 +110,11 @@ impl AnkiPackageBuilder {
 
         match &result {
             Ok(_) => println!(
-                "[DEBUG] Deck written successfully at {:?}",
+                "Deck written successfully at {:?}",
                 self.start_time.elapsed()
             ),
             Err(e) => println!(
-                "[DEBUG] Failed to write deck: {} at {:?}",
+                "Failed to write deck: {} at {:?}",
                 e,
                 self.start_time.elapsed()
             ),

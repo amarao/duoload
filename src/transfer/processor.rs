@@ -3,7 +3,8 @@ use crate::duocards::DuocardsClientTrait;
 use crate::error::Result;
 use crate::transfer::DuplicateHandler;
 use std::path::Path;
-use std::time::Instant;
+use std::time::{Duration, Instant};
+use tokio::time::sleep;
 
 #[derive(Debug, Default, PartialEq)]
 pub struct TransferStats {
@@ -46,14 +47,19 @@ where
 
         loop {
             page_count += 1;
-            println!("[DEBUG] Fetching page {}...", page_count);
+            println!("Fetching page {}...", page_count);
+
+            // Add a delay between page fetches (1 second)
+            if page_count > 1 {
+                sleep(Duration::from_secs(1)).await;
+            }
 
             // Fetch a page of cards
             let response = self.client.fetch_page(&self.deck_id, cursor).await?;
             let cards = self.client.convert_to_vocabulary_cards(&response);
             let cards_len = cards.len();
             println!(
-                "[DEBUG] Page {} fetched with {} cards",
+                "Page {} fetched with {} cards",
                 page_count, cards_len
             );
 
@@ -71,7 +77,7 @@ where
                 total_processed += 1;
                 if total_processed % 100 == 0 {
                     println!(
-                        "[DEBUG] Processed {} cards so far ({} added, {} duplicates) at {:?}",
+                        "Processed {} cards so far ({} added, {} duplicates) at {:?}",
                         total_processed,
                         self.stats.total_cards,
                         self.stats.duplicates,
@@ -82,7 +88,7 @@ where
 
             // Check if there are more pages
             if !response.data.node.cards.page_info.has_next_page {
-                println!("[DEBUG] No more pages to process");
+                println!("No more pages to process");
                 break;
             }
 
@@ -90,7 +96,7 @@ where
         }
 
         println!(
-            "[DEBUG] All pages processed. Total cards: {}, Duplicates: {} in {:?}",
+            "All pages processed. Total cards: {}, Duplicates: {} in {:?}",
             self.stats.total_cards,
             self.stats.duplicates,
             start_time.elapsed()
@@ -103,9 +109,9 @@ where
     }
 
     pub fn write_to_file<P: AsRef<Path>>(&self, path: P) -> Result<()> {
-        println!("[DEBUG] Writing deck to file...");
+        println!("Writing deck to file...");
         let result = self.builder.write_to_file(path);
-        println!("[DEBUG] Deck written successfully");
+        println!("Deck written successfully");
         result
     }
 }

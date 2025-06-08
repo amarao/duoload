@@ -34,23 +34,8 @@ async fn main() -> Result<()> {
     let start_time = Instant::now();
     let args = Args::parse();
 
-    println!(
-        "Initializing new Anki file at '{}'...",
-        args.output_file.display()
-    );
-    println!(
-        "[DEBUG] Starting initialization at {:?}",
-        start_time.elapsed()
-    );
-
-    // Initialize components
-    println!("[DEBUG] Creating DuocardsClient...");
     let client = match DuocardsClient::new() {
         Ok(client) => {
-            println!(
-                "[DEBUG] DuocardsClient created successfully at {:?}",
-                start_time.elapsed()
-            );
             client
         }
         Err(e) => {
@@ -60,45 +45,26 @@ async fn main() -> Result<()> {
     };
 
     // Validate deck ID
-    println!("[DEBUG] Validating deck ID...");
+    println!("Validating deck ID...");
     if let Err(e) = deck::validate_deck_id(&args.deck_id) {
         eprintln!("Error: Invalid deck ID: {}", e);
         exit(1);
     }
-    println!("[DEBUG] Deck ID validated at {:?}", start_time.elapsed());
 
-    println!("[DEBUG] Creating AnkiPackageBuilder...");
     let builder = AnkiPackageBuilder::new("Duocards Vocabulary");
-    println!(
-        "[DEBUG] AnkiPackageBuilder created at {:?}",
-        start_time.elapsed()
-    );
-
-    println!("[DEBUG] Creating TransferProcessor...");
     let mut processor = TransferProcessor::new(client, builder, args.deck_id.clone());
-    println!(
-        "[DEBUG] TransferProcessor created at {:?}",
-        start_time.elapsed()
-    );
 
-    println!("[DEBUG] Starting card processing...");
     processor.process_all().await?;
-    println!(
-        "[DEBUG] Card processing completed at {:?}",
-        start_time.elapsed()
-    );
 
-    // Write the output file
-    println!("[DEBUG] Writing to file...");
     processor.write_to_file(&args.output_file)?;
-    println!("[DEBUG] File written at {:?}", start_time.elapsed());
+    println!("File written at {:?}", start_time.elapsed());
 
     // Print success message
     let stats = processor.stats();
     println!("Export completed successfully!");
     println!("Total cards saved: {}", stats.total_cards);
     println!("Duplicates skipped: {}", stats.duplicates);
-    println!("[DEBUG] Total execution time: {:?}", start_time.elapsed());
+    println!("Total execution time: {:?}", start_time.elapsed());
 
     Ok(())
 }
