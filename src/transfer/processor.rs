@@ -58,7 +58,7 @@ where
             );
 
             // Process each card
-            for (_i, card) in cards.into_iter().enumerate() {
+            for card in cards.into_iter() {
                 if self.duplicates.is_duplicate(&card.word) {
                     self.stats.duplicates += 1;
                     continue;

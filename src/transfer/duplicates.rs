@@ -4,6 +4,12 @@ pub struct DuplicateHandler {
     processed_words: HashSet<String>,
 }
 
+impl Default for DuplicateHandler {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl DuplicateHandler {
     pub fn new() -> Self {
         Self {
