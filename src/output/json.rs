@@ -25,7 +25,6 @@ impl JsonOutputBuilder {
     /// # Returns
     ///
     /// A new JsonOutputBuilder instance.
-    #[cfg(test)]
     pub fn new() -> Self {
         Self {
             cards: Vec::new(),
