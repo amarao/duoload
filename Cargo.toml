@@ -1,6 +1,6 @@
 [package]
 name = "duoload"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 description = "Export vocabulary from Duocards"
 authors = ["George Shuklin <george.shuklin@gmail.com>"]
@@ -8,6 +8,9 @@ license = "MIT"
 repository = "https://github.com/amarao/duoload"
 keywords = ["duocards", "anki"]
 categories = ["command-line-utilities"]
+
+[features]
+debug-tools = []
 
 [dependencies]
 clap = { version = "4.0", features = ["derive"] }
@@ -35,5 +38,10 @@ panic = "abort"
 strip = true
 
 [[bin]]
+name = "duoload"
+path = "src/main.rs"
+
+[[bin]]
 name = "fetch_cards"
 path = "src/bin/fetch_cards.rs"
+required-features = ["debug-tools"]

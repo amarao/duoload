@@ -6,6 +6,12 @@ This application is intended to be used only with user-created cards. Please, re
 
 ## Installation
 
+There are three ways to get duocards:
+
+* Download an archive with pre-compiled binary
+* Build your own from source code
+* Use Docker image
+
 ### Binary Installation
 
 Duoload provides pre-built binaries for all major platforms. You can download the latest release from the [GitHub releases page](https://github.com/amarao/duoload/releases):
@@ -22,6 +28,14 @@ unzip duoload-linux-amd64.zip
 cd duoload-linux-amd64
 chmod +x duoload
 ./duocard --verion
+```
+
+### Build your own
+
+Run
+
+```
+cargo install duoload
 ```
 
 ### Docker
