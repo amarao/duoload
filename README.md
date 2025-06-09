@@ -15,7 +15,9 @@
 
 ## Overview
 
-Duoload is a powerful command-line tool that allows you to liberate your vocabulary data from Duocards and transfer it to either Anki flashcards or a JSON format. This gives you full control over your learning data, enabling you to use it with the powerful Anki ecosystem or process it with your own tools.
+Duoload is a command-line tool that allows you to export your data from [Duocards](https://duocards.com/) and transfer it to either Anki flashcards or a JSON format. This gives you full control over your learning data, enabling you to use it with the powerful Anki ecosystem or process it with your own tools.
+
+This application is intended to be used only with user-created cards. Please, respect copyright and don't download own Duocards card stacks.
 
 ## Installation
 
@@ -24,14 +26,16 @@ Duoload is a powerful command-line tool that allows you to liberate your vocabul
 Duoload provides pre-built binaries for all major platforms. You can download the latest release from the [GitHub releases page](https://github.com/amarao/duoload/releases):
 
 * Linux (AMD64): `duoload-linux-amd64`
-* Linux (ARM64): `duoload-linux-arm64`
+* Linux (ARM64): `duoload-linux-arm64` (broken, under construction)
 * Windows (AMD64): `duoload-windows-amd64.exe`
 * macOS (AMD64): `duoload-macos-amd64`
 * macOS (ARM64): `duoload-macos-arm64`
 
 After downloading, make the binary executable (on Unix-like systems):
 ```bash
-chmod +x duoload-linux-amd64  # or appropriate binary name
+unzip duoload-linux-amd64
+(fix this)
+chmod +x duoload
 ```
 
 ### Docker Installation
@@ -130,13 +134,6 @@ The JSON output is an array of card objects with the following structure:
 ]
 ```
 
-# Duoload
-
-Duoload is an utility to transfer a user's vocabulary data from the [Duocards](https://duocards.com/)
-into the Anki flashcards local database.
-
-This application is intended to be used only with user-created cards. Please, respect copyright and
-don't download third party Duocards card stacks.
 
 ## Vibe coding
 
@@ -149,4 +146,3 @@ This utility was vibe coded using:
 It also got some manual polishing (mostly in specs, PRDs and tests) and was completely reviewed by humans.
 
 It also was tested to work with Duocards as per Jule 2025 with a personal database of 2k+ words.
-
