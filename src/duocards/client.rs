@@ -19,7 +19,7 @@ const DEFAULT_PAGE_SIZE: i32 = 100;
 #[derive(Debug, Clone)]
 pub struct DuocardsClient {
     client: Client,
-    base_url: String,
+    pub base_url: String,
 }
 
 impl DuocardsClient {
@@ -90,108 +90,5 @@ impl DuocardsClientTrait for DuocardsClient {
 
     fn convert_to_vocabulary_cards(&self, response: &DuocardsResponse) -> Vec<VocabularyCard> {
         self.convert_to_vocabulary_cards(response)
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use crate::duocards::models::LearningStatus;
-    use mockito::Server;
-    use serde_json::json;
-    use tokio_test::block_on;
-
-    // Valid test deck ID (base64 encoded "Deck:46f2b9ed-abf3-4bd8-a054-68dfa4a4203e")
-    const TEST_DECK_ID: &str = "RGVjazo0NmYyYjllZC1hYmYzLTRiZDgtYTA1NC02OGRmYTRhNDIwM2U=";
-
-    fn create_mock_response() -> serde_json::Value {
-        json!({
-            "data": {
-                "node": {
-                    "__typename": "Deck",
-                    "cards": {
-                        "edges": [
-                            {
-                                "node": {
-                                    "id": "test-id",
-                                    "front": "hello",
-                                    "back": "hola",
-                                    "hint": "Hello, world!",
-                                    "waiting": null,
-                                    "knownCount": 5,
-                                    "svg": null,
-                                    "__typename": "Card"
-                                },
-                                "cursor": "0"
-                            }
-                        ],
-                        "pageInfo": {
-                            "endCursor": "0",
-                            "hasNextPage": true
-                        }
-                    },
-                    "id": TEST_DECK_ID
-                }
-            },
-            "extensions": {
-                "releaseId": "2025-06-04T14:06:15.707Z"
-            }
-        })
-    }
-
-    #[test]
-    fn test_fetch_page() {
-        let mut server = Server::new();
-        let mock = server
-            .mock("POST", "/graphql")
-            .match_header("content-type", "application/json")
-            .with_status(200)
-            .with_header("content-type", "application/json")
-            .with_body(create_mock_response().to_string())
-            .create();
-
-        // Override the base URL to use the mock server
-        let mut client = DuocardsClient::new().unwrap();
-        client.base_url = server.url() + "/graphql";
-
-        let response = block_on(client.fetch_page(TEST_DECK_ID, None)).unwrap();
-
-        mock.assert();
-        assert_eq!(response.data.node.id, TEST_DECK_ID);
-        assert_eq!(response.data.node.cards.edges.len(), 1);
-        assert_eq!(response.data.node.cards.edges[0].node.front, "hello");
-        assert_eq!(response.data.node.cards.edges[0].node.back, "hola");
-        assert_eq!(response.data.node.cards.edges[0].node.known_count, 5);
-        assert_eq!(
-            response.data.node.cards.page_info.end_cursor,
-            Some("0".to_string())
-        );
-        assert!(response.data.node.cards.page_info.has_next_page);
-    }
-
-    #[test]
-    fn test_convert_to_vocabulary_cards() {
-        let mut server = Server::new();
-        let mock = server
-            .mock("POST", "/graphql")
-            .match_header("content-type", "application/json")
-            .with_status(200)
-            .with_header("content-type", "application/json")
-            .with_body(create_mock_response().to_string())
-            .create();
-
-        // Override the base URL to use the mock server
-        let mut client = DuocardsClient::new().unwrap();
-        client.base_url = server.url() + "/graphql";
-
-        let response = block_on(client.fetch_page(TEST_DECK_ID, None)).unwrap();
-        let cards = client.convert_to_vocabulary_cards(&response);
-
-        mock.assert();
-        assert_eq!(cards.len(), 1);
-        assert_eq!(cards[0].word, "hello");
-        assert_eq!(cards[0].translation, "hola");
-        assert_eq!(cards[0].example, Some("Hello, world!".to_string()));
-        assert!(matches!(cards[0].status, LearningStatus::Known));
     }
 }

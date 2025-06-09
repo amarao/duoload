@@ -1,7 +1,7 @@
 use crate::duocards::models::{DuocardsResponse, VocabularyCard};
 use crate::error::Result;
 
-mod client;
+pub mod client;
 pub mod deck;
 pub mod models;
 
