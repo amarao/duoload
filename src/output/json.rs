@@ -159,7 +159,7 @@ mod tests {
         let temp_file = NamedTempFile::new().unwrap();
         let file = File::create(&temp_file).unwrap();
         let mut writer = BufWriter::new(file);
-        builder.write(&mut writer).unwrap();
+        builder.write(OutputDestination::Writer(&mut writer)).unwrap();
         writer.flush().unwrap();
 
         // Verify file exists and has content
@@ -200,7 +200,7 @@ mod tests {
         }
 
         let mut writer = FailingWriter;
-        let result = builder.write(&mut writer);
+        let result = builder.write(OutputDestination::Writer(&mut writer));
         assert!(result.is_err());
         assert!(result.unwrap_err().to_string().contains("Test write error"));
     }
@@ -211,9 +211,7 @@ mod tests {
         let temp_file = NamedTempFile::new().unwrap();
         let file = File::create(&temp_file).unwrap();
         let mut writer = BufWriter::new(file);
-
-        // Should still be able to write an empty deck
-        builder.write(&mut writer).unwrap();
+        builder.write(OutputDestination::Writer(&mut writer)).unwrap();
         writer.flush().unwrap();
 
         // Verify file exists and contains empty array

@@ -2,7 +2,6 @@ use crate::duocards::DuocardsClientTrait;
 use crate::error::Result;
 use crate::output::{OutputBuilder, OutputDestination};
 use crate::transfer::DuplicateHandler;
-use std::fs::File;
 use std::io;
 use std::path::Path;
 use std::path::PathBuf;
@@ -264,9 +263,20 @@ mod tests {
             }
         }
 
-        fn write<W: Write>(&self, writer: &mut W) -> Result<()> {
-            writer.write_all(b"TEST_OUTPUT")?;
-            Ok(())
+        fn write(&self, dest: OutputDestination<'_>) -> Result<()> {
+            match dest {
+                OutputDestination::Writer(writer) => {
+                    writer.write_all(b"TEST_OUTPUT")?;
+                    Ok(())
+                }
+                OutputDestination::File(path) => {
+                    let file = std::fs::File::create(path)?;
+                    let mut writer = std::io::BufWriter::new(file);
+                    writer.write_all(b"TEST_OUTPUT")?;
+                    writer.flush()?;
+                    Ok(())
+                }
+            }
         }
     }
 
@@ -471,7 +481,7 @@ mod tests {
         let mut output = Vec::new();
         {
             let mut writer = Cursor::new(&mut output);
-            processor.builder.write(&mut writer)?;
+            processor.builder.write(OutputDestination::Writer(&mut writer))?;
         }
         assert_eq!(output, b"TEST_OUTPUT");
         Ok(())

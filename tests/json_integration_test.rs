@@ -1,5 +1,5 @@
 use duoload::duocards::models::{LearningStatus, VocabularyCard};
-use duoload::output::OutputBuilder;
+use duoload::output::{OutputBuilder, OutputDestination};
 use duoload::output::json::JsonOutputBuilder;
 use serde_json;
 use std::fs::File;
@@ -52,7 +52,7 @@ async fn test_end_to_end_json_creation() {
     {
         let file = File::create(&temp_file).unwrap();
         let mut writer = BufWriter::new(file);
-        builder.write(&mut writer).unwrap();
+        builder.write(OutputDestination::Writer(&mut writer)).unwrap();
         // Ensure writer is dropped (and flushed) before checking file contents
     }
 
@@ -100,7 +100,7 @@ async fn test_json_duplicate_handling() {
     {
         let file = File::create(&temp_file).unwrap();
         let mut writer = BufWriter::new(file);
-        builder.write(&mut writer).unwrap();
+        builder.write(OutputDestination::Writer(&mut writer)).unwrap();
         // Ensure writer is dropped (and flushed) before checking file contents
     }
 
@@ -125,7 +125,7 @@ async fn test_empty_json_deck_creation() {
     {
         let file = File::create(&temp_file).unwrap();
         let mut writer = BufWriter::new(file);
-        builder.write(&mut writer).unwrap();
+        builder.write(OutputDestination::Writer(&mut writer)).unwrap();
         // Ensure writer is dropped (and flushed) before checking file contents
     }
 
@@ -159,7 +159,7 @@ async fn test_large_json_deck_creation() {
     {
         let file = File::create(&temp_file).unwrap();
         let mut writer = BufWriter::new(file);
-        builder.write(&mut writer).unwrap();
+        builder.write(OutputDestination::Writer(&mut writer)).unwrap();
         // Ensure writer is dropped (and flushed) before checking file contents
     }
 

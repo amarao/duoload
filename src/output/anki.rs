@@ -4,7 +4,6 @@ use crate::error::{DuoloadError, Result};
 use crate::output::{OutputBuilder, OutputDestination};
 use genanki_rs::Deck;
 use std::collections::HashSet;
-use std::io::Write;
 
 /// Builder for creating Anki packages from vocabulary cards.
 ///
@@ -84,8 +83,6 @@ impl OutputBuilder for AnkiPackageBuilder {
 mod tests {
     use super::*;
     use crate::duocards::models::LearningStatus;
-    use std::fs::File;
-    use std::io::BufWriter;
     use tempfile::NamedTempFile;
 
     fn create_test_card(
@@ -157,8 +154,7 @@ mod tests {
 
         // Write to temporary file
         let temp_file = NamedTempFile::new().unwrap();
-        let file = File::create(&temp_file).unwrap();
-        let result = builder.write(OutputDestination::File(file));
+        let result = builder.write(OutputDestination::File(temp_file.path()));
         assert!(result.is_ok());
     }
 
@@ -183,14 +179,7 @@ mod tests {
     fn test_empty_deck() {
         let builder = AnkiPackageBuilder::new("Empty Deck");
         let temp_file = NamedTempFile::new().unwrap();
-        let file = File::create(&temp_file).unwrap();
-        let result = builder.write(OutputDestination::File(file));
-        assert!(result.is_err()); // Anki output only supports file output
-        assert!(
-            result
-                .unwrap_err()
-                .to_string()
-                .contains("Anki output is only supported for file output")
-        );
+        let result = builder.write(OutputDestination::File(temp_file.path()));
+        assert!(result.is_ok()); // Should be able to write an empty deck
     }
 }

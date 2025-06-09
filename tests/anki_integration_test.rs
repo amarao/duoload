@@ -1,8 +1,6 @@
 use duoload::duocards::models::{LearningStatus, VocabularyCard};
-use duoload::output::OutputBuilder;
+use duoload::output::{OutputBuilder, OutputDestination};
 use duoload::output::anki::AnkiPackageBuilder;
-use std::fs::File;
-use std::io::BufWriter;
 use tempfile::NamedTempFile;
 
 fn create_test_card(
@@ -48,16 +46,9 @@ async fn test_end_to_end_anki_package_creation() {
 
     // Write the package
     let temp_file = NamedTempFile::new().unwrap();
-    let file = File::create(&temp_file).unwrap();
-    let mut writer = BufWriter::new(file);
-    let result = builder.write(&mut writer);
-    assert!(result.is_err()); // Anki output only supports file output
-    assert!(
-        result
-            .unwrap_err()
-            .to_string()
-            .contains("Anki output is only supported for file output")
-    );
+    let result = builder.write(OutputDestination::File(temp_file.path()));
+    assert!(result.is_ok()); // Should be able to write to file
+    assert!(temp_file.path().exists()); // File should exist
 }
 
 #[tokio::test]
@@ -88,34 +79,18 @@ async fn test_anki_duplicate_handling() {
 
     // Verify we can write the package
     let temp_file = NamedTempFile::new().unwrap();
-    let file = File::create(&temp_file).unwrap();
-    let mut writer = BufWriter::new(file);
-    let result = builder.write(&mut writer);
-    assert!(result.is_err()); // Anki output only supports file output
-    assert!(
-        result
-            .unwrap_err()
-            .to_string()
-            .contains("Anki output is only supported for file output")
-    );
+    let result = builder.write(OutputDestination::File(temp_file.path()));
+    assert!(result.is_ok()); // Should be able to write to file
+    assert!(temp_file.path().exists()); // File should exist
 }
 
 #[tokio::test]
 async fn test_empty_anki_deck_creation() {
     let builder = AnkiPackageBuilder::new("Empty Deck");
     let temp_file = NamedTempFile::new().unwrap();
-    let file = File::create(&temp_file).unwrap();
-    let mut writer = BufWriter::new(file);
-
-    // Should return error for any writer
-    let result = builder.write(&mut writer);
-    assert!(result.is_err()); // Anki output only supports file output
-    assert!(
-        result
-            .unwrap_err()
-            .to_string()
-            .contains("Anki output is only supported for file output")
-    );
+    let result = builder.write(OutputDestination::File(temp_file.path()));
+    assert!(result.is_ok()); // Should be able to write empty deck
+    assert!(temp_file.path().exists()); // File should exist
 }
 
 #[tokio::test]
@@ -139,14 +114,7 @@ async fn test_large_anki_deck_creation() {
 
     // Write the package
     let temp_file = NamedTempFile::new().unwrap();
-    let file = File::create(&temp_file).unwrap();
-    let mut writer = BufWriter::new(file);
-    let result = builder.write(&mut writer);
-    assert!(result.is_err()); // Anki output only supports file output
-    assert!(
-        result
-            .unwrap_err()
-            .to_string()
-            .contains("Anki output is only supported for file output")
-    );
+    let result = builder.write(OutputDestination::File(temp_file.path()));
+    assert!(result.is_ok()); // Should be able to write to file
+    assert!(temp_file.path().exists()); // File should exist
 }
