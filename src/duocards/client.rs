@@ -20,6 +20,7 @@ const DEFAULT_PAGE_SIZE: i32 = 100;
 pub struct DuocardsClient {
     client: Client,
     pub base_url: String,
+    pub page_limit: Option<u32>,
 }
 
 impl DuocardsClient {
@@ -42,7 +43,20 @@ impl DuocardsClient {
         Ok(Self {
             client,
             base_url: BASE_URL.to_string(),
+            page_limit: None,
         })
+    }
+
+    pub fn with_page_limit(mut self, limit: u32) -> Self {
+        self.page_limit = Some(limit);
+        self
+    }
+
+    pub fn should_continue(&self, current_page: u32) -> bool {
+        match self.page_limit {
+            Some(limit) => current_page <= limit,
+            None => true,
+        }
     }
 
     pub async fn fetch_page(
@@ -90,5 +104,13 @@ impl DuocardsClientTrait for DuocardsClient {
 
     fn convert_to_vocabulary_cards(&self, response: &DuocardsResponse) -> Vec<VocabularyCard> {
         self.convert_to_vocabulary_cards(response)
+    }
+
+    fn should_continue(&self, current_page: u32) -> bool {
+        self.should_continue(current_page)
+    }
+
+    fn page_limit(&self) -> Option<u32> {
+        self.page_limit
     }
 }

@@ -97,3 +97,46 @@ fn test_convert_to_vocabulary_cards() {
     assert_eq!(cards[0].example, Some("Hello, world!".to_string()));
     assert!(matches!(cards[0].status, LearningStatus::Known));
 }
+
+#[test]
+fn test_page_limit() {
+    let client = DuocardsClient::new().unwrap();
+    
+    // Test without page limit
+    assert!(client.should_continue(1));
+    assert!(client.should_continue(100));
+    
+    // Test with page limit
+    let client = client.with_page_limit(5);
+    assert!(client.should_continue(1));
+    assert!(client.should_continue(5));
+    assert!(!client.should_continue(6));
+    assert!(!client.should_continue(100));
+}
+
+#[test]
+fn test_page_limit_with_fetch() {
+    let mut server = Server::new();
+    let mock = server
+        .mock("POST", "/graphql")
+        .match_header("content-type", "application/json")
+        .with_status(200)
+        .with_header("content-type", "application/json")
+        .with_body(create_mock_response().to_string())
+        .create();
+
+    // Create client with page limit
+    let mut client = DuocardsClient::new().unwrap().with_page_limit(3);
+    client.base_url = server.url() + "/graphql";
+
+    // Test that client respects page limit
+    assert!(client.should_continue(1));
+    assert!(client.should_continue(2));
+    assert!(client.should_continue(3));
+    assert!(!client.should_continue(4));
+
+    // Test that fetch still works with page limit
+    let response = block_on(client.fetch_page(TEST_DECK_ID, None)).unwrap();
+    mock.assert();
+    assert_eq!(response.data.node.id, TEST_DECK_ID);
+}

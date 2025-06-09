@@ -71,8 +71,22 @@ where
         let mut page_count = 0;
         let mut total_processed = 0;
 
+        // Print initial message with page limit info if set
+        if let Some(limit) = self.client.page_limit() {
+            eprintln!("Starting export (limited to {} pages)...", limit);
+        } else {
+            eprintln!("Starting export...");
+        }
+
         loop {
             page_count += 1;
+
+            // Check if we should continue based on page limit
+            if !self.client.should_continue(page_count) {
+                eprintln!("Page limit reached ({} pages)", page_count - 1);
+                break;
+            }
+
             eprintln!("Fetching page {}...", page_count);
 
             // Add a delay between page fetches (1 second)
@@ -118,12 +132,23 @@ where
             cursor = response.data.node.cards.page_info.end_cursor;
         }
 
-        eprintln!(
-            "All pages processed. Total cards: {}, Duplicates: {} in {:?}",
-            self.stats.total_cards,
-            self.stats.duplicates,
-            self.start_time.elapsed()
-        );
+        // Print completion message with appropriate context
+        if let Some(limit) = self.client.page_limit() {
+            eprintln!(
+                "Page limit reached ({} pages). Total cards: {}, Duplicates: {} in {:?}",
+                limit,
+                self.stats.total_cards,
+                self.stats.duplicates,
+                self.start_time.elapsed()
+            );
+        } else {
+            eprintln!(
+                "All pages processed. Total cards: {}, Duplicates: {} in {:?}",
+                self.stats.total_cards,
+                self.stats.duplicates,
+                self.start_time.elapsed()
+            );
+        }
 
         // Write the processed data to output
         self.write_output()?;
@@ -189,13 +214,20 @@ mod tests {
     #[derive(Clone)]
     struct TestDuocardsClient {
         responses: Arc<Mutex<Vec<DuocardsResponse>>>,
+        page_limit: Option<u32>,
     }
 
     impl TestDuocardsClient {
         fn new(responses: Vec<DuocardsResponse>) -> Self {
             Self {
                 responses: Arc::new(Mutex::new(responses)),
+                page_limit: None,
             }
+        }
+
+        fn with_page_limit(mut self, limit: u32) -> Self {
+            self.page_limit = Some(limit);
+            self
         }
     }
 
@@ -233,6 +265,17 @@ mod tests {
                     },
                 })
                 .collect()
+        }
+
+        fn should_continue(&self, current_page: u32) -> bool {
+            match self.page_limit {
+                Some(limit) => current_page <= limit,
+                None => true,
+            }
+        }
+
+        fn page_limit(&self) -> Option<u32> {
+            self.page_limit
         }
     }
 
@@ -501,6 +544,60 @@ mod tests {
         processor.write_output()?;
         let contents = std::fs::read(temp_file.path())?;
         assert_eq!(contents, b"TEST_OUTPUT");
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn test_process_with_page_limit() -> Result<()> {
+        // Create test cards for three pages
+        let page1_cards = vec![VocabularyCard {
+            word: "hello".to_string(),
+            translation: "hola".to_string(),
+            example: Some("Hello, world!".to_string()),
+            status: LearningStatus::New,
+        }];
+
+        let page2_cards = vec![VocabularyCard {
+            word: "world".to_string(),
+            translation: "mundo".to_string(),
+            example: None,
+            status: LearningStatus::Known,
+        }];
+
+        let page3_cards = vec![VocabularyCard {
+            word: "goodbye".to_string(),
+            translation: "adiós".to_string(),
+            example: None,
+            status: LearningStatus::New,
+        }];
+
+        // Create test responses
+        let response1 = create_test_response(page1_cards.clone(), true, Some("cursor1".to_string()));
+        let response2 = create_test_response(page2_cards.clone(), true, Some("cursor2".to_string()));
+        let response3 = create_test_response(page3_cards.clone(), false, None);
+
+        // Create test client with page limit and builder
+        let client = TestDuocardsClient::new(vec![response1, response2, response3]).with_page_limit(2);
+        let builder = TestOutputBuilder::new();
+
+        // Create processor and process cards
+        let mut processor = TransferProcessor::new(client, "test-deck".to_string())
+            .output(builder, Path::new("test_output.txt"));
+
+        processor.process().await?;
+        processor.write_output()?;
+
+        // Verify results
+        let stats = processor.stats();
+        assert_eq!(stats.total_cards, 2); // Only first two pages should be processed
+        assert_eq!(stats.duplicates, 0);
+
+        // Verify cards were added in correct order
+        let added_cards = processor.builder.get_added_cards();
+        assert_eq!(added_cards.len(), 2);
+        assert_eq!(added_cards[0].word, "hello");
+        assert_eq!(added_cards[1].word, "world");
+
         Ok(())
     }
 }

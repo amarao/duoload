@@ -76,6 +76,9 @@ Language learners invest significant time building vocabulary lists in applicati
         --anki-file "path/to/my_deck.apkg" (for Anki format)
         --json-file "path/to/my_deck.json" (for JSON format to file)
         --json (for JSON format to stdout)
+    Page Limit: Optional argument to limit the number of pages to process:
+        --pages N (where N is a positive integer)
+        If not specified, all available pages will be processed
     The application will require exactly one output option to be specified.
 
 5.5. Feedback & Error Handling
@@ -104,14 +107,19 @@ Bash
 
 duoload --deck-id "RGVjazo1YjZmMTA3My1hZjA2LTQwMGMtYTQyNC05ZWM5YzFlMGEzZjg=" --anki-file "duocards_export.apkg"
 
+Or export only the first 5 pages:
+Bash
+
+duoload --deck-id "RGVjazo1YjZmMTA3My1hZjA2LTQwMGMtYTQyNC05ZWM5YzFlMGEzZjg=" --anki-file "duocards_export.apkg" --pages 5
+
 Expected Output:
 
 Initializing new Anki file at 'duocards_export.apkg'...
 Processing page 1... done.
 Processing page 2... done.
 ...
-Processing page 25... done.
-Export complete. 1250 cards saved to duocards_export.apkg.
+Processing page 5... done.
+Export complete. 250 cards saved to duocards_export.apkg.
 
 Scenario 2: Export to JSON File
 
@@ -120,14 +128,18 @@ Bash
 
 duoload --deck-id "RGVjazo1YjZmMTA3My1hZjA2LTQwMGMtYTQyNC05ZWM5YzFlMGEzZjg=" --json-file "duocards_export.json"
 
+Or export only the first 3 pages:
+Bash
+
+duoload --deck-id "RGVjazo1YjZmMTA3My1hZjA2LTQwMGMtYTQyNC05ZWM5YzFlMGEzZjg=" --json-file "duocards_export.json" --pages 3
+
 Expected Output:
 
 Initializing JSON export to 'duocards_export.json'...
 Processing page 1... done.
 Processing page 2... done.
-...
-Processing page 25... done.
-Export complete. 1250 cards saved to duocards_export.json.
+Processing page 3... done.
+Export complete. 150 cards saved to duocards_export.json.
 
 Scenario 3: Export to JSON via stdout
 
@@ -136,11 +148,14 @@ Bash
 
 duoload --deck-id "RGVjazo1YjZmMTA3My1hZjA2LTQwMGMtYTQyNC05ZWM5YzFlMGEzZjg=" --json | jq '.[] | select(.learning_status == "new")'
 
+Or export only the first 2 pages:
+Bash
+
+duoload --deck-id "RGVjazo1YjZmMTA3My1hZjA2LTQwMGMtYTQyNC05ZWM5YzFlMGEzZjg=" --json --pages 2 | jq '.[] | select(.learning_status == "new")'
+
 Expected Output:
 
 Processing page 1... done.
 Processing page 2... done.
-...
-Processing page 25... done.
-Export complete. 1250 cards processed.
+Export complete. 100 cards processed.
 [{"word": "hello", "translation": "hola", "example": "Hello, world!", "learning_status": "new"}, ...]

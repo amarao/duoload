@@ -14,36 +14,45 @@ The application follows a simple, linear flow to transfer vocabulary from Duocar
 
    # For JSON stdout output (JSON only)
    duoload --deck-id "RGVjazo0NmYyYjllZC1hYmYzLTRiZDgtYTA1NC02OGRmYTRhNDIwM2U=" --json | jq '.[] | select(.learning_status == "new")'
+
+   # With page limit (any output format)
+   duoload --deck-id "RGVjazo0NmYyYjllZC1hYmYzLTRiZDgtYTA1NC02OGRmYTRhNDIwM2U=" --anki-file "my_deck.apkg" --pages 5
    ```
 
 2. **Data Flow**
    ```
    Duocards API (public) → Transfer Processor → (Anki Generator → File | JSON Generator → (File | Stdout))
    ```
+   Note: Page limit is enforced at the Duocards API client level
 
 ## Components
 
 ### 1. CLI Interface (`src/main.rs`)
 - Parses deck ID and output format options
 - Validates mutually exclusive output options (--anki-file, --json-file, or --json)
+- Validates page limit (must be positive integer when specified)
 - Provides progress feedback
 - Example outputs:
   ```
-  # Anki output
-  Initializing export to 'my_deck.apkg'...
+  # Anki output (with page limit)
+  Initializing export to 'my_deck.apkg' (limited to 5 pages)...
   Processing page 1... done.
   Processing page 2... done.
-  Export complete. 1250 cards saved to my_deck.apkg.
+  Processing page 3... done.
+  Processing page 4... done.
+  Processing page 5... done.
+  Export complete. 250 cards saved to my_deck.apkg.
 
   # JSON output (both file and stdout)
   Processing page 1... done.
   Processing page 2... done.
-  Export complete. 1250 cards processed.
+  Export complete. 100 cards processed.
   ```
 
 ### 2. Duocards Client (`src/duocards/`)
 - Fetches vocabulary cards from Duocards API
 - Handles pagination automatically
+- Enforces page limit when specified
 - Returns structured data:
   ```rust
   struct VocabularyCard {
@@ -51,6 +60,17 @@ The application follows a simple, linear flow to transfer vocabulary from Duocar
       translation: String,
       example: Option<String>,
       status: LearningStatus,
+  }
+  ```
+- Implements page limit logic:
+  ```rust
+  impl DuocardsClient {
+      fn should_continue(&self, current_page: u32) -> bool {
+          match self.page_limit {
+              Some(limit) => current_page <= limit,
+              None => true,
+          }
+      }
   }
   ```
 
@@ -98,8 +118,10 @@ The application follows a simple, linear flow to transfer vocabulary from Duocar
 ## Happy Path Sequence
 
 1. User runs command with valid deck ID and output format
-2. CLI validates inputs and creates appropriate generator
-3. Client validates deck ID and fetches vocabulary pages from Duocards
+2. CLI validates inputs (including page limit if specified) and creates appropriate generator
+3. Client validates deck ID and fetches vocabulary pages from Duocards:
+   - Respects page limit if specified
+   - Stops fetching when limit is reached or no more pages available
 4. Transfer processor:
    - Receives cards from client
    - Checks for duplicates
@@ -110,9 +132,10 @@ The application follows a simple, linear flow to transfer vocabulary from Duocar
 5. Generator creates output in requested format:
    - Anki: Always writes to specified Writer
    - JSON: Writes to either file or stdout based on processor configuration
-6. User gets success message with card count
+6. User gets success message with card count:
    - For file output: Includes file path in message
    - For stdout: Progress messages go to stderr to avoid corrupting JSON output
+   - When page limit is specified: Indicates limited export in progress messages
 
 ## Output Handling
 
@@ -134,4 +157,7 @@ The application follows a simple, linear flow to transfer vocabulary from Duocar
   
   # Count cards by status
   duoload --deck-id "..." --json | jq 'group_by(.learning_status) | map({status: .[0].learning_status, count: length})'
+
+  # With page limit
+  duoload --deck-id "..." --json --pages 3 | jq '.[] | select(.learning_status == "new")'
   ```

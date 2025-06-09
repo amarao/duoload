@@ -12,7 +12,7 @@ use crate::output::anki::AnkiPackageBuilder;
 use crate::output::json::JsonOutputBuilder;
 use duocards::DuocardsClient;
 use duocards::deck;
-use error::Result;
+use error::{Result, DuoloadError};
 use transfer::processor::TransferProcessor;
 
 #[derive(Parser)]
@@ -48,6 +48,23 @@ struct Args {
         group = "output_format"
     )]
     json: bool,
+
+    #[arg(
+        long,
+        value_name = "N",
+        help = "Limit export to N pages (default: all pages)",
+        value_parser = validate_page_limit
+    )]
+    pages: Option<u32>,
+}
+
+/// Validate that the page limit is a positive integer
+fn validate_page_limit(s: &str) -> std::result::Result<u32, String> {
+    match s.parse::<u32>() {
+        Ok(n) if n > 0 => Ok(n),
+        Ok(_) => Err("Page limit must be a positive integer".to_string()),
+        Err(_) => Err("Page limit must be a valid positive integer".to_string()),
+    }
 }
 
 #[tokio::main]
@@ -56,38 +73,52 @@ async fn main() -> Result<()> {
 
     // Validate that exactly one output format is specified
     if args.anki_file.is_none() && args.json_file.is_none() && !args.json {
-        eprintln!("Error: Please specify either --anki-file, --json-file, or --json");
-        exit(1);
+        return Err(DuoloadError::Api("Please specify either --anki-file, --json-file, or --json".to_string()));
     }
 
-    let client = match DuocardsClient::new() {
+    let mut client = match DuocardsClient::new() {
         Ok(client) => client,
         Err(e) => {
-            eprintln!("Error: Failed to initialize client: {}", e);
-            exit(1);
+            return Err(DuoloadError::Api(format!("Failed to initialize client: {}", e)));
         }
     };
+
+    // Set page limit if specified
+    if let Some(limit) = args.pages {
+        client = client.with_page_limit(limit);
+    }
 
     // Validate deck ID
     eprintln!("Validating deck ID...");
     if let Err(e) = deck::validate_deck_id(&args.deck_id) {
-        eprintln!("Error: Invalid deck ID: {}", e);
-        exit(1);
+        return Err(DuoloadError::Api(format!("Invalid deck ID: {}", e)));
     }
 
     let processor = TransferProcessor::new(client, args.deck_id);
 
     if let Some(path) = args.anki_file {
-        eprintln!("Exporting to Anki package '{:?}'...", path);
+        if let Some(limit) = args.pages {
+            eprintln!("Exporting to Anki package '{:?}' (limited to {} pages)...", path, limit);
+        } else {
+            eprintln!("Exporting to Anki package '{:?}'...", path);
+        }
         let mut processor = processor.output(AnkiPackageBuilder::new("Duocards Vocabulary"), path);
         processor.process().await?;
     } else if args.json {
-        eprintln!("Exporting to stdout...");
+        if let Some(limit) = args.pages {
+            eprintln!("Exporting to stdout (limited to {} pages)...", limit);
+        } else {
+            eprintln!("Exporting to stdout...");
+        }
         let mut processor = processor.output(JsonOutputBuilder::new(), PathBuf::from("-"));
         processor.process().await?;
     } else {
         let path = args.json_file.unwrap();
-        eprintln!("Exporting to JSON file '{:?}'...", path);
+        if let Some(limit) = args.pages {
+            eprintln!("Exporting to JSON file {:?} (limited to {} pages)...", path, limit);
+        } else {
+            eprintln!("Exporting to JSON file {:?}...", path);
+        }
         let mut processor = processor.output(JsonOutputBuilder::new(), path);
         processor.process().await?;
     }

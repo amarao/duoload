@@ -55,6 +55,9 @@ struct Args {
 
     #[arg(long, help = "Output JSON to stdout")]
     json: bool,
+
+    #[arg(long, value_name = "N", help = "Limit export to N pages (default: all pages)")]
+    pages: Option<u32>,
 }
 ```
 
@@ -63,6 +66,7 @@ struct Args {
 - Output file path validation (writable directory)
 - Exactly one output format must be specified (either --anki-file, --json-file, or --json)
 - When using --json, ensure stdout is not a terminal if progress messages are enabled
+- Page limit must be a positive integer when specified
 
 ## 3. Data Models
 
@@ -149,10 +153,18 @@ struct DuocardsClient {
     client: reqwest::Client,
     deck_id: String,
     base_url: String,
+    page_limit: Option<u32>,
 }
 
 impl DuocardsClient {
     async fn fetch_page(&self, page: u32) -> Result<DuocardsResponse>;
+    
+    fn should_continue(&self, current_page: u32) -> bool {
+        match self.page_limit {
+            Some(limit) => current_page <= limit,
+            None => true,
+        }
+    }
 }
 ```
 
@@ -168,6 +180,7 @@ pub fn validate_deck_id(deck_id: &str) -> Result<()>;
 - Maximum retries: 3 attempts
 - Polite delay between requests: 1-2 seconds
 - User-Agent: "duoload/1.0"
+- Page limit handling: Stop fetching when limit is reached or no more pages available
 
 ### 4.4 Error Handling
 - Invalid deck ID detection
@@ -282,6 +295,15 @@ Processing page 2... done.
 Export complete. X cards processed.
 ```
 
+When page limit is specified:
+```
+Initializing export to 'filename.apkg' (limited to N pages)...
+Processing page 1... done.
+Processing page 2... done.
+...
+Export complete. X cards saved to filename.apkg.
+```
+
 Note: When using stdout output, progress messages are written to stderr to avoid corrupting the JSON output.
 
 ## 9. Security Requirements
@@ -333,6 +355,8 @@ Note: When using stdout output, progress messages are written to stderr to avoid
 - JSON output validation for both file and stdout paths
 - Progress message separation for stdout output
 - Pipe operation testing
+- Page limit validation and enforcement
+- Partial export completion with page limits
 
 ### 12.2 Integration Tests
 - End-to-end transfer simulation
@@ -341,6 +365,8 @@ Note: When using stdout output, progress messages are written to stderr to avoid
 - JSON stdout output with pipe operations
 - Progress message handling in pipe scenarios
 - Large dataset handling via stdout
+- Page limit functionality with various limits
+- Partial export completion scenarios
 
 ## 13. Build and Deployment
 
