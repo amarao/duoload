@@ -52,11 +52,23 @@ docker pull ghcr.io/amarao/duoload:v1.0.0
 
 ## Usage
 
+To download your vocabulary you need to know deck ID in Duocards. Deck ID is a base64-encoded identifier that looks like: `RGVjazo1YjZmMTA3My1hZjA2LTQwMGMtYTQyNC05ZWM5YzFlMGEzZjg=`
+
 ### Finding Your Deck ID
 
-Before using Duoload, you'll need your Duocards deck ID. This is a base64-encoded identifier that looks like: `RGVjazo1YjZmMTA3My1hZjA2LTQwMGMtYTQyNC05ZWM5YzFlMGEzZjg=`
+Instructions for Firefox:
 
-TODO: Instructions on how to find your deck ID in the Duocards application.
+* Login into https://app.duocards.com
+* Open your browser debug console (usually, F12)
+* Go to into storage tab (1 on the picture)
+* Go into 'Local Storage' (2 on the picture)
+* Find 'reduxState' line, click on it. (3 on the picture)
+* On the right pannel find 'deckID' (scroll manually or put it into search line on the right, 4 on the picture)
+* Click on this value (on the right pannel) (5 on the picture)
+* Copy value (just press Ctrl-C or Cmd-C)
+* Remove 'deckID:' from copied string. Everything after column is deck ID to use in command line with duoload.
+
+![Deck ID](deck_id.png)
 
 ### Examples
 
