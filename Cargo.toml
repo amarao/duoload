@@ -5,6 +5,9 @@ edition = "2024"
 description = "Export vocabulary from Duocards"
 authors = ["George Shuklin <george.shuklin@gmail.com>"]
 license = "MIT"
+repository = "https://github.com/amarao/duoload"
+keywords = ["duocards", "anki"]
+categories = ["command-line-utilities"]
 
 [dependencies]
 clap = { version = "4.0", features = ["derive"] }
