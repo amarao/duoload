@@ -1,6 +1,6 @@
 use crate::duocards::DuocardsClientTrait;
 use crate::error::Result;
-use crate::output::OutputBuilder;
+use crate::output::{OutputBuilder, OutputDestination};
 use crate::transfer::DuplicateHandler;
 use std::fs::File;
 use std::io;
@@ -154,12 +154,10 @@ where
             // Write to stdout, ensure progress messages go to stderr
             let stdout = io::stdout();
             let mut writer = stdout.lock();
-            self.builder.write(&mut writer)
+            self.builder.write(OutputDestination::Writer(&mut writer))
         } else {
             // Write to file
-            let file = File::create(&self.output_path)?;
-            let mut writer = io::BufWriter::new(file);
-            self.builder.write(&mut writer)
+            self.builder.write(OutputDestination::File(&self.output_path))
         };
 
         match result {

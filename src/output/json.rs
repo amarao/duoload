@@ -1,6 +1,6 @@
 use crate::duocards::models::VocabularyCard;
 use crate::error::Result;
-use crate::output::OutputBuilder;
+use crate::output::{OutputBuilder, OutputDestination};
 use serde_json;
 use std::collections::HashSet;
 use std::io::Write;
@@ -54,10 +54,22 @@ impl OutputBuilder for JsonOutputBuilder {
         Ok(true)
     }
 
-    fn write<W: Write>(&self, writer: &mut W) -> Result<()> {
-        // Convert cards to JSON with pretty printing and write directly to the writer
-        serde_json::to_writer_pretty(writer, &self.cards)
-            .map_err(|e| anyhow::anyhow!("Failed to write JSON: {}", e))?;
+    fn write(&self, dest: OutputDestination<'_>) -> Result<()> {
+        match dest {
+            OutputDestination::Writer(writer) => {
+                // Write directly to the writer
+                serde_json::to_writer_pretty(writer, &self.cards)
+                    .map_err(|e| anyhow::anyhow!("Failed to write JSON: {}", e))?;
+            }
+            OutputDestination::File(path) => {
+                // Create a file and write to it
+                let file = std::fs::File::create(path)?;
+                let mut writer = std::io::BufWriter::new(file);
+                serde_json::to_writer_pretty(&mut writer, &self.cards)
+                    .map_err(|e| anyhow::anyhow!("Failed to write JSON: {}", e))?;
+                writer.flush()?;
+            }
+        }
 
         println!(
             "JSON written successfully at {:?}",

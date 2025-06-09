@@ -1,7 +1,7 @@
 use crate::anki::note::{VocabularyNote, create_vocabulary_model};
 use crate::duocards::models::VocabularyCard;
 use crate::error::{DuoloadError, Result};
-use crate::output::OutputBuilder;
+use crate::output::{OutputBuilder, OutputDestination};
 use genanki_rs::Deck;
 use std::collections::HashSet;
 use std::io::Write;
@@ -62,9 +62,21 @@ impl OutputBuilder for AnkiPackageBuilder {
         Ok(true)
     }
 
-    fn write<W: Write>(&self, _writer: &mut W) -> Result<()> {
-        // Anki output is only supported for file output
-        Err(DuoloadError::AnkiOutputNotSupported)
+    fn write(&self, dest: OutputDestination<'_>) -> Result<()> {
+        match dest {
+            OutputDestination::Writer(_) => {
+                // Anki packages can only be written to files
+                Err(DuoloadError::AnkiOutputNotSupported)
+            }
+            OutputDestination::File(path) => {
+                // Convert path to string and write the Anki package
+                let path_str = path.to_str()
+                    .ok_or_else(|| anyhow::anyhow!("Invalid file path"))?;
+                self.deck.write_to_file(path_str)
+                    .map_err(|e| anyhow::anyhow!("Failed to write Anki package: {}", e))?;
+                Ok(())
+            }
+        }
     }
 }
 
@@ -146,15 +158,8 @@ mod tests {
         // Write to temporary file
         let temp_file = NamedTempFile::new().unwrap();
         let file = File::create(&temp_file).unwrap();
-        let mut writer = BufWriter::new(file);
-        let result = builder.write(&mut writer);
-        assert!(result.is_err()); // Anki output only supports file output
-        assert!(
-            result
-                .unwrap_err()
-                .to_string()
-                .contains("Anki output is only supported for file output")
-        );
+        let result = builder.write(OutputDestination::File(file));
+        assert!(result.is_ok());
     }
 
     #[test]
@@ -164,7 +169,7 @@ mod tests {
         builder.add_note(card).unwrap();
 
         let mut buffer = Vec::new();
-        let result = builder.write(&mut buffer);
+        let result = builder.write(OutputDestination::Writer(&mut buffer));
         assert!(result.is_err()); // Anki output only supports file output
         assert!(
             result
@@ -179,10 +184,7 @@ mod tests {
         let builder = AnkiPackageBuilder::new("Empty Deck");
         let temp_file = NamedTempFile::new().unwrap();
         let file = File::create(&temp_file).unwrap();
-        let mut writer = BufWriter::new(file);
-
-        // Should return error for any writer
-        let result = builder.write(&mut writer);
+        let result = builder.write(OutputDestination::File(file));
         assert!(result.is_err()); // Anki output only supports file output
         assert!(
             result
