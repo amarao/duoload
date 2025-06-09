@@ -2,7 +2,7 @@
 name = "duoload"
 version = "0.1.0"
 edition = "2024"
-description = "Transfer vocabulary from Duocards to Anki"
+description = "Export vocabulary from Duocards"
 authors = ["George Shuklin <george.shuklin@gmail.com>"]
 license = "MIT"
 
