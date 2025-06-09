@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM debian:stable-slim
 
 ARG VERSION
 LABEL org.opencontainers.image.version=$VERSION
