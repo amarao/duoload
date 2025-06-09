@@ -1,6 +1,6 @@
 use duoload::duocards::models::{LearningStatus, VocabularyCard};
-use duoload::output::{OutputBuilder, OutputDestination};
 use duoload::output::anki::AnkiPackageBuilder;
+use duoload::output::{OutputBuilder, OutputDestination};
 use tempfile::NamedTempFile;
 
 fn create_test_card(

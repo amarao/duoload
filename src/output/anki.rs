@@ -69,9 +69,11 @@ impl OutputBuilder for AnkiPackageBuilder {
             }
             OutputDestination::File(path) => {
                 // Convert path to string and write the Anki package
-                let path_str = path.to_str()
+                let path_str = path
+                    .to_str()
                     .ok_or_else(|| anyhow::anyhow!("Invalid file path"))?;
-                self.deck.write_to_file(path_str)
+                self.deck
+                    .write_to_file(path_str)
                     .map_err(|e| anyhow::anyhow!("Failed to write Anki package: {}", e))?;
                 Ok(())
             }

@@ -159,7 +159,9 @@ mod tests {
         let temp_file = NamedTempFile::new().unwrap();
         let file = File::create(&temp_file).unwrap();
         let mut writer = BufWriter::new(file);
-        builder.write(OutputDestination::Writer(&mut writer)).unwrap();
+        builder
+            .write(OutputDestination::Writer(&mut writer))
+            .unwrap();
         writer.flush().unwrap();
 
         // Verify file exists and has content
@@ -211,7 +213,9 @@ mod tests {
         let temp_file = NamedTempFile::new().unwrap();
         let file = File::create(&temp_file).unwrap();
         let mut writer = BufWriter::new(file);
-        builder.write(OutputDestination::Writer(&mut writer)).unwrap();
+        builder
+            .write(OutputDestination::Writer(&mut writer))
+            .unwrap();
         writer.flush().unwrap();
 
         // Verify file exists and contains empty array

@@ -156,7 +156,8 @@ where
             self.builder.write(OutputDestination::Writer(&mut writer))
         } else {
             // Write to file
-            self.builder.write(OutputDestination::File(&self.output_path))
+            self.builder
+                .write(OutputDestination::File(&self.output_path))
         };
 
         match result {
@@ -481,7 +482,9 @@ mod tests {
         let mut output = Vec::new();
         {
             let mut writer = Cursor::new(&mut output);
-            processor.builder.write(OutputDestination::Writer(&mut writer))?;
+            processor
+                .builder
+                .write(OutputDestination::Writer(&mut writer))?;
         }
         assert_eq!(output, b"TEST_OUTPUT");
         Ok(())
