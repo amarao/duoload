@@ -76,7 +76,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.artifact_name }}
-          path: target/${{ matrix.target }}/release/fetch_cards${{ matrix.os == 'windows-latest' && '.exe' || '' }}
+          path: target/${{ matrix.target }}/release/duoload${{ matrix.os == 'windows-latest' && '.exe' || '' }}
 
   docker:
     needs: [build, check-version]
@@ -98,6 +98,13 @@ jobs:
         with:
           path: artifacts
           pattern: duoload-linux-*
+
+      - name: List artifacts contents
+        run: |
+          echo "Contents of artifacts directory:"
+          ls -la artifacts/
+          echo "Contents of artifacts/duoload-linux-*:"
+          ls -la artifacts/duoload-linux-*
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
