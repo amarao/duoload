@@ -213,5 +213,4 @@ Most of the plan was implemented, we have working code and packages.
 Leftovers:
 
 * Fix linux/arm issue for build and image
-* Update docs on how to extract deck id. It is not the simplest task.
 * I want to validate it works on someone's else machine and deck before final release.
