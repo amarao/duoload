@@ -1,18 +1,3 @@
-# Current state and plans
-
-
-* I got it working on my machine (that means, I get apkg file with all my words from my Deck). `[done]`.
-* I want to cleanup code. There are multiple warnings I want to cleanup before doing anything else. `[done]`
-* I want to support json output. I found apkg a bit hard to validate, and multiple outputs will be of a great help. `[done]`
-* I want to support stdout in json output. Trivial. `[done]`. It was hard.
-* I want to add a proper CI (there are plenty of tests to run) `[done]`
-* I want to provide releases for all major architectures `[done]`. I never cross-build rust applications before, going to be fun.
-* I want to provide a docker image (multi-arch) `[plan]`
-* I want to write/generate documentation on how to use it. Extracting deck id is not the simplest task. `[plan]`. Or should I find a way to automate it?
-* I want to validate it works on someone's else machine and deck `[plan]`
-
-# User Documentation
-
 ## Overview
 
 Duoload is a command-line tool that allows you to export your data from [Duocards](https://duocards.com/) and transfer it to either Anki flashcards or a JSON format. This gives you full control over your learning data, enabling you to use it with the powerful Anki ecosystem or process it with your own tools.
@@ -31,14 +16,15 @@ Duoload provides pre-built binaries for all major platforms. You can download th
 * macOS (AMD64): `duoload-macos-amd64`
 * macOS (ARM64): `duoload-macos-arm64`
 
-After downloading, make the binary executable (on Unix-like systems):
+After downloading, extract archive, make the binary executable (on Unix-like systems):
 ```bash
-unzip duoload-linux-amd64
-(fix this)
+unzip duoload-linux-amd64.zip
+cd duoload-linux-amd64
 chmod +x duoload
+./duocard --verion
 ```
 
-### Docker Installation
+### Docker
 
 Duoload is also available as a Docker image. You can pull it from GitHub Container Registry:
 
@@ -146,3 +132,14 @@ This utility was vibe coded using:
 It also got some manual polishing (mostly in specs, PRDs and tests) and was completely reviewed by humans.
 
 It also was tested to work with Duocards as per Jule 2025 with a personal database of 2k+ words.
+
+
+# Current state and plans
+
+Most of the plan was implemented, we have working code and packages.
+
+Leftovers:
+
+* Fix linux/arm issue for build and image
+* Update docs on how to extract deck id. It is not the simplest task.
+* I want to validate it works on someone's else machine and deck before final release.
