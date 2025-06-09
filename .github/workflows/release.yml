@@ -35,8 +35,8 @@ jobs:
             target: x86_64-unknown-linux-gnu
             artifact_name: duoload-linux-amd64
         #   - os: ubuntu-latest
-        #     target: aarch64-unknown-linux-gnu
-        #     artifact_name: duoload-linux-arm64
+            # target: aarch64-unknown-linux-gnu
+            # artifact_name: duoload-linux-arm64
           - os: windows-latest
             target: x86_64-pc-windows-msvc
             artifact_name: duoload-windows-amd64.exe
@@ -56,18 +56,18 @@ jobs:
         with:
           targets: ${{ matrix.target }}
 
-      - name: Install OpenSSL for cross-compilation
-        if: matrix.target == 'aarch64-unknown-linux-gnu'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y gcc-aarch64-linux-gnu
-          sudo apt-get install -y libssl-dev
-          export OPENSSL_DIR=/usr
-          export OPENSSL_INCLUDE_DIR=/usr/include
-          export OPENSSL_LIB_DIR=/usr/lib/aarch64-linux-gnu
-          echo "OPENSSL_DIR=/usr" >> $GITHUB_ENV
-          echo "OPENSSL_INCLUDE_DIR=/usr/include" >> $GITHUB_ENV
-          echo "OPENSSL_LIB_DIR=/usr/lib/aarch64-linux-gnu" >> $GITHUB_ENV
+    #   - name: Install OpenSSL for cross-compilation
+    #     if: matrix.target == 'aarch64-unknown-linux-gnu'
+    #     run: |
+    #       sudo apt-get update
+    #       sudo apt-get install -y gcc-aarch64-linux-gnu
+    #       sudo apt-get install -y libssl-dev
+    #       export OPENSSL_DIR=/usr
+    #       export OPENSSL_INCLUDE_DIR=/usr/include
+    #       export OPENSSL_LIB_DIR=/usr/lib/aarch64-linux-gnu
+    #       echo "OPENSSL_DIR=/usr" >> "$GITHUB_ENV"
+    #       echo "OPENSSL_INCLUDE_DIR=/usr/include" >> "$GITHUB_ENV"
+    #       echo "OPENSSL_LIB_DIR=/usr/lib/aarch64-linux-gnu" >> "$GITHUB_ENV"
 
       - name: Build
         run: cargo build --release --target ${{ matrix.target }}
@@ -113,7 +113,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
           push: true
           tags: |
             ghcr.io/${{ github.repository_owner }}/duoload:${{ steps.cargo-version.outputs.version }}
@@ -126,6 +126,8 @@ jobs:
   release:
     needs: [build, docker, check-version]
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
       
@@ -142,7 +144,7 @@ jobs:
           pattern: duoload-*
 
       - name: Create Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           name: Release v${{ steps.cargo-version.outputs.version }}
           body: |
@@ -150,7 +152,6 @@ jobs:
             
             ## Binaries
             * Linux (AMD64): `duoload-linux-amd64`
-            * Linux (ARM64): `duoload-linux-arm64`
             * Windows (AMD64): `duoload-windows-amd64.exe`
             * macOS (AMD64): `duoload-macos-amd64`
             * macOS (ARM64): `duoload-macos-arm64`
