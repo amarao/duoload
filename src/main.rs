@@ -1,6 +1,5 @@
 use clap::Parser;
 use std::path::PathBuf;
-use std::process::exit;
 
 mod anki;
 mod duocards;
@@ -12,7 +11,7 @@ use crate::output::anki::AnkiPackageBuilder;
 use crate::output::json::JsonOutputBuilder;
 use duocards::DuocardsClient;
 use duocards::deck;
-use error::{Result, DuoloadError};
+use error::{DuoloadError, Result};
 use transfer::processor::TransferProcessor;
 
 #[derive(Parser)]
@@ -73,13 +72,18 @@ async fn main() -> Result<()> {
 
     // Validate that exactly one output format is specified
     if args.anki_file.is_none() && args.json_file.is_none() && !args.json {
-        return Err(DuoloadError::Api("Please specify either --anki-file, --json-file, or --json".to_string()));
+        return Err(DuoloadError::Api(
+            "Please specify either --anki-file, --json-file, or --json".to_string(),
+        ));
     }
 
     let mut client = match DuocardsClient::new() {
         Ok(client) => client,
         Err(e) => {
-            return Err(DuoloadError::Api(format!("Failed to initialize client: {}", e)));
+            return Err(DuoloadError::Api(format!(
+                "Failed to initialize client: {}",
+                e
+            )));
         }
     };
 
@@ -98,7 +102,10 @@ async fn main() -> Result<()> {
 
     if let Some(path) = args.anki_file {
         if let Some(limit) = args.pages {
-            eprintln!("Exporting to Anki package '{:?}' (limited to {} pages)...", path, limit);
+            eprintln!(
+                "Exporting to Anki package '{:?}' (limited to {} pages)...",
+                path, limit
+            );
         } else {
             eprintln!("Exporting to Anki package '{:?}'...", path);
         }
@@ -115,7 +122,10 @@ async fn main() -> Result<()> {
     } else {
         let path = args.json_file.unwrap();
         if let Some(limit) = args.pages {
-            eprintln!("Exporting to JSON file {:?} (limited to {} pages)...", path, limit);
+            eprintln!(
+                "Exporting to JSON file {:?} (limited to {} pages)...",
+                path, limit
+            );
         } else {
             eprintln!("Exporting to JSON file {:?}...", path);
         }

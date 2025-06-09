@@ -572,12 +572,15 @@ mod tests {
         }];
 
         // Create test responses
-        let response1 = create_test_response(page1_cards.clone(), true, Some("cursor1".to_string()));
-        let response2 = create_test_response(page2_cards.clone(), true, Some("cursor2".to_string()));
+        let response1 =
+            create_test_response(page1_cards.clone(), true, Some("cursor1".to_string()));
+        let response2 =
+            create_test_response(page2_cards.clone(), true, Some("cursor2".to_string()));
         let response3 = create_test_response(page3_cards.clone(), false, None);
 
         // Create test client with page limit and builder
-        let client = TestDuocardsClient::new(vec![response1, response2, response3]).with_page_limit(2);
+        let client =
+            TestDuocardsClient::new(vec![response1, response2, response3]).with_page_limit(2);
         let builder = TestOutputBuilder::new();
 
         // Create processor and process cards

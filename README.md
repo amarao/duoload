@@ -65,13 +65,22 @@ TODO: Instructions on how to find your deck ID in the Duocards application.
 Export your vocabulary to an Anki package file that can be directly imported into Anki:
 
 ```bash
-# Using binary
+# Using binary - export all pages
 ./duoload --deck-id "RGVjazo1YjZmMTA3My1hZjA2LTQwMGMtYTQyNC05ZWM5YzFlMGEzZjg=" --anki-file "my_vocabulary.apkg"
 
-# Using Docker
+# Using binary - export only first 5 pages
+./duoload --deck-id "RGVjazo1YjZmMTA3My1hZjA2LTQwMGMtYTQyNC05ZWM5YzFlMGEzZjg=" --anki-file "my_vocabulary.apkg" --pages 5
+
+# Using Docker - export all pages
 docker run --rm -v "$(pwd):/data" ghcr.io/amarao/duoload:latest \
     --deck-id "RGVjazo1YjZmMTA3My1hZjA2LTQwMGMtYTQyNC05ZWM5YzFlMGEzZjg=" \
     --anki-file "/data/my_vocabulary.apkg"
+
+# Using Docker - export only first 3 pages
+docker run --rm -v "$(pwd):/data" ghcr.io/amarao/duoload:latest \
+    --deck-id "RGVjazo1YjZmMTA3My1hZjA2LTQwMGMtYTQyNC05ZWM5YzFlMGEzZjg=" \
+    --anki-file "/data/my_vocabulary.apkg" \
+    --pages 3
 ```
 
 #### 2. Export to JSON File
@@ -79,13 +88,22 @@ docker run --rm -v "$(pwd):/data" ghcr.io/amarao/duoload:latest \
 Save your vocabulary as a JSON file for custom processing:
 
 ```bash
-# Using binary
+# Using binary - export all pages
 ./duoload --deck-id "RGVjazo1YjZmMTA3My1hZjA2LTQwMGMtYTQyNC05ZWM5YzFlMGEzZjg=" --json-file "my_vocabulary.json"
 
-# Using Docker
+# Using binary - export only first 10 pages
+./duoload --deck-id "RGVjazo1YjZmMTA3My1hZjA2LTQwMGMtYTQyNC05ZWM5YzFlMGEzZjg=" --json-file "my_vocabulary.json" --pages 10
+
+# Using Docker - export all pages
 docker run --rm -v "$(pwd):/data" ghcr.io/amarao/duoload:latest \
     --deck-id "RGVjazo1YjZmMTA3My1hZjA2LTQwMGMtYTQyNC05ZWM5YzFlMGEzZjg=" \
     --json-file "/data/my_vocabulary.json"
+
+# Using Docker - export only first 5 pages
+docker run --rm -v "$(pwd):/data" ghcr.io/amarao/duoload:latest \
+    --deck-id "RGVjazo1YjZmMTA3My1hZjA2LTQwMGMtYTQyNC05ZWM5YzFlMGEzZjg=" \
+    --json-file "/data/my_vocabulary.json" \
+    --pages 5
 ```
 
 #### 3. Export to JSON via stdout
@@ -93,24 +111,52 @@ docker run --rm -v "$(pwd):/data" ghcr.io/amarao/duoload:latest \
 Pipe the JSON output directly to other tools or save it to a file:
 
 ```bash
-# Using binary
+# Using binary - export all pages
 # Save to file
 ./duoload --deck-id "RGVjazo1YjZmMTA3My1hZjA2LTQwMGMtYTQyNC05ZWM5YzFlMGEzZjg=" --json > my_vocabulary.json
 
-# Process with jq
+# Using binary - export only first 2 pages
+./duoload --deck-id "RGVjazo1YjZmMTA3My1hZjA2LTQwMGMtYTQyNC05ZWM5YzFlMGEzZjg=" --json --pages 2 > my_vocabulary.json
+
+# Process with jq - export all pages
 ./duoload --deck-id "RGVjazo1YjZmMTA3My1hZjA2LTQwMGMtYTQyNC05ZWM5YzFlMGEzZjg=" --json | jq '.[] | select(.learning_status == "new")'
 
-# Using Docker
+# Process with jq - export only first 3 pages
+./duoload --deck-id "RGVjazo1YjZmMTA3My1hZjA2LTQwMGMtYTQyNC05ZWM5YzFlMGEzZjg=" --json --pages 3 | jq '.[] | select(.learning_status == "new")'
+
+# Using Docker - export all pages
 # Save to file
 docker run --rm -v "$(pwd):/data" ghcr.io/amarao/duoload:latest \
     --deck-id "RGVjazo1YjZmMTA3My1hZjA2LTQwMGMtYTQyNC05ZWM5YzFlMGEzZjg=" \
     --json > my_vocabulary.json
 
-# Process with jq
+# Using Docker - export only first 5 pages
+docker run --rm -v "$(pwd):/data" ghcr.io/amarao/duoload:latest \
+    --deck-id "RGVjazo1YjZmMTA3My1hZjA2LTQwMGMtYTQyNC05ZWM5YzFlMGEzZjg=" \
+    --json --pages 5 > my_vocabulary.json
+
+# Process with jq - export all pages
 docker run --rm ghcr.io/amarao/duoload:latest \
     --deck-id "RGVjazo1YjZmMTA3My1hZjA2LTQwMGMtYTQyNC05ZWM5YzFlMGEzZjg=" \
     --json | jq '.[] | select(.learning_status == "new")'
+
+# Process with jq - export only first 2 pages
+docker run --rm ghcr.io/amarao/duoload:latest \
+    --deck-id "RGVjazo1YjZmMTA3My1hZjA2LTQwMGMtYTQyNC05ZWM5YzFlMGEzZjg=" \
+    --json --pages 2 | jq '.[] | select(.learning_status == "new")'
 ```
+
+### Command Line Options
+
+The following options are available:
+
+- `--deck-id`: (Required) Your Duocards deck ID
+- `--anki-file`: Output path for Anki package (.apkg)
+- `--json-file`: Output path for JSON file
+- `--json`: Output JSON to stdout (for piping to other tools)
+- `--pages`: (Optional) Limit export to N pages (default: all pages)
+
+Note: You must specify exactly one output format (either `--anki-file`, `--json-file`, or `--json`).
 
 ## Output Format
 

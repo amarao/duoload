@@ -101,11 +101,11 @@ fn test_convert_to_vocabulary_cards() {
 #[test]
 fn test_page_limit() {
     let client = DuocardsClient::new().unwrap();
-    
+
     // Test without page limit
     assert!(client.should_continue(1));
     assert!(client.should_continue(100));
-    
+
     // Test with page limit
     let client = client.with_page_limit(5);
     assert!(client.should_continue(1));
