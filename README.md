@@ -22,6 +22,9 @@ Duoload provides pre-built binaries for all major platforms. You can download th
 * macOS (AMD64): `duoload-macos-amd64`
 * macOS (ARM64): `duoload-macos-arm64`
 
+Note: all binaries are coming unsinged (I don't have excess €100 to throw to Apple just for privilege to compile opensource software for
+their OS).
+
 After downloading, extract archive, make the binary executable (on Unix-like systems):
 ```bash
 unzip duoload-linux-amd64.zip
