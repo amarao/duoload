@@ -2,7 +2,9 @@ name: Rust Checks
 
 on:
   push:
-
+    paths-ignore:
+      - '.github/**'
+    
 env:
   CARGO_TERM_COLOR: always
 
