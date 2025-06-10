@@ -39,7 +39,7 @@ jobs:
             artifact_name: duoload-linux-arm64
           - os: windows-latest
             target: x86_64-pc-windows-msvc
-            artifact_name: duoload-windows-amd64.exe
+            artifact_name: duoload-windows-amd64
           - os: macos-latest
             target: x86_64-apple-darwin
             artifact_name: duoload-macos-amd64
@@ -170,10 +170,10 @@ jobs:
             docker pull ghcr.io/${{ github.repository_owner }}/duoload:latest
             ```
           files: |
-            artifacts/duoload-linux-amd64
-            artifacts/duoload-linux-arm64
-            artifacts/duoload-windows-amd64.exe
-            artifacts/duoload-macos-amd64
-            artifacts/duoload-macos-arm64
+            artifacts/duoload-macos-amd64/duoload
+            artifacts/duoload-macos-arm64/duoload
+            artifacts/duoload-linux-amd64/duoload
+            artifacts/duoload-linux-arm64/duoload
+            artifacts/duoload-windows-amd64/duoload.exe
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
