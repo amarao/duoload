@@ -14,7 +14,7 @@ jobs:
 
       - name: Install actionlint
         run: |
-          VERSION=1.6.25
+          VERSION=1.7.7
           curl -sSLo actionlint.tar.gz https://github.com/rhysd/actionlint/releases/download/v$VERSION/actionlint_${VERSION}_linux_amd64.tar.gz
           tar xzf actionlint.tar.gz
           sudo mv actionlint /usr/local/bin/
