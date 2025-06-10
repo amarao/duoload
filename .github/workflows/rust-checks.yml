@@ -4,6 +4,9 @@ on:
   push:
     paths-ignore:
       - '.github/**'
+      - README.md
+      - Dockerfile
+      - internal_docs/*
     
 env:
   CARGO_TERM_COLOR: always

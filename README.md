@@ -6,7 +6,7 @@ This application is intended to be used only with user-created cards. Please, re
 
 ## Installation
 
-There are three ways to get duocards:
+There are three ways to get Duoload:
 
 * Download an archive with pre-compiled binary
 * Build your own from source code
@@ -17,7 +17,7 @@ There are three ways to get duocards:
 Duoload provides pre-built binaries for all major platforms. You can download the latest release from the [GitHub releases page](https://github.com/amarao/duoload/releases):
 
 * Linux (AMD64): `duoload-linux-amd64`
-* Linux (ARM64): `duoload-linux-arm64` (broken, under construction)
+* Linux (ARM64): `duoload-linux-arm64`
 * Windows (AMD64): `duoload-windows-amd64.exe`
 * macOS (AMD64): `duoload-macos-amd64`
 * macOS (ARM64): `duoload-macos-arm64`
@@ -203,14 +203,4 @@ This utility was vibe coded using:
 
 It also got some manual polishing (mostly in specs, PRDs and tests) and was completely reviewed by humans.
 
-It also was tested to work with Duocards as per Jule 2025 with a personal database of 2k+ words.
-
-
-# Current state and plans
-
-Most of the plan was implemented, we have working code and packages.
-
-Leftovers:
-
-* Fix linux/arm issue for build and image
-* I want to validate it works on someone's else machine and deck before final release.
+It also was tested to work with Duocards as per June 2025 with a personal database of 2k+ words.

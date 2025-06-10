@@ -137,6 +137,15 @@ jobs:
           path: artifacts
           pattern: duoload-*
 
+      - name: Debug artifact contents
+        run: |
+          echo "Contents of artifacts directory:"
+          ls -la artifacts/
+          echo "Contents of artifacts/duoload-*:"
+          ls -la artifacts/duoload-*
+          echo "Full path of artifacts:"
+          find artifacts -type f
+
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
@@ -146,6 +155,7 @@ jobs:
             
             ## Binaries
             * Linux (AMD64): `duoload-linux-amd64`
+            * Linux (ARM64): `duoload-linux-arm64`
             * Windows (AMD64): `duoload-windows-amd64.exe`
             * macOS (AMD64): `duoload-macos-amd64`
             * macOS (ARM64): `duoload-macos-arm64`
@@ -160,6 +170,10 @@ jobs:
             docker pull ghcr.io/${{ github.repository_owner }}/duoload:latest
             ```
           files: |
-            artifacts/duoload-*
+            artifacts/duoload-linux-amd64
+            artifacts/duoload-linux-arm64
+            artifacts/duoload-windows-amd64.exe
+            artifacts/duoload-macos-amd64
+            artifacts/duoload-macos-arm64
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
