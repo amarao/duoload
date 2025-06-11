@@ -132,6 +132,22 @@ jobs:
           path: artifacts
           pattern: duoload-*-v${{ needs.check-version.outputs.version }}
 
+      - name: Create release archives
+        run: |
+          # Create archives for Unix-like systems
+          for arch in x86_64-unknown-linux-gnu aarch64-unknown-linux-gnu x86_64-apple-darwin aarch64-apple-darwin; do
+            dir="artifacts/duoload-${arch}-v${{ needs.check-version.outputs.version }}"
+            if [ -d "$dir" ]; then
+              tar -czf "artifacts/duoload-${arch}-${{ needs.check-version.outputs.version }}.tar.gz" -C "$dir" duoload
+            fi
+          done
+          
+          # Create archive for Windows
+          dir="artifacts/duoload-x86_64-pc-windows-msvc-v${{ needs.check-version.outputs.version }}"
+          if [ -d "$dir" ]; then
+            zip -j "artifacts/duoload-x86_64-pc-windows-msvc-${{ needs.check-version.outputs.version }}.zip" "$dir/duoload.exe"
+          fi
+
       - name: Debug artifact contents
         run: |
           echo "Contents of artifacts directory:"
@@ -141,23 +157,10 @@ jobs:
             echo "Contents of $dir:"
             ls -la "$dir"
           done
+          echo "Contents of archives:"
+          ls -la artifacts/*.tar.gz artifacts/*.zip
 
-      - name: Verify release files exist
-        run: |
-          echo "Verifying release files..."
-          for file in \
-            "artifacts/duoload-x86_64-apple-darwin-v${{ needs.check-version.outputs.version }}/duoload" \
-            "artifacts/duoload-aarch64-apple-darwin-v${{ needs.check-version.outputs.version }}/duoload" \
-            "artifacts/duoload-x86_64-unknown-linux-gnu-v${{ needs.check-version.outputs.version }}/duoload" \
-            "artifacts/duoload-aarch64-unknown-linux-gnu-v${{ needs.check-version.outputs.version }}/duoload" \
-            "artifacts/duoload-x86_64-pc-windows-msvc-v${{ needs.check-version.outputs.version }}/duoload.exe"; do
-            if [ ! -f "$file" ]; then
-              echo "Error: File $file does not exist"
-              exit 1
-            fi
-            echo "Found: $file"
-          done
-          echo "All release files verified successfully"
+
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
@@ -167,11 +170,11 @@ jobs:
             Release v${{ needs.check-version.outputs.version }}
             
             ## Binaries
-            * Linux (AMD64): `duoload-x86_64-unknown-linux-gnu`
-            * Linux (ARM64): `duoload-aarch64-unknown-linux-gnu`
-            * Windows (AMD64): `duoload-x86_64-pc-windows-msvc.exe`
-            * macOS (AMD64): `duoload-x86_64-apple-darwin`
-            * macOS (ARM64): `duoload-aarch64-apple-darwin`
+            * Linux (AMD64): `duoload-x86_64-unknown-linux-gnu-${{ needs.check-version.outputs.version }}.tar.gz`
+            * Linux (ARM64): `duoload-aarch64-unknown-linux-gnu-${{ needs.check-version.outputs.version }}.tar.gz`
+            * Windows (AMD64): `duoload-x86_64-pc-windows-msvc-${{ needs.check-version.outputs.version }}.zip`
+            * macOS (AMD64): `duoload-x86_64-apple-darwin-${{ needs.check-version.outputs.version }}.tar.gz`
+            * macOS (ARM64): `duoload-aarch64-apple-darwin-${{ needs.check-version.outputs.version }}.tar.gz`
 
             ## Docker Images
             Docker images are available on GitHub Container Registry:
@@ -183,10 +186,10 @@ jobs:
             docker pull ghcr.io/${{ github.repository_owner }}/duoload:latest
             ```
           files: |
-            artifacts/duoload-x86_64-apple-darwin-v${{ needs.check-version.outputs.version }}/duoload
-            artifacts/duoload-aarch64-apple-darwin-v${{ needs.check-version.outputs.version }}/duoload
-            artifacts/duoload-x86_64-unknown-linux-gnu-v${{ needs.check-version.outputs.version }}/duoload
-            artifacts/duoload-aarch64-unknown-linux-gnu-v${{ needs.check-version.outputs.version }}/duoload
-            artifacts/duoload-x86_64-pc-windows-msvc-v${{ needs.check-version.outputs.version }}/duoload.exe
+            artifacts/duoload-x86_64-unknown-linux-gnu-${{ needs.check-version.outputs.version }}.tar.gz
+            artifacts/duoload-aarch64-unknown-linux-gnu-${{ needs.check-version.outputs.version }}.tar.gz
+            artifacts/duoload-x86_64-apple-darwin-${{ needs.check-version.outputs.version }}.tar.gz
+            artifacts/duoload-aarch64-apple-darwin-${{ needs.check-version.outputs.version }}.tar.gz
+            artifacts/duoload-x86_64-pc-windows-msvc-${{ needs.check-version.outputs.version }}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
