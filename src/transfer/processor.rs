@@ -102,7 +102,7 @@ where
 
             // Process each card
             for card in cards.into_iter() {
-                if self.duplicates.is_duplicate(&card.word) {
+                if self.duplicates.try_remember(&card.word) {
                     self.stats.duplicates += 1;
                     continue;
                 }

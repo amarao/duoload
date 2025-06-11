@@ -17,7 +17,7 @@ impl DuplicateHandler {
         }
     }
 
-    pub fn is_duplicate(&mut self, word: &str) -> bool {
+    pub fn try_remember(&mut self, word: &str) -> bool {
         !self.processed_words.insert(word.to_string())
     }
 }
@@ -37,14 +37,14 @@ mod tests {
         let mut handler = DuplicateHandler::new();
 
         // First time seeing a word
-        assert!(!handler.is_duplicate("hello"));
+        assert!(!handler.try_remember("hello"));
         assert!(handler.processed_words.contains("hello"));
 
         // Second time seeing the same word
-        assert!(handler.is_duplicate("hello"));
+        assert!(handler.try_remember("hello"));
 
         // Different word
-        assert!(!handler.is_duplicate("world"));
+        assert!(!handler.try_remember("world"));
         assert!(handler.processed_words.contains("world"));
     }
 
@@ -52,8 +52,8 @@ mod tests {
     fn test_duplicate_handler_case_sensitive() {
         let mut handler = DuplicateHandler::new();
 
-        assert!(!handler.is_duplicate("Hello"));
-        assert!(!handler.is_duplicate("hello")); // Different due to case
-        assert!(handler.is_duplicate("Hello")); // Duplicate
+        assert!(!handler.try_remember("Hello"));
+        assert!(!handler.try_remember("hello")); // Different due to case
+        assert!(handler.try_remember("Hello")); // Duplicate
     }
 }
